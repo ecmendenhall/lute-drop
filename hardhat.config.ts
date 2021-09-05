@@ -1,8 +1,8 @@
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
-import '@nomiclabs/hardhat-ethers'
-import '@nomiclabs/hardhat-waffle'
-import '@typechain/hardhat'
+import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-waffle";
+import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import dotenv from "dotenv";
@@ -28,7 +28,7 @@ module.exports = {
   solidity: "0.8.4",
   networks: {
     hardhat: {
-      initialBaseFeePerGas: 0, 
+      initialBaseFeePerGas: 0,
     },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
