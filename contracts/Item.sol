@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "./lib/Base64.sol";
 
 contract Item is ERC721Enumerable {
     using Strings for uint256;
@@ -55,6 +56,117 @@ contract Item is ERC721Enumerable {
 
     function getRange(uint256 tokenId) public view returns (string memory) {
         return pluck(tokenId, "RANGE", ranges);
+    }
+
+    function getName(uint256 tokenId) public view returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    getMaterial(tokenId),
+                    " ",
+                    getRange(tokenId),
+                    " ",
+                    getType(tokenId)
+                )
+            );
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        return tokenSVG(tokenId);
+    }
+
+    function tokenSVG(uint256 tokenId) public view returns (string memory) {
+        string[7] memory parts;
+        parts[
+            0
+        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
+        parts[1] = getName(tokenId);
+        parts[2] = '</text><text x="10" y="40" class="base">';
+        parts[3] = getMajorModifier(tokenId);
+        parts[4] = '</text><text x="10" y="60" class="base">';
+        parts[5] = getMinorModifier(tokenId);
+        parts[6] = "</text></svg>";
+
+        return
+            string(
+                abi.encodePacked(
+                    parts[0],
+                    parts[1],
+                    parts[2],
+                    parts[3],
+                    parts[4],
+                    parts[5],
+                    parts[6]
+                )
+            );
+    }
+
+    function attributesJSON(uint256 tokenId)
+        public
+        view
+        returns (string memory)
+    {
+        return
+            string(
+                abi.encodePacked(
+                    "[",
+                    encodeAttribute("Type", getType(tokenId)),
+                    ",",
+                    encodeAttribute("Range", getRange(tokenId)),
+                    ",",
+                    encodeAttribute("Material", getMaterial(tokenId)),
+                    ",",
+                    encodeAttribute(
+                        "Major Modifier",
+                        getMajorModifier(tokenId)
+                    ),
+                    ",",
+                    encodeAttribute(
+                        "Minor Modifier",
+                        getMinorModifier(tokenId)
+                    ),
+                    "]"
+                )
+            );
+    }
+
+    function tokenJSON(uint256 tokenId) public view returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    '{"name":"',
+                    name(),
+                    " #",
+                    tokenId.toString(),
+                    '","description":"I hear that you and your bard have sold your lutes and bought flutes. I hear that you and your bard have sold your flutes and bought lutes.","image":"data:image/svg+xml;base64,',
+                    Base64.encode(bytes(tokenSVG(tokenId))),
+                    '","attributes":',
+                    attributesJSON(tokenId),
+                    "}"
+                )
+            );
+    }
+
+    function encodeAttribute(string memory attr, string memory value)
+        internal
+        view
+        returns (string memory)
+    {
+        return
+            string(
+                abi.encodePacked(
+                    '{"trait_type":"',
+                    attr,
+                    '","value":"',
+                    value,
+                    '"}'
+                )
+            );
     }
 
     function random(string memory input) internal pure returns (uint256) {

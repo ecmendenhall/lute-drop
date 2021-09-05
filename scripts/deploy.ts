@@ -7,9 +7,11 @@ type Ethers = typeof ethers & HardhatEthersHelpers;
 async function logToken(token: Contract, i: number) {
   const material = await token.getMaterial(i);
   const type = await token.getType(i);
-  const modifier = await token.getModifier(i);
-  const register = await token.getRegister(i);
-  console.log(modifier, material, register, type);
+  const majorModifier = await token.getMajorModifier(i);
+  const minorModifier = await token.getMinorModifier(i);
+
+  const range = await token.getRange(i);
+  console.log(material, range, type, majorModifier, minorModifier);
 }
 
 export default async function deploy(ethers: Ethers) {

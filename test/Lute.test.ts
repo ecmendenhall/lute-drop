@@ -116,4 +116,57 @@ describe("Lute", () => {
       expect(await contracts.lute.getRange(9)).to.equal("Bass");
     });
   });
+
+  describe("name", () => {
+    it("constructs full name", async function () {
+      expect(await contracts.lute.getName(0)).to.equal("Ebony Baritone Oud");
+    });
+  });
+
+  describe("SVG generation", () => {
+    it("returns SVG as string", async function () {
+      expect(await contracts.lute.tokenSVG(0)).to.equal(
+        [
+          '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" />',
+          '<text x="10" y="20" class="base">Ebony Baritone Oud</text>',
+          '<text x="10" y="40" class="base">Two Strings</text>',
+          '<text x="10" y="60" class="base">Five Frets</text>',
+          "</svg>",
+        ].join("")
+      );
+    });
+  });
+
+  describe("JSON generation", () => {
+    it("returns attributes JSON as string", async function () {
+      expect(await contracts.lute.attributesJSON(0)).to.equal(
+        JSON.stringify([
+          { trait_type: "Type", value: "Oud" },
+          { trait_type: "Range", value: "Baritone" },
+          { trait_type: "Material", value: "Ebony" },
+          { trait_type: "Major Modifier", value: "Two Strings" },
+          { trait_type: "Minor Modifier", value: "Five Frets" },
+        ])
+      );
+    });
+
+    it("returns JSON as string", async function () {
+      expect(await contracts.lute.tokenJSON(0)).to.equal(
+        JSON.stringify({
+          name: "Lute #0",
+          description:
+            "I hear that you and your bard have sold your lutes and bought flutes. I hear that you and your bard have sold your flutes and bought lutes.",
+          image:
+            "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkVib255IEJhcml0b25lIE91ZDwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNDAiIGNsYXNzPSJiYXNlIj5Ud28gU3RyaW5nczwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNjAiIGNsYXNzPSJiYXNlIj5GaXZlIEZyZXRzPC90ZXh0Pjwvc3ZnPg==",
+          attributes: [
+            { trait_type: "Type", value: "Oud" },
+            { trait_type: "Range", value: "Baritone" },
+            { trait_type: "Material", value: "Ebony" },
+            { trait_type: "Major Modifier", value: "Two Strings" },
+            { trait_type: "Minor Modifier", value: "Five Frets" },
+          ],
+        })
+      );
+    });
+  });
 });
