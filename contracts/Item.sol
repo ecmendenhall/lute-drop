@@ -78,7 +78,7 @@ contract Item is ERC721Enumerable, Ownable, ReentrancyGuard {
         view
         returns (string memory)
     {
-        return pluck(tokenId, "DEC", decorations);
+        return pluck(tokenId, "DECORATION", decorations);
     }
 
     function getName(uint256 tokenId) public view returns (string memory) {
