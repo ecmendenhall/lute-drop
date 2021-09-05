@@ -13,6 +13,7 @@ contract Item is ERC721Enumerable {
     string[3] private majorModifiers;
     string[3] private minorModifiers;
     string[3] private ranges;
+    string[3] private decorations;
 
     constructor(
         string memory name,
@@ -21,13 +22,15 @@ contract Item is ERC721Enumerable {
         string[3] memory _types,
         string[3] memory _majorModifiers,
         string[3] memory _minorModifiers,
-        string[3] memory _ranges
+        string[3] memory _ranges,
+        string[3] memory _decorations
     ) ERC721(name, symbol) {
         materials = _materials;
         types = _types;
         majorModifiers = _majorModifiers;
         minorModifiers = _minorModifiers;
         ranges = _ranges;
+        decorations = _decorations;
     }
 
     function getMaterial(uint256 tokenId) public view returns (string memory) {
@@ -58,6 +61,14 @@ contract Item is ERC721Enumerable {
         return pluck(tokenId, "RANGE", ranges);
     }
 
+    function getDecoration(uint256 tokenId)
+        public
+        view
+        returns (string memory)
+    {
+        return pluck(tokenId, "DECORATION", decorations);
+    }
+
     function getName(uint256 tokenId) public view returns (string memory) {
         return
             string(
@@ -81,7 +92,7 @@ contract Item is ERC721Enumerable {
     }
 
     function tokenSVG(uint256 tokenId) public view returns (string memory) {
-        string[7] memory parts;
+        string[9] memory parts;
         parts[
             0
         ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
@@ -90,7 +101,9 @@ contract Item is ERC721Enumerable {
         parts[3] = getMajorModifier(tokenId);
         parts[4] = '</text><text x="10" y="60" class="base">';
         parts[5] = getMinorModifier(tokenId);
-        parts[6] = "</text></svg>";
+        parts[6] = '</text><text x="10" y="80" class="base">';
+        parts[7] = getDecoration(tokenId);
+        parts[8] = "</text></svg>";
 
         return
             string(
@@ -101,7 +114,9 @@ contract Item is ERC721Enumerable {
                     parts[3],
                     parts[4],
                     parts[5],
-                    parts[6]
+                    parts[6],
+                    parts[7],
+                    parts[8]
                 )
             );
     }
@@ -130,6 +145,8 @@ contract Item is ERC721Enumerable {
                         "Minor Modifier",
                         getMinorModifier(tokenId)
                     ),
+                    ",",
+                    encodeAttribute("Decoration", getDecoration(tokenId)),
                     "]"
                 )
             );

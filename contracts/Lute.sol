@@ -12,7 +12,8 @@ contract Lute is Item {
             ["Lute", "Mandolin", "Oud"],
             ["Two Strings", "Three Strings", "Four Strings"],
             ["Five Frets", "Six Frets", "Seven Frets"],
-            ["Tenor", "Baritone", "Bass"]
+            ["Tenor", "Baritone", "Bass"],
+            ["Pearl Inlay", "Silver Frets", "Decorative Carving"]
         )
     {}
 }

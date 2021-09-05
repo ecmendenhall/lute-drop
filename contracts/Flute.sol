@@ -12,7 +12,8 @@ contract Flute is Item {
             ["Flute", "Ocarina", "Panpipes"],
             ["One Pipe", "Two Pipes", "Three Pipes"],
             ["Four Holes", "Five Holes", "Six Holes"],
-            ["Piccolo", "Soprano", "Alto"]
+            ["Piccolo", "Soprano", "Alto"],
+            ["Pearl Inlay", "Silver Keys", "Decorative Engraving"]
         )
     {}
 }
