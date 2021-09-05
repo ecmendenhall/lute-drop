@@ -57,39 +57,57 @@ describe("Flute", () => {
     });
   });
 
-  describe("modifier", () => {
-    it("gets flute modifier", async function () {
-      expect(await contracts.flute.getModifier(0)).to.equal("Five-Holed");
+  describe("major modifier", () => {
+    it("gets flute major modifier", async function () {
+      expect(await contracts.flute.getMajorModifier(0)).to.equal("One Pipe");
     });
 
-    it("flutes have different modifiers", async function () {
-      expect(await contracts.flute.getModifier(1)).to.equal("Four-Holed");
-      expect(await contracts.flute.getModifier(2)).to.equal("Five-Holed");
-      expect(await contracts.flute.getModifier(3)).to.equal("Four-Holed");
-      expect(await contracts.flute.getModifier(4)).to.equal("Five-Holed");
-      expect(await contracts.flute.getModifier(5)).to.equal("Four-Holed");
-      expect(await contracts.flute.getModifier(6)).to.equal("Four-Holed");
-      expect(await contracts.flute.getModifier(7)).to.equal("Two-Piped");
-      expect(await contracts.flute.getModifier(8)).to.equal("Two-Piped");
-      expect(await contracts.flute.getModifier(9)).to.equal("Two-Piped");
+    it("flutes have different major modifiers", async function () {
+      expect(await contracts.flute.getMajorModifier(1)).to.equal("One Pipe");
+      expect(await contracts.flute.getMajorModifier(2)).to.equal("Three Pipes");
+      expect(await contracts.flute.getMajorModifier(3)).to.equal("Three Pipes");
+      expect(await contracts.flute.getMajorModifier(4)).to.equal("Three Pipes");
+      expect(await contracts.flute.getMajorModifier(5)).to.equal("Three Pipes");
+      expect(await contracts.flute.getMajorModifier(6)).to.equal("Two Pipes");
+      expect(await contracts.flute.getMajorModifier(7)).to.equal("Two Pipes");
+      expect(await contracts.flute.getMajorModifier(8)).to.equal("One Pipe");
+      expect(await contracts.flute.getMajorModifier(9)).to.equal("Two Pipes");
     });
   });
 
-  describe("register", () => {
-    it("gets flute register", async function () {
-      expect(await contracts.flute.getRegister(0)).to.equal("Alto");
+  describe("minor modifier", () => {
+    it("gets flute minor modifier", async function () {
+      expect(await contracts.flute.getMinorModifier(0)).to.equal("Four Holes");
     });
 
-    it("flutes have different registers", async function () {
-      expect(await contracts.flute.getRegister(1)).to.equal("Piccolo");
-      expect(await contracts.flute.getRegister(2)).to.equal("Piccolo");
-      expect(await contracts.flute.getRegister(3)).to.equal("Piccolo");
-      expect(await contracts.flute.getRegister(4)).to.equal("Soprano");
-      expect(await contracts.flute.getRegister(5)).to.equal("Piccolo");
-      expect(await contracts.flute.getRegister(6)).to.equal("Piccolo");
-      expect(await contracts.flute.getRegister(7)).to.equal("Alto");
-      expect(await contracts.flute.getRegister(8)).to.equal("Piccolo");
-      expect(await contracts.flute.getRegister(9)).to.equal("Alto");
+    it("flutes have different minor modifiers", async function () {
+      expect(await contracts.flute.getMinorModifier(1)).to.equal("Five Holes");
+      expect(await contracts.flute.getMinorModifier(2)).to.equal("Four Holes");
+      expect(await contracts.flute.getMinorModifier(3)).to.equal("Five Holes");
+      expect(await contracts.flute.getMinorModifier(4)).to.equal("Six Holes");
+      expect(await contracts.flute.getMinorModifier(5)).to.equal("Five Holes");
+      expect(await contracts.flute.getMinorModifier(6)).to.equal("Six Holes");
+      expect(await contracts.flute.getMinorModifier(7)).to.equal("Four Holes");
+      expect(await contracts.flute.getMinorModifier(8)).to.equal("Four Holes");
+      expect(await contracts.flute.getMinorModifier(9)).to.equal("Five Holes");
+    });
+  });
+
+  describe("range", () => {
+    it("gets flute range", async function () {
+      expect(await contracts.flute.getRange(0)).to.equal("Soprano");
+    });
+
+    it("flutes have different ranges", async function () {
+      expect(await contracts.flute.getRange(1)).to.equal("Soprano");
+      expect(await contracts.flute.getRange(2)).to.equal("Alto");
+      expect(await contracts.flute.getRange(3)).to.equal("Alto");
+      expect(await contracts.flute.getRange(4)).to.equal("Piccolo");
+      expect(await contracts.flute.getRange(5)).to.equal("Soprano");
+      expect(await contracts.flute.getRange(6)).to.equal("Alto");
+      expect(await contracts.flute.getRange(7)).to.equal("Piccolo");
+      expect(await contracts.flute.getRange(8)).to.equal("Soprano");
+      expect(await contracts.flute.getRange(9)).to.equal("Alto");
     });
   });
 });

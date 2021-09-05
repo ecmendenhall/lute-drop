@@ -57,39 +57,63 @@ describe("Lute", () => {
     });
   });
 
-  describe("modifier", () => {
-    it("gets lute modifier", async function () {
-      expect(await contracts.lute.getModifier(0)).to.equal("Four-Stringed");
+  describe("major modifier", () => {
+    it("gets lute major modifier", async function () {
+      expect(await contracts.lute.getMajorModifier(0)).to.equal("Two Strings");
     });
 
-    it("lutes have different modifiers", async function () {
-      expect(await contracts.lute.getModifier(1)).to.equal("Three-Stringed");
-      expect(await contracts.lute.getModifier(2)).to.equal("Four-Stringed");
-      expect(await contracts.lute.getModifier(3)).to.equal("Three-Stringed");
-      expect(await contracts.lute.getModifier(4)).to.equal("Four-Stringed");
-      expect(await contracts.lute.getModifier(5)).to.equal("Three-Stringed");
-      expect(await contracts.lute.getModifier(6)).to.equal("Three-Stringed");
-      expect(await contracts.lute.getModifier(7)).to.equal("Two-Stringed");
-      expect(await contracts.lute.getModifier(8)).to.equal("Two-Stringed");
-      expect(await contracts.lute.getModifier(9)).to.equal("Two-Stringed");
+    it("lutes have different major modifiers", async function () {
+      expect(await contracts.lute.getMajorModifier(1)).to.equal("Two Strings");
+      expect(await contracts.lute.getMajorModifier(2)).to.equal("Four Strings");
+      expect(await contracts.lute.getMajorModifier(3)).to.equal("Four Strings");
+      expect(await contracts.lute.getMajorModifier(4)).to.equal("Four Strings");
+      expect(await contracts.lute.getMajorModifier(5)).to.equal("Four Strings");
+      expect(await contracts.lute.getMajorModifier(6)).to.equal(
+        "Three Strings"
+      );
+      expect(await contracts.lute.getMajorModifier(7)).to.equal(
+        "Three Strings"
+      );
+      expect(await contracts.lute.getMajorModifier(8)).to.equal("Two Strings");
+      expect(await contracts.lute.getMajorModifier(9)).to.equal(
+        "Three Strings"
+      );
     });
   });
 
-  describe("register", () => {
-    it("gets lute register", async function () {
-      expect(await contracts.lute.getRegister(0)).to.equal("Bass");
+  describe("minor modifier", () => {
+    it("gets lute minor modifier", async function () {
+      expect(await contracts.lute.getMinorModifier(0)).to.equal("Five Frets");
     });
 
-    it("lutes have different registers", async function () {
-      expect(await contracts.lute.getRegister(1)).to.equal("Tenor");
-      expect(await contracts.lute.getRegister(2)).to.equal("Tenor");
-      expect(await contracts.lute.getRegister(3)).to.equal("Tenor");
-      expect(await contracts.lute.getRegister(4)).to.equal("Baritone");
-      expect(await contracts.lute.getRegister(5)).to.equal("Tenor");
-      expect(await contracts.lute.getRegister(6)).to.equal("Tenor");
-      expect(await contracts.lute.getRegister(7)).to.equal("Bass");
-      expect(await contracts.lute.getRegister(8)).to.equal("Tenor");
-      expect(await contracts.lute.getRegister(9)).to.equal("Bass");
+    it("lutes have different minor modifiers", async function () {
+      expect(await contracts.lute.getMinorModifier(1)).to.equal("Six Frets");
+      expect(await contracts.lute.getMinorModifier(2)).to.equal("Five Frets");
+      expect(await contracts.lute.getMinorModifier(3)).to.equal("Six Frets");
+      expect(await contracts.lute.getMinorModifier(4)).to.equal("Seven Frets");
+      expect(await contracts.lute.getMinorModifier(5)).to.equal("Six Frets");
+      expect(await contracts.lute.getMinorModifier(6)).to.equal("Seven Frets");
+      expect(await contracts.lute.getMinorModifier(7)).to.equal("Five Frets");
+      expect(await contracts.lute.getMinorModifier(8)).to.equal("Five Frets");
+      expect(await contracts.lute.getMinorModifier(9)).to.equal("Six Frets");
+    });
+  });
+
+  describe("range", () => {
+    it("gets lute range", async function () {
+      expect(await contracts.lute.getRange(0)).to.equal("Baritone");
+    });
+
+    it("lutes have different ranges", async function () {
+      expect(await contracts.lute.getRange(1)).to.equal("Baritone");
+      expect(await contracts.lute.getRange(2)).to.equal("Bass");
+      expect(await contracts.lute.getRange(3)).to.equal("Bass");
+      expect(await contracts.lute.getRange(4)).to.equal("Tenor");
+      expect(await contracts.lute.getRange(5)).to.equal("Baritone");
+      expect(await contracts.lute.getRange(6)).to.equal("Bass");
+      expect(await contracts.lute.getRange(7)).to.equal("Tenor");
+      expect(await contracts.lute.getRange(8)).to.equal("Baritone");
+      expect(await contracts.lute.getRange(9)).to.equal("Bass");
     });
   });
 });

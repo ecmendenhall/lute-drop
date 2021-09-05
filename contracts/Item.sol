@@ -9,21 +9,24 @@ contract Item is ERC721Enumerable {
 
     string[3] private materials;
     string[3] private types;
-    string[3] private modifiers;
-    string[3] private registers;
+    string[3] private majorModifiers;
+    string[3] private minorModifiers;
+    string[3] private ranges;
 
     constructor(
         string memory name,
         string memory symbol,
         string[3] memory _materials,
         string[3] memory _types,
-        string[3] memory _modifiers,
-        string[3] memory _registers
+        string[3] memory _majorModifiers,
+        string[3] memory _minorModifiers,
+        string[3] memory _ranges
     ) ERC721(name, symbol) {
         materials = _materials;
         types = _types;
-        modifiers = _modifiers;
-        registers = _registers;
+        majorModifiers = _majorModifiers;
+        minorModifiers = _minorModifiers;
+        ranges = _ranges;
     }
 
     function getMaterial(uint256 tokenId) public view returns (string memory) {
@@ -34,12 +37,24 @@ contract Item is ERC721Enumerable {
         return pluck(tokenId, "TYPE", types);
     }
 
-    function getModifier(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "MODIFIER", modifiers);
+    function getMajorModifier(uint256 tokenId)
+        public
+        view
+        returns (string memory)
+    {
+        return pluck(tokenId, "MAJORMOD", majorModifiers);
     }
 
-    function getRegister(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "REGISTER", registers);
+    function getMinorModifier(uint256 tokenId)
+        public
+        view
+        returns (string memory)
+    {
+        return pluck(tokenId, "MINORMOD", minorModifiers);
+    }
+
+    function getRange(uint256 tokenId) public view returns (string memory) {
+        return pluck(tokenId, "RANGE", ranges);
     }
 
     function random(string memory input) internal pure returns (uint256) {

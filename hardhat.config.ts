@@ -7,6 +7,7 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import dotenv from "dotenv";
 import { task } from "hardhat/config";
+import deploy from "./scripts/deploy";
 
 dotenv.config();
 
@@ -18,8 +19,9 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
   }
 });
 
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
+task("deploy", "Deploys contracts", async (args, hre) => {
+  await deploy(hre.ethers);
+});
 
 /**
  * @type import('hardhat/config').HardhatUserConfig

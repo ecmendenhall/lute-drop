@@ -10,7 +10,8 @@ contract Flute is Item {
             "FLUTE",
             ["Brass", "Silver", "Gold"],
             ["Flute", "Ocarina", "Panpipes"],
-            ["Two-Piped", "Four-Holed", "Five-Holed"],
+            ["One Pipe", "Two Pipes", "Three Pipes"],
+            ["Four Holes", "Five Holes", "Six Holes"],
             ["Piccolo", "Soprano", "Alto"]
         )
     {}

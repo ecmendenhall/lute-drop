@@ -10,7 +10,8 @@ contract Lute is Item {
             "LUTE",
             ["Pine", "Walnut", "Ebony"],
             ["Lute", "Mandolin", "Oud"],
-            ["Two-Stringed", "Three-Stringed", "Four-Stringed"],
+            ["Two Strings", "Three Strings", "Four Strings"],
+            ["Five Frets", "Six Frets", "Seven Frets"],
             ["Tenor", "Baritone", "Bass"]
         )
     {}
