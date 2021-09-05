@@ -2,11 +2,17 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./lib/Base64.sol";
 
-contract Item is ERC721Enumerable {
+contract Item is ERC721Enumerable, Ownable, ReentrancyGuard {
     using Strings for uint256;
+    using Counters for Counters.Counter;
+
+    Counters.Counter private tokenIds;
 
     string[3] private materials;
     string[3] private types;
@@ -31,6 +37,12 @@ contract Item is ERC721Enumerable {
         minorModifiers = _minorModifiers;
         ranges = _ranges;
         decorations = _decorations;
+    }
+
+    function craft(address recipient) public onlyOwner nonReentrant {
+        uint256 id = tokenIds.current();
+        tokenIds.increment();
+        _safeMint(recipient, id);
     }
 
     function getMaterial(uint256 tokenId) public view returns (string memory) {
@@ -66,7 +78,7 @@ contract Item is ERC721Enumerable {
         view
         returns (string memory)
     {
-        return pluck(tokenId, "DECORATION", decorations);
+        return pluck(tokenId, "DEC", decorations);
     }
 
     function getName(uint256 tokenId) public view returns (string memory) {
