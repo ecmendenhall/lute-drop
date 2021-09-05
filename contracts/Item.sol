@@ -82,15 +82,6 @@ contract Item is ERC721Enumerable {
             );
     }
 
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
-    {
-        return tokenSVG(tokenId);
-    }
-
     function tokenSVG(uint256 tokenId) public view returns (string memory) {
         string[9] memory parts;
         parts[
@@ -165,6 +156,21 @@ contract Item is ERC721Enumerable {
                     '","attributes":',
                     attributesJSON(tokenId),
                     "}"
+                )
+            );
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        return
+            string(
+                abi.encodePacked(
+                    "data:application/json;base64,",
+                    Base64.encode(bytes(tokenJSON(tokenId)))
                 )
             );
     }

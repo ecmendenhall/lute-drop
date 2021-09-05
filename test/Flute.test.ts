@@ -168,4 +168,29 @@ describe("Flute", () => {
       );
     });
   });
+
+  describe("token URI", () => {
+    it("generates base64 JSON data", async function () {
+      const json = JSON.stringify({
+        name: "Flute #0",
+        description:
+          "I hear that you and your bard have sold your lutes and bought flutes. I hear that you and your bard have sold your flutes and bought lutes.",
+        image:
+          "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkdvbGQgU29wcmFubyBQYW5waXBlczwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNDAiIGNsYXNzPSJiYXNlIj5PbmUgUGlwZTwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNjAiIGNsYXNzPSJiYXNlIj5Gb3VyIEhvbGVzPC90ZXh0Pjx0ZXh0IHg9IjEwIiB5PSI4MCIgY2xhc3M9ImJhc2UiPkRlY29yYXRpdmUgRW5ncmF2aW5nPC90ZXh0Pjwvc3ZnPg==",
+        attributes: [
+          { trait_type: "Type", value: "Panpipes" },
+          { trait_type: "Range", value: "Soprano" },
+          { trait_type: "Material", value: "Gold" },
+          { trait_type: "Major Modifier", value: "One Pipe" },
+          { trait_type: "Minor Modifier", value: "Four Holes" },
+          { trait_type: "Decoration", value: "Decorative Engraving" },
+        ],
+      });
+      const base64 = Buffer.from(json).toString("base64");
+      const tokenURI = await contracts.flute.tokenURI(0);
+      const [mimeType, data] = tokenURI.split(",");
+      expect(mimeType).to.equal("data:application/json;base64");
+      expect(data).to.equal(base64);
+    });
+  });
 });
