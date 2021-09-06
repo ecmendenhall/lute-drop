@@ -236,6 +236,172 @@ describe("Lutiswap", () => {
       });
     });
 
+    describe("lutes", () => {
+      it("burns the swapped lute", async () => {
+        expect(await contracts.lute.balanceOf(luteHolder.address)).to.equal(
+          1
+        );
+        expect(await contracts.lute.ownerOf(0)).to.equal(luteHolder.address);
+        await contracts.lutiswap
+          .connect(luteHolder)
+          .swapExactLuteForFlute(0, {
+            value: parseEther("0.133333333333333333"),
+          });
+        expect(await contracts.lute.balanceOf(luteHolder.address)).to.equal(
+          0
+        );
+      });
+
+      it("mints a flute", async () => {
+        expect(await contracts.flute.balanceOf(luteHolder.address)).to.equal(0);
+        await contracts.lutiswap
+          .connect(luteHolder)
+          .swapExactLuteForFlute(0, {
+            value: parseEther("0.133333333333333333"),
+          });
+        expect(await contracts.flute.balanceOf(luteHolder.address)).to.equal(1);
+      });
+
+      it("cannot burn unowned lutes", async () => {
+        await expect(
+          contracts.lutiswap
+            .connect(luteHolder)
+            .swapExactLuteForFlute(1, {
+              value: parseEther("0.133333333333333333"),
+            })
+        ).to.be.revertedWith("Must own item to swap");
+      });
+
+      it("reverts on insufficient payment", async () => {
+        await expect(
+          contracts.lutiswap
+            .connect(luteHolder)
+            .swapExactLuteForFlute(0, { value: parseEther("0.01") })
+        ).to.be.revertedWith("Insufficient payment");
+      });
+
+      it("refunds excess payment", async () => {
+        const initialETHbalance = await ethers.provider.getBalance(
+          luteHolder.address
+        );
+        const tx = await contracts.lutiswap
+          .connect(luteHolder)
+          .swapExactLuteForFlute(0, {
+            value: parseEther("10.133333333333333333"),
+          });
+        const receipt = await tx.wait();
+        const gasSpent = receipt.gasUsed.mul(tx.gasPrice || 0);
+        const finalETHbalance = await ethers.provider.getBalance(
+          luteHolder.address
+        );
+        expect(initialETHbalance.sub(finalETHbalance)).to.equal(
+          parseEther("0.133333333333333333").add(gasSpent)
+        );
+      });
+
+      it("can swap all owned lutes", async () => {
+        expect(await contracts.lute.balanceOf(luteWhale.address)).to.equal(3);
+        expect(await contracts.lute.ownerOf(1)).to.equal(luteWhale.address);
+        expect(await contracts.lute.ownerOf(2)).to.equal(luteWhale.address);
+        expect(await contracts.lute.ownerOf(3)).to.equal(luteWhale.address);
+
+        for (let id = 1; id <= 3; id++) {
+          const swapCost = await contracts.lutiswap.latestLuteSwapPrice();
+          await contracts.lutiswap
+            .connect(luteWhale)
+            .swapExactLuteForFlute(id, { value: swapCost });
+        }
+        expect(await contracts.flute.balanceOf(luteWhale.address)).to.equal(3);
+        expect(await contracts.lute.balanceOf(luteWhale.address)).to.equal(0);
+      });
+
+      it("swap price increases as supply decreases", async () => {
+        let swapPrice = await contracts.lutiswap.latestLuteSwapPrice();
+        expect(swapPrice).to.equal(parseEther("0.133333333333333333"));
+        await contracts.lutiswap
+          .connect(luteWhale)
+          .swapExactLuteForFlute(1, { value: swapPrice });
+
+        swapPrice = await contracts.lutiswap.latestLuteSwapPrice();
+        expect(swapPrice).to.equal(parseEther("0.250000000000000000"));
+        await contracts.lutiswap
+          .connect(luteWhale)
+          .swapExactLuteForFlute(2, { value: swapPrice });
+
+        swapPrice = await contracts.lutiswap.latestLuteSwapPrice();
+        expect(swapPrice).to.equal(parseEther("0.600000000000000000"));
+        await contracts.lutiswap
+          .connect(luteWhale)
+          .swapExactLuteForFlute(3, { value: swapPrice });
+
+        expect(contracts.lutiswap.latestLuteSwapPrice()).to.be.revertedWith(
+          "Invalid swap"
+        );
+      });
+
+      it("swaps preserve total supply", async () => {
+        expect(await contracts.lute.totalSupply()).to.equal(4);
+        expect(await contracts.flute.totalSupply()).to.equal(4);
+
+        await contracts.lutiswap
+          .connect(luteWhale)
+          .swapExactLuteForFlute(1, {
+            value: await contracts.lutiswap.latestLuteSwapPrice(),
+          });
+        expect(await contracts.lute.totalSupply()).to.equal(3);
+        expect(await contracts.flute.totalSupply()).to.equal(5);
+
+        await contracts.lutiswap
+          .connect(luteWhale)
+          .swapExactLuteForFlute(2, {
+            value: await contracts.lutiswap.latestLuteSwapPrice(),
+          });
+        expect(await contracts.lute.totalSupply()).to.equal(2);
+        expect(await contracts.flute.totalSupply()).to.equal(6);
+
+        await contracts.lutiswap
+          .connect(luteWhale)
+          .swapExactLuteForFlute(3, {
+            value: await contracts.lutiswap.latestLuteSwapPrice(),
+          });
+        expect(await contracts.lute.totalSupply()).to.equal(1);
+        expect(await contracts.flute.totalSupply()).to.equal(7);
+      });
+
+      it("contract holds fees from swaps", async () => {
+        expect(
+          await ethers.provider.getBalance(contracts.lutiswap.address)
+        ).to.equal(parseEther("0"));
+
+        await contracts.lutiswap
+          .connect(fluteWhale)
+          .swapExactFluteForLute(1, {
+            value: await contracts.lutiswap.latestFluteSwapPrice(),
+          });
+        expect(
+          await ethers.provider.getBalance(contracts.lutiswap.address)
+        ).to.equal(parseEther("0.133333333333333333"));
+
+        await contracts.lutiswap
+          .connect(fluteWhale)
+          .swapExactFluteForLute(2, {
+            value: await contracts.lutiswap.latestFluteSwapPrice(),
+          });
+        expect(
+          await ethers.provider.getBalance(contracts.lutiswap.address)
+        ).to.equal(parseEther("0.383333333333333333"));
+
+        await contracts.lutiswap
+          .connect(fluteWhale)
+          .swapExactFluteForLute(3, {
+            value: await contracts.lutiswap.latestFluteSwapPrice(),
+          });
+        expect(
+          await ethers.provider.getBalance(contracts.lutiswap.address)
+        ).to.equal(parseEther("0.983333333333333333"));
+      });
+    });
+
     describe("swap price", () => {
       describe("flutes", () => {
         it("gets current swap price", async () => {
