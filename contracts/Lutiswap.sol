@@ -16,9 +16,16 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         flute = IItem(_flute);
     }
 
-    function swapExactFluteForLute(uint256 tokenId) public nonReentrant {
-        flute.burn(tokenId);
-        lute.craft(msg.sender);
+    function swapExactFluteForLute(uint256 tokenId)
+        public
+        payable
+        nonReentrant
+    {
+        return swap(tokenId, flute, lute);
+    }
+
+    function latestFluteSwapPrice() public view returns (uint256) {
+        return fluteSwapPrice(lute.totalSupply(), flute.totalSupply());
     }
 
     function fluteSwapPrice(uint256 _l, uint256 _f)
@@ -26,9 +33,44 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         pure
         returns (uint256)
     {
-        uint256 l = _l * 1e17;
-        uint256 f = _f * 1e17;
-        uint256 k = l * f;
-        return (k / (f - 1e17)) - l;
+        return swapPrice(_f, _l);
+    }
+
+    function swap(
+        uint256 tokenId,
+        IItem from,
+        IItem to
+    ) internal {
+        require(from.ownerOf(tokenId) == msg.sender, "Must own item to swap");
+        uint256 fromSupply = from.totalSupply();
+        uint256 toSupply = to.totalSupply();
+        uint256 fee = swapPrice(fromSupply, toSupply);
+        require(msg.value >= fee, "Insufficient payment");
+        from.burn(tokenId);
+        to.craft(msg.sender);
+        require(
+            (fromSupply + toSupply) == (from.totalSupply() + to.totalSupply()),
+            "Supply invariant"
+        );
+        if (msg.value > fee) {
+            safeTransferETH(msg.sender, msg.value - fee);
+        }
+    }
+
+    function swapPrice(uint256 _from, uint256 _to)
+        internal
+        pure
+        returns (uint256)
+    {
+        require(_from > 1, "Invalid swap");
+        uint256 f = _from * 1e17;
+        uint256 t = _to * 1e17;
+        uint256 k = f * t;
+        return (k / (f - 1e17)) - t;
+    }
+
+    function safeTransferETH(address to, uint256 value) internal {
+        (bool success, ) = to.call{value: value}(new bytes(0));
+        require(success, "Transfer failed");
     }
 }
