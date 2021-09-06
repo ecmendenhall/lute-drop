@@ -2,7 +2,8 @@
   "name": "lute-drop",
   "scripts": {
     "compile": "yarn hardhat compile",
-    "test": "yarn hardhat compile && yarn hardhat test"
+    "test": "yarn hardhat compile && yarn hardhat test",
+    "coverage": "yarn hardhat compile && yarn hardhat coverage"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
