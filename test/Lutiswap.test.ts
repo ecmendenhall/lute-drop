@@ -1,5 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
+import { parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
 import { Lutiswap, Lute, Flute } from "../typechain";
@@ -79,6 +80,81 @@ describe("Lutiswap", () => {
         await contracts.lutiswap.connect(fluteHolder).swapExactFluteForLute(0);
         expect(await contracts.lute.balanceOf(fluteHolder.address)).to.equal(1);
       });
+
+      it("gets swap price", async () => {
+        expect(await contracts.lutiswap.fluteSwapPrice(4, 4)).to.equal(parseEther("0.133333333333333333"));
+      });
     })
+
+    describe("swap price", () => {
+
+      describe("flutes", () => {
+
+        describe("max supply", () => {
+          it("Oops! all lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(24998, 2)).to.equal(parseEther("2499.8"));
+          });
+    
+          it("Oops! all flutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(2, 24998)).to.equal(parseEther("0.000008000960115213"));
+          });
+    
+          it("Equal supply", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(12500, 12500)).to.equal(parseEther("0.100008000640051204"));
+          });
+  
+          it("10,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(10000, 15000)).to.equal(parseEther("0.066671111407427161"));
+          });
+  
+          it("5,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(5000, 20000)).to.equal(parseEther("0.025001250062503125"));
+          });
+  
+          it("2,500 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(2500, 22500)).to.equal(parseEther("0.011111604960220454"));
+          });
+  
+          it("1,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(1000, 24000)).to.equal(parseEther("0.004166840285011875"));
+          });
+  
+          it("100 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(100, 24900)).to.equal(parseEther("0.000401622555122695"));
+          });
+        });
+      });
+
+      describe("less than max supply", () => {
+        it("Oops! all lutes", async () => {
+          expect(await contracts.lutiswap.fluteSwapPrice(2000, 2)).to.equal(parseEther("200.000000000000000000"));
+        });
+  
+        it("Oops! all flutes", async () => {
+          expect(await contracts.lutiswap.fluteSwapPrice(2, 2000)).to.equal(parseEther("0.000100050025012506"));
+        });
+  
+        it("Equal supply", async () => {
+          expect(await contracts.lutiswap.fluteSwapPrice(1000, 1000)).to.equal(parseEther("0.100100100100100100"));
+        });
+
+        it("10000 lutes, 2000 flutes", async () => {
+          expect(await contracts.lutiswap.fluteSwapPrice(10000, 2000)).to.equal(parseEther("0.500250125062531265"));
+        });
+
+        it("5000 lutes, 2000 flutes", async () => {
+          expect(await contracts.lutiswap.fluteSwapPrice(5000, 2000)).to.equal(parseEther("0.250125062531265632"));
+        });
+
+        it("30 lutes, 100 flutes", async () => {
+          expect(await contracts.lutiswap.fluteSwapPrice(30, 100)).to.equal(parseEther("0.030303030303030303"));
+        });
+
+        it("10347 lutes, 11003 flutes", async () => {
+          expect(await contracts.lutiswap.fluteSwapPrice(10347, 11003)).to.equal(parseEther("0.094046536993273950"));
+        });
+      });
+    });
+  
   });
 });
