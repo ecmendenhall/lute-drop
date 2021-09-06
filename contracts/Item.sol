@@ -2,15 +2,18 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./lib/Base64.sol";
 
-contract Item is ERC721Enumerable, Ownable, ReentrancyGuard {
+contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
     using Strings for uint256;
     using Counters for Counters.Counter;
+
+    bytes32 public constant CRAFTER_ROLE = keccak256("CRAFTER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     Counters.Counter private tokenIds;
 
@@ -37,15 +40,30 @@ contract Item is ERC721Enumerable, Ownable, ReentrancyGuard {
         minorModifiers = _minorModifiers;
         ranges = _ranges;
         decorations = _decorations;
+        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
-    function craft(address recipient) public onlyOwner nonReentrant {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721Enumerable, AccessControl)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function craft(address recipient)
+        public
+        onlyRole(CRAFTER_ROLE)
+        nonReentrant
+    {
         uint256 id = tokenIds.current();
         tokenIds.increment();
         _safeMint(recipient, id);
     }
 
-    function burn(uint256 tokenId) public onlyOwner nonReentrant {
+    function burn(uint256 tokenId) public onlyRole(BURNER_ROLE) nonReentrant {
         _burn(tokenId);
     }
 

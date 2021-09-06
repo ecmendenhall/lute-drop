@@ -53,6 +53,13 @@ let owner: SignerWithAddress,
   mlootHolder2: SignerWithAddress,
   mlootWhale: SignerWithAddress;
 
+const CRAFTER_ROLE = ethers.utils.keccak256(
+  ethers.utils.toUtf8Bytes("CRAFTER_ROLE")
+);
+const BURNER_ROLE = ethers.utils.keccak256(
+  ethers.utils.toUtf8Bytes("BURNER_ROLE")
+);
+
 describe("LuteDrop", () => {
   beforeEach(async () => {
     contracts = await deploy();
@@ -67,10 +74,12 @@ describe("LuteDrop", () => {
       mlootHolder2,
       mlootWhale,
     ] = await ethers.getSigners();
-    contracts.lute.connect(owner).transferOwnership(contracts.luteDrop.address);
-    contracts.flute
+    await contracts.lute
       .connect(owner)
-      .transferOwnership(contracts.luteDrop.address);
+      .grantRole(CRAFTER_ROLE, contracts.luteDrop.address);
+    await contracts.flute
+      .connect(owner)
+      .grantRole(CRAFTER_ROLE, contracts.luteDrop.address);
   });
 
   describe("configuration", () => {
