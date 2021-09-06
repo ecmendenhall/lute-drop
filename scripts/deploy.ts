@@ -38,6 +38,12 @@ async function logTokens(flute: Contract, lute: Contract) {
 }
 
 export default async function deploy(ethers: Ethers) {
+  const Multicall = await ethers.getContractFactory("Multicall");
+  const multicall = await Multicall.deploy();
+  await multicall.deployed();
+
+  console.log("Multicall deployed to:", multicall.address);
+
   const Lute = await ethers.getContractFactory("Lute");
   const lute = await Lute.deploy();
   await lute.deployed();
@@ -69,11 +75,13 @@ export default async function deploy(ethers: Ethers) {
 
   console.log("Lutiswap deployed to:", lutiswap.address);
 
-  lute.grantRole(CRAFTER_ROLE, luteDrop.address);
-  lute.grantRole(CRAFTER_ROLE, lutiswap.address);
-  lute.grantRole(BURNER_ROLE, lutiswap.address);
+  console.log("Granting Lute roles...")
+  await lute.grantRole(CRAFTER_ROLE, luteDrop.address);
+  await lute.grantRole(CRAFTER_ROLE, lutiswap.address);
+  await lute.grantRole(BURNER_ROLE, lutiswap.address);
 
-  flute.grantRole(CRAFTER_ROLE, luteDrop.address);
-  flute.grantRole(CRAFTER_ROLE, lutiswap.address);
-  flute.grantRole(BURNER_ROLE, lutiswap.address);
+  console.log("Granting Flute roles...")
+  await flute.grantRole(CRAFTER_ROLE, luteDrop.address);
+  await flute.grantRole(CRAFTER_ROLE, lutiswap.address);
+  await flute.grantRole(BURNER_ROLE, lutiswap.address);
 }
