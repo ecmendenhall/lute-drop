@@ -94,11 +94,35 @@ describe("Lutiswap", () => {
           it("Oops! all lutes", async () => {
             expect(await contracts.lutiswap.fluteSwapPrice(24998, 2)).to.equal(parseEther("2499.8"));
           });
-    
-          it("Oops! all flutes", async () => {
-            expect(await contracts.lutiswap.fluteSwapPrice(2, 24998)).to.equal(parseEther("0.000008000960115213"));
+
+          it("23,900 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(23900, 100)).to.equal(parseEther("24.141414141414141414"));
           });
-    
+
+          it("24,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(24000, 1000)).to.equal(parseEther("2.402402402402402402"));
+          });
+
+          it("22,500 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(22500, 2500)).to.equal(parseEther("0.900360144057623049"));
+          });
+
+          it("20,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(20000, 5000)).to.equal(parseEther("0.400080016003200640"));
+          });
+
+          it("18,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(18000, 7000)).to.equal(parseEther("0.257179597085297899"));
+          });
+
+          it("16,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(16000, 9000)).to.equal(parseEther("0.177797533059228803"));
+          });
+
+          it("14,000 lutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(14000, 11000)).to.equal(parseEther("0.127284298572597508"));
+          });
+
           it("Equal supply", async () => {
             expect(await contracts.lutiswap.fluteSwapPrice(12500, 12500)).to.equal(parseEther("0.100008000640051204"));
           });
@@ -121,6 +145,10 @@ describe("Lutiswap", () => {
   
           it("100 lutes", async () => {
             expect(await contracts.lutiswap.fluteSwapPrice(100, 24900)).to.equal(parseEther("0.000401622555122695"));
+          });
+
+          it("Oops! all flutes", async () => {
+            expect(await contracts.lutiswap.fluteSwapPrice(2, 24998)).to.equal(parseEther("0.000008000960115213"));
           });
         });
       });

@@ -15,7 +15,6 @@ async function logToken(token: Contract, i: number) {
 }
 
 export default async function deploy(ethers: Ethers) {
-  // We get the contract to deploy
   const Lute = await ethers.getContractFactory("Lute");
   const lute = await Lute.deploy();
 
