@@ -64,4 +64,41 @@ describe("Item", () => {
       expect(await contracts.item.totalSupply()).to.equal(1);
     });
   });
+
+  describe("burning", () => {
+    it("owner can burn items", async function () {
+      await contracts.item.connect(owner).craft(recipient.address);
+      expect(await contracts.item.balanceOf(recipient.address)).to.equal(1);
+      await contracts.item.connect(owner).burn(0);
+      expect(await contracts.item.balanceOf(recipient.address)).to.equal(0);
+    });
+
+    it("non-owner cannot burn items", async function () {
+      expect(
+        contracts.item.connect(nonOwner).burn(0)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+    });
+
+    it("burning does not change token ID", async function () {
+      await contracts.item.connect(owner).craft(recipient.address);
+      await contracts.item.connect(owner).craft(recipient.address);
+      await contracts.item.connect(owner).craft(recipient.address);
+      expect(await contracts.item.ownerOf(0)).to.equal(recipient.address);
+      expect(await contracts.item.ownerOf(1)).to.equal(recipient.address);
+      expect(await contracts.item.ownerOf(2)).to.equal(recipient.address);
+      await contracts.item.connect(owner).burn(0);
+      await contracts.item.connect(owner).burn(1);
+      await contracts.item.connect(owner).burn(2);
+      await contracts.item.connect(owner).craft(recipient.address);
+      expect(await contracts.item.ownerOf(3)).to.equal(recipient.address);
+    });
+
+    it("burning decreases total supply", async function () {
+      expect(await contracts.item.totalSupply()).to.equal(0);
+      await contracts.item.connect(owner).craft(recipient.address);
+      expect(await contracts.item.totalSupply()).to.equal(1);
+      await contracts.item.connect(owner).burn(0);
+      expect(await contracts.item.totalSupply()).to.equal(0);
+    });
+  });
 });

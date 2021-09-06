@@ -45,6 +45,10 @@ contract Item is ERC721Enumerable, Ownable, ReentrancyGuard {
         _safeMint(recipient, id);
     }
 
+    function burn(uint256 tokenId) public onlyOwner nonReentrant {
+        _burn(tokenId);
+    }
+
     function getMaterial(uint256 tokenId) public view returns (string memory) {
         return pluck(tokenId, "MATERIAL", materials);
     }

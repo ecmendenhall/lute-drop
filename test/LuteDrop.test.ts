@@ -42,7 +42,7 @@ let owner: SignerWithAddress,
   mlootHolder2: SignerWithAddress,
   mlootWhale: SignerWithAddress;
 
-describe("Item", () => {
+describe("LuteDrop", () => {
   beforeEach(async () => {
     contracts = await deploy();
     [owner, recipient, nonOwner, lootHolder1, lootHolder2, lootWhale, mlootHolder1, mlootHolder2, mlootWhale] = await ethers.getSigners();
@@ -58,7 +58,7 @@ describe("Item", () => {
     });
 
     it("stores the Flute contract", async () => {
-      expect(await contracts.luteDrop.lute()).to.equal(contracts.lute.address);
+      expect(await contracts.luteDrop.flute()).to.equal(contracts.flute.address);
     });
 
     it("stores the Loot contract", async () => {

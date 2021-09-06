@@ -5,9 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
-interface IItem {
-    function craft(address recipient) external;
-}
+import "./interfaces/IItem.sol";
 
 contract LuteDrop is Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
