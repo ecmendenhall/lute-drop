@@ -74,9 +74,9 @@ describe("Item", () => {
     });
 
     it("non-owner cannot burn items", async function () {
-      expect(
-        contracts.item.connect(nonOwner).burn(0)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      expect(contracts.item.connect(nonOwner).burn(0)).to.be.revertedWith(
+        "Ownable: caller is not the owner"
+      );
     });
 
     it("burning does not change token ID", async function () {

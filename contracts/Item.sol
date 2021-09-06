@@ -193,7 +193,7 @@ contract Item is ERC721Enumerable, Ownable, ReentrancyGuard {
 
     function encodeAttribute(string memory attr, string memory value)
         internal
-        view
+        pure
         returns (string memory)
     {
         return

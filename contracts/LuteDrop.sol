@@ -21,8 +21,8 @@ contract LuteDrop is Ownable, ReentrancyGuard {
     Counters.Counter private lootClaimedSupply;
     Counters.Counter private mlootClaimedSupply;
 
-    mapping (uint256 => bool) lootClaims;
-    mapping (uint256 => bool) mlootClaims;
+    mapping(uint256 => bool) public lootClaims;
+    mapping(uint256 => bool) public mlootClaims;
 
     enum ItemType {
         LUTE,
@@ -34,7 +34,14 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         MLOOT
     }
 
-    constructor(address _lute, address _flute, address _loot, address _mloot, uint256 _lootClaimableSupply, uint256 _mlootClaimableSupply) {
+    constructor(
+        address _lute,
+        address _flute,
+        address _loot,
+        address _mloot,
+        uint256 _lootClaimableSupply,
+        uint256 _mlootClaimableSupply
+    ) {
         lute = IItem(_lute);
         flute = IItem(_flute);
         loot = IERC721Enumerable(_loot);
@@ -43,19 +50,41 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         mlootClaimableSupply = _mlootClaimableSupply;
     }
 
-    function claim(ItemType item, ClaimType claimType, uint256 tokenId) public nonReentrant {
+    function claim(
+        ItemType item,
+        ClaimType claimType,
+        uint256 tokenId
+    ) public nonReentrant {
         if (claimType == ClaimType.LOOT && loot.balanceOf(msg.sender) > 0) {
-            require(!lootClaims[tokenId], "LuteDrop: Item already claimed for this tokenId");
-            require(loot.ownerOf(tokenId) == msg.sender, "LuteDrop: Must hold specified token to claim");
-            require(lootClaimedSupply.current() < lootClaimableSupply, "LuteDrop: Loot holder supply fully claimed");
+            require(
+                !lootClaims[tokenId],
+                "Item already claimed for this tokenId"
+            );
+            require(
+                loot.ownerOf(tokenId) == msg.sender,
+                "Must hold specified token to claim"
+            );
+            require(
+                lootClaimedSupply.current() < lootClaimableSupply,
+                "Loot holder supply fully claimed"
+            );
             lootClaimedSupply.increment();
             lootClaims[tokenId] = true;
             _claim(item, msg.sender);
         }
         if (claimType == ClaimType.MLOOT && mloot.balanceOf(msg.sender) > 0) {
-            require(!mlootClaims[tokenId], "LuteDrop: Item already claimed for this tokenId");
-            require(mloot.ownerOf(tokenId) == msg.sender, "LuteDrop: Must hold specified token to claim");
-            require(mlootClaimedSupply.current() < mlootClaimableSupply, "LuteDrop: mLoot holder supply fully claimed");
+            require(
+                !mlootClaims[tokenId],
+                "Item already claimed for this tokenId"
+            );
+            require(
+                mloot.ownerOf(tokenId) == msg.sender,
+                "Must hold specified token to claim"
+            );
+            require(
+                mlootClaimedSupply.current() < mlootClaimableSupply,
+                "mLoot holder supply fully claimed"
+            );
             mlootClaimedSupply.increment();
             mlootClaims[tokenId] = true;
             _claim(item, msg.sender);
