@@ -1,5 +1,6 @@
 import { Contract, ethers } from "ethers";
 import { HardhatEthersHelpers } from "@nomiclabs/hardhat-ethers/types";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 type Ethers = typeof ethers & HardhatEthersHelpers;
 
@@ -38,6 +39,8 @@ async function logTokens(flute: Contract, lute: Contract) {
 }
 
 export default async function deploy(ethers: Ethers) {
+  const [owner] = await ethers.getSigners();
+
   const Multicall = await ethers.getContractFactory("Multicall");
   const multicall = await Multicall.deploy();
   await multicall.deployed();
@@ -76,12 +79,20 @@ export default async function deploy(ethers: Ethers) {
   console.log("Lutiswap deployed to:", lutiswap.address);
 
   console.log("Granting Lute roles...")
+  await lute.grantRole(CRAFTER_ROLE, owner.address);
   await lute.grantRole(CRAFTER_ROLE, luteDrop.address);
   await lute.grantRole(CRAFTER_ROLE, lutiswap.address);
   await lute.grantRole(BURNER_ROLE, lutiswap.address);
 
   console.log("Granting Flute roles...")
+  await flute.grantRole(CRAFTER_ROLE, owner.address);
   await flute.grantRole(CRAFTER_ROLE, luteDrop.address);
   await flute.grantRole(CRAFTER_ROLE, lutiswap.address);
   await flute.grantRole(BURNER_ROLE, lutiswap.address);
+
+  console.log("Crafting Lutes/Flutes to owner...")
+  for (let i=0; i<10; i++) {
+    await lute.craft(owner.address);
+    await flute.craft(owner.address);
+  }
 }

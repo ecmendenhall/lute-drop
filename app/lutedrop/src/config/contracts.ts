@@ -9,10 +9,18 @@ const MLOOT = "0x1dfe7ca09e99d10835bf73044a23b73fc20623df";
 
 const config = {
     lute: {
-        address: LUTE
+        address: LUTE,
+        abi: new Interface([
+            "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
+            "function tokenURI(uint256 tokenId) returns (string)"
+        ])
     },
     flute: {
-        address: FLUTE
+        address: FLUTE,
+        abi: new Interface([
+            "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
+            "function tokenURI(uint256 tokenId) returns (string)"
+        ])
     },
     luteDrop: {
         address: LUTE_DROP, 
@@ -23,10 +31,10 @@ const config = {
     lutiswap: {
         address: LUTISWAP,
         abi: new Interface([
-            "function latestLuteSwapPrice()",
-            "function latestFluteSwapPrice()",
-            "function swapExactLuteForFlute(uint256 tokenId)",
-            "function swapExactFluteForLute(uint256 tokenId)"
+            "function latestLuteSwapPrice() view returns (uint256)",
+            "function latestFluteSwapPrice() view returns (uint256)",  
+            "function swapExactLuteForFlute(uint256 tokenId) payable",
+            "function swapExactFluteForLute(uint256 tokenId) payable"
         ])
     },
     loot: {

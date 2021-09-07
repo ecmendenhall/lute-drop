@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { ChainId, Config, DAppProvider, MULTICALL_ADDRESSES } from '@usedapp/core';
 
 const config: Config = {
-  readOnlyChainId: ChainId.Mainnet,
+  readOnlyChainId: ChainId.Hardhat,
   readOnlyUrls: {
     [ChainId.Hardhat]: "http://localhost:8545",
   },
