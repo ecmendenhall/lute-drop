@@ -3,12 +3,12 @@ import {
   useEtherBalance,
   useEthers,
   useTokenBalance,
-} from '@usedapp/core'
-import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils'
-import React, { ReactElement, useState } from 'react'
+} from "@usedapp/core";
+import { formatEther, formatUnits, parseEther } from "ethers/lib/utils";
+import React, { ReactElement, useState } from "react";
 
-import './App.css'
-import config from './config/contracts'
+import "./App.css";
+import config from "./config/contracts";
 import {
   useClaimItem,
   useLatestLuteSwapPrice,
@@ -20,53 +20,53 @@ import {
   useTokenImageSrc,
   useLuteTokenIds,
   useLuteTokenUri,
-} from './hooks/contracts'
+} from "./hooks/contracts";
 
 export function App() {
-  const { activateBrowserWallet, account } = useEthers()
-  const etherBalance = useEtherBalance(account)
-  const lootBalance = useTokenBalance(config.loot.address, account)
-  const mlootBalance = useTokenBalance(config.mloot.address, account)
-  const luteBalance = useTokenBalance(config.lute.address, account)
-  const fluteBalance = useTokenBalance(config.flute.address, account)
-  const luteSwapPrice = useLatestLuteSwapPrice()
-  const fluteSwapPrice = useLatestFluteSwapPrice()
-  const fluteTokenIds = useFluteTokenIds(fluteBalance, account, 0)
-  const fluteTokenUri = useFluteTokenUri(fluteTokenIds)
-  const luteTokenIds = useLuteTokenIds(luteBalance, account, 0)
-  const luteTokenUri = useLuteTokenUri(luteTokenIds)
-  const fluteTokenImageSrc = useTokenImageSrc(fluteTokenUri)
-  const luteTokenImageSrc = useTokenImageSrc(luteTokenUri)
-  const { state: claimState, send: sendClaim } = useClaimItem()
-  const { state: swapFluteState, send: sendSwapFlute } = useSwapFlute()
-  const { state: swapLuteState, send: sendSwapLute } = useSwapLute()
+  const { activateBrowserWallet, account } = useEthers();
+  const etherBalance = useEtherBalance(account);
+  const lootBalance = useTokenBalance(config.loot.address, account);
+  const mlootBalance = useTokenBalance(config.mloot.address, account);
+  const luteBalance = useTokenBalance(config.lute.address, account);
+  const fluteBalance = useTokenBalance(config.flute.address, account);
+  const luteSwapPrice = useLatestLuteSwapPrice();
+  const fluteSwapPrice = useLatestFluteSwapPrice();
+  const fluteTokenIds = useFluteTokenIds(fluteBalance, account, 0);
+  const fluteTokenUri = useFluteTokenUri(fluteTokenIds);
+  const luteTokenIds = useLuteTokenIds(luteBalance, account, 0);
+  const luteTokenUri = useLuteTokenUri(luteTokenIds);
+  const fluteTokenImageSrc = useTokenImageSrc(fluteTokenUri);
+  const luteTokenImageSrc = useTokenImageSrc(luteTokenUri);
+  const { state: claimState, send: sendClaim } = useClaimItem();
+  const { state: swapFluteState, send: sendSwapFlute } = useSwapFlute();
+  const { state: swapLuteState, send: sendSwapLute } = useSwapLute();
 
-  const [luteId, setLuteId] = useState(0)
-  const [fluteId, setFluteId] = useState(0)
+  const [luteId, setLuteId] = useState(0);
+  const [fluteId, setFluteId] = useState(0);
 
   const claimLute = () => {
-    sendClaim(0, 1, 1311550)
-  }
+    sendClaim(0, 1, 1311550);
+  };
 
   const claimFlute = () => {
-    sendClaim(1, 1, 152963)
-  }
+    sendClaim(1, 1, 152963);
+  };
 
   const swapFlute = () => {
-    sendSwapFlute(fluteId, { value: fluteSwapPrice })
-  }
+    sendSwapFlute(fluteId, { value: fluteSwapPrice });
+  };
 
   const swapLute = () => {
-    sendSwapLute(luteId, { value: luteSwapPrice })
-  }
+    sendSwapLute(luteId, { value: luteSwapPrice });
+  };
 
   const onLuteIdChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setLuteId(parseInt(e.currentTarget.value))
-  }
+    setLuteId(parseInt(e.currentTarget.value));
+  };
 
   const onFluteIdChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setFluteId(parseInt(e.currentTarget.value))
-  }
+    setFluteId(parseInt(e.currentTarget.value));
+  };
 
   return (
     <div className="p-16">
@@ -87,30 +87,36 @@ export function App() {
                 </p>
               )}
               {etherBalance && <p>ETH: {formatEther(etherBalance)}</p>}
-              {lootBalance && <p>LOOT: {formatUnits(lootBalance, 'wei')}</p>}
-              {mlootBalance && <p>MLOOT: {formatUnits(mlootBalance, 'wei')}</p>}
-              {luteBalance && <p>LUTE: {formatUnits(luteBalance, 'wei')}</p>}
-              {fluteBalance && <p>FLUTE: {formatUnits(fluteBalance, 'wei')}</p>}
+              {lootBalance && <p>LOOT: {formatUnits(lootBalance, "wei")}</p>}
+              {mlootBalance && <p>MLOOT: {formatUnits(mlootBalance, "wei")}</p>}
+              {luteBalance && <p>LUTE: {formatUnits(luteBalance, "wei")}</p>}
+              {fluteBalance && <p>FLUTE: {formatUnits(fluteBalance, "wei")}</p>}
             </div>
           </div>
           <div>
             <h1 className="text-xl font-bold">Your Loot</h1>
-            <div className="my-4">
-              FLUTEs
-              <div>
-                {fluteTokenIds}
-                {fluteTokenImageSrc && (
-                  <img src={fluteTokenImageSrc} width="200" />
-                )}
+            <div className="flex flex-row justify-between">
+              <div className="my-4">
+                <div className="w-56">
+                  Flute #{fluteTokenIds}
+                  {fluteTokenImageSrc && (
+                    <img
+                      src={fluteTokenImageSrc}
+                      className="object-cover rounded"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="my-4">
-              LUTEs
-              <div>
-                {luteTokenIds}
-                {luteTokenImageSrc && (
-                  <img src={luteTokenImageSrc} width="200" />
-                )}
+              <div className="my-4">
+                <div className="w-56 rounded-lg">
+                  Lute #{luteTokenIds}
+                  {luteTokenImageSrc && (
+                    <img
+                      src={luteTokenImageSrc}
+                      className="object-cover rounded"
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -119,7 +125,9 @@ export function App() {
           <div>
             <h1 className="text-xl font-bold">Lute Drop</h1>
             <div className="my-4">
-              {claimState && <p>{claimState.status}</p>}
+              {claimState && claimState.status != "None" && (
+                <p>{claimState.status}</p>
+              )}
               {claimState && <p>{claimState.errorMessage}</p>}
             </div>
             <div className="my-4">
@@ -142,7 +150,9 @@ export function App() {
           <div>
             <h1 className="text-xl font-bold">Lutiswap</h1>
             <div className="my-4">
-              {swapLuteState && <p>{swapLuteState.status}</p>}
+              {swapLuteState && swapLuteState.status != "None" && (
+                <p>{swapLuteState.status}</p>
+              )}
               {swapLuteState && <p>{swapLuteState.errorMessage}</p>}
             </div>
             <div className="my-4">
@@ -162,7 +172,9 @@ export function App() {
               </button>
             </div>
             <div className="my-4">
-              {swapFluteState && <p>{swapFluteState.status}</p>}
+              {swapFluteState && swapFluteState.status != "None" && (
+                <p>{swapFluteState.status}</p>
+              )}
               {swapFluteState && <p>{swapFluteState.errorMessage}</p>}
             </div>
             <div className="my-4">
@@ -185,7 +197,7 @@ export function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

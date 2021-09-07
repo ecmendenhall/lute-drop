@@ -78,20 +78,20 @@ export default async function deploy(ethers: Ethers) {
 
   console.log("Lutiswap deployed to:", lutiswap.address);
 
-  console.log("Granting Lute roles...")
+  console.log("Granting Lute roles...");
   await lute.grantRole(CRAFTER_ROLE, owner.address);
   await lute.grantRole(CRAFTER_ROLE, luteDrop.address);
   await lute.grantRole(CRAFTER_ROLE, lutiswap.address);
   await lute.grantRole(BURNER_ROLE, lutiswap.address);
 
-  console.log("Granting Flute roles...")
+  console.log("Granting Flute roles...");
   await flute.grantRole(CRAFTER_ROLE, owner.address);
   await flute.grantRole(CRAFTER_ROLE, luteDrop.address);
   await flute.grantRole(CRAFTER_ROLE, lutiswap.address);
   await flute.grantRole(BURNER_ROLE, lutiswap.address);
 
-  console.log("Crafting Lutes/Flutes to owner...")
-  for (let i=0; i<10; i++) {
+  console.log("Crafting Lutes/Flutes to owner...");
+  for (let i = 0; i < 10; i++) {
     await lute.craft(owner.address);
     await flute.craft(owner.address);
   }
