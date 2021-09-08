@@ -5,8 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/IItem.sol";
 
-import "hardhat/console.sol";
-
 contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
@@ -45,7 +43,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         pure
         returns (uint256)
     {
-        return swapPrice(_f, _l);
+        return _swapPrice(_f, _l);
     }
 
     function luteSwapPrice(uint256 _l, uint256 _f)
@@ -53,7 +51,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         pure
         returns (uint256)
     {
-        return swapPrice(_l, _f);
+        return _swapPrice(_l, _f);
     }
 
     function swap(
@@ -64,7 +62,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         require(from.ownerOf(tokenId) == msg.sender, "Must own item to swap");
         uint256 fromSupply = from.totalSupply();
         uint256 toSupply = to.totalSupply();
-        uint256 fee = swapPrice(fromSupply, toSupply);
+        uint256 fee = _swapPrice(fromSupply, toSupply);
         require(msg.value >= fee, "Insufficient payment");
         from.burn(tokenId);
         to.craft(msg.sender);
@@ -73,11 +71,15 @@ contract Lutiswap is Ownable, ReentrancyGuard {
             "Supply invariant"
         );
         if (msg.value > fee) {
-            safeTransferETH(msg.sender, msg.value - fee);
+            _safeTransferETH(msg.sender, msg.value - fee);
         }
     }
 
-    function swapPrice(uint256 _from, uint256 _to)
+    function withdraw(address to, uint256 value) public onlyOwner {
+        _safeTransferETH(to, value);
+    }
+
+    function _swapPrice(uint256 _from, uint256 _to)
         internal
         pure
         returns (uint256)
@@ -89,7 +91,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         return (k / (f - 1e17)) - t;
     }
 
-    function safeTransferETH(address to, uint256 value) internal {
+    function _safeTransferETH(address to, uint256 value) internal {
         (bool success, ) = to.call{value: value}(new bytes(0));
         require(success, "Transfer failed");
     }

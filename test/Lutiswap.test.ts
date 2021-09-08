@@ -1,3 +1,4 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { parseEther } from "ethers/lib/utils";
@@ -524,6 +525,38 @@ describe("Lutiswap", () => {
             await contracts.lutiswap.fluteSwapPrice(10347, 11003)
           ).to.equal(parseEther("0.094046536993273950"));
         });
+      });
+    });
+  });
+
+  describe("fee withdrawals", () => {
+    let fee: BigNumber;
+
+    beforeEach(async () => {
+      fee = parseEther("0.133333333333333333");
+      await contracts.lutiswap.connect(luteHolder).swapExactLuteForFlute(0, {
+        value: fee,
+      });
+    });
+
+    it("owner can withdraw stored fees", async () => {
+      const initialETHbalance = await ethers.provider.getBalance(owner.address);
+      const tx = await contracts.lutiswap
+        .connect(owner)
+        .withdraw(owner.address, fee);
+      const receipt = await tx.wait();
+      const gasSpent = receipt.gasUsed.mul(tx.gasPrice || 0);
+      const finalETHbalance = await ethers.provider.getBalance(owner.address);
+      expect(finalETHbalance).to.equal(
+        initialETHbalance.add(fee).sub(gasSpent)
+      );
+    });
+
+    it("non-owner cannot withdraw stored fees", async () => {
+      it("non-owner cannot withdraw ETH from tips", async () => {
+        await expect(
+          contracts.lutiswap.connect(nonOwner).withdraw(nonOwner.address, fee)
+        ).to.be.revertedWith("caller is not the owner");
       });
     });
   });

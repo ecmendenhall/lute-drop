@@ -12,26 +12,22 @@ contract LuteDrop is Ownable, ReentrancyGuard {
 
     IItem public lute;
     IItem public flute;
-    IERC721Enumerable public loot;
-    IERC721Enumerable public mloot;
 
-    uint256 public lootClaimableSupply;
-    uint256 public mlootClaimableSupply;
+    mapping(address => uint256) public dropId;
+    mapping(uint256 => Drop) public drops;
 
-    Counters.Counter private lootClaimedSupply;
-    Counters.Counter private mlootClaimedSupply;
+    Counters.Counter private nextId;
 
-    mapping(uint256 => bool) public lootClaims;
-    mapping(uint256 => bool) public mlootClaims;
+    struct Drop {
+        IERC721Enumerable token;
+        uint256 claimableSupply;
+        Counters.Counter claimedSupply;
+        mapping(uint256 => bool) claims;
+    }
 
     enum ItemType {
         LUTE,
         FLUTE
-    }
-
-    enum ClaimType {
-        LOOT,
-        MLOOT
     }
 
     constructor(
@@ -44,59 +40,64 @@ contract LuteDrop is Ownable, ReentrancyGuard {
     ) {
         lute = IItem(_lute);
         flute = IItem(_flute);
-        loot = IERC721Enumerable(_loot);
-        mloot = IERC721Enumerable(_mloot);
-        lootClaimableSupply = _lootClaimableSupply;
-        mlootClaimableSupply = _mlootClaimableSupply;
+
+        nextId.increment();
+        _addDrop(_loot, _lootClaimableSupply);
+        _addDrop(_mloot, _mlootClaimableSupply);
     }
 
     function claim(
         ItemType item,
-        ClaimType claimType,
+        address token,
         uint256 tokenId
-    ) public nonReentrant {
-        if (claimType == ClaimType.LOOT && loot.balanceOf(msg.sender) > 0) {
-            require(
-                !lootClaims[tokenId],
-                "Item already claimed for this tokenId"
-            );
-            require(
-                loot.ownerOf(tokenId) == msg.sender,
-                "Must hold specified token to claim"
-            );
-            require(
-                lootClaimedSupply.current() < lootClaimableSupply,
-                "Loot holder supply fully claimed"
-            );
-            lootClaimedSupply.increment();
-            lootClaims[tokenId] = true;
-            _claim(item, msg.sender);
-        }
-        if (claimType == ClaimType.MLOOT && mloot.balanceOf(msg.sender) > 0) {
-            require(
-                !mlootClaims[tokenId],
-                "Item already claimed for this tokenId"
-            );
-            require(
-                mloot.ownerOf(tokenId) == msg.sender,
-                "Must hold specified token to claim"
-            );
-            require(
-                mlootClaimedSupply.current() < mlootClaimableSupply,
-                "mLoot holder supply fully claimed"
-            );
-            mlootClaimedSupply.increment();
-            mlootClaims[tokenId] = true;
-            _claim(item, msg.sender);
-        }
+    ) public payable nonReentrant {
+        uint256 id = dropId[token];
+        require(id != 0, "Invalid token address");
+
+        Drop storage drop = drops[id];
+
+        require(!drop.claims[tokenId], "Item already claimed for this tokenId");
+        require(
+            drop.token.ownerOf(tokenId) == msg.sender,
+            "Must own specified token to claim"
+        );
+        require(
+            drop.claimedSupply.current() < drop.claimableSupply,
+            "Token holder supply fully claimed"
+        );
+
+        drop.claimedSupply.increment();
+        drop.claims[tokenId] = true;
+        _claimItem(item, msg.sender);
     }
 
-    function _claim(ItemType item, address recipient) internal {
+    function addDrop(address token, uint256 claimableSupply) public onlyOwner {
+        _addDrop(token, claimableSupply);
+    }
+
+    function withdraw(address to, uint256 value) public onlyOwner {
+        _safeTransferETH(to, value);
+    }
+
+    function _addDrop(address token, uint256 claimableSupply) internal {
+        uint256 id = nextId.current();
+        nextId.increment();
+        dropId[token] = id;
+        drops[id].token = IERC721Enumerable(token);
+        drops[id].claimableSupply = claimableSupply;
+    }
+
+    function _claimItem(ItemType item, address recipient) internal {
         if (item == ItemType.LUTE) {
             lute.craft(recipient);
         }
         if (item == ItemType.FLUTE) {
             flute.craft(recipient);
         }
+    }
+
+    function _safeTransferETH(address to, uint256 value) internal {
+        (bool success, ) = to.call{value: value}(new bytes(0));
+        require(success, "Transfer failed");
     }
 }
