@@ -8,7 +8,7 @@ import "./interfaces/IItem.sol";
 contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
-
+    
     constructor(address _lute, address _flute) {
         lute = IItem(_lute);
         flute = IItem(_flute);
@@ -85,10 +85,10 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         returns (uint256)
     {
         require(_from > 1, "Invalid swap");
-        uint256 f = _from * 1e17;
-        uint256 t = _to * 1e17;
+        uint256 f = _from * 1e18;
+        uint256 t = _to * 1e18;
         uint256 k = f * t;
-        return (k / (f - 1e17)) - t;
+        return ((k / (f - 1e18)) - t) / 1e2;
     }
 
     function _safeTransferETH(address to, uint256 value) internal {
