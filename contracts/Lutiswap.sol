@@ -8,7 +8,7 @@ import "./interfaces/IItem.sol";
 contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
-    
+
     constructor(address _lute, address _flute) {
         lute = IItem(_lute);
         flute = IItem(_flute);

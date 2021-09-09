@@ -9,7 +9,14 @@ interface Contracts {
 }
 
 async function deploy(): Promise<Contracts> {
-  const ItemFactory = await ethers.getContractFactory("Item");
+  const ItemLibFactory = await ethers.getContractFactory("ItemLib");
+  const itemlib = await (await ItemLibFactory.deploy()).deployed();
+
+  const ItemFactory = await ethers.getContractFactory("Item", {
+    libraries: {
+      ItemLib: itemlib.address,
+    },
+  });
   const item = (await (
     await ItemFactory.deploy(
       "Item",

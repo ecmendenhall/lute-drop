@@ -8,7 +8,14 @@ interface Contracts {
 }
 
 async function deploy(): Promise<Contracts> {
-  const FluteFactory = await ethers.getContractFactory("Flute");
+  const ItemLibFactory = await ethers.getContractFactory("ItemLib");
+  const itemlib = await (await ItemLibFactory.deploy()).deployed();
+
+  const FluteFactory = await ethers.getContractFactory("Flute", {
+    libraries: {
+      ItemLib: itemlib.address,
+    },
+  });
   const flute = (await (await FluteFactory.deploy()).deployed()) as Flute;
 
   return { flute };
@@ -153,7 +160,7 @@ describe("Flute", () => {
         JSON.stringify({
           name: "Flute #0",
           description:
-            "I hear that you and your bard have sold your lutes and bought flutes. I hear that you and your bard have sold your flutes and bought lutes.",
+            "I hear that you and your bard have sold your lutes and bought flutes.",
           image:
             "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkdvbGQgU29wcmFubyBQYW5waXBlczwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNDAiIGNsYXNzPSJiYXNlIj5PbmUgUGlwZTwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNjAiIGNsYXNzPSJiYXNlIj5Gb3VyIEhvbGVzPC90ZXh0Pjx0ZXh0IHg9IjEwIiB5PSI4MCIgY2xhc3M9ImJhc2UiPkRlY29yYXRpdmUgRW5ncmF2aW5nPC90ZXh0Pjwvc3ZnPg==",
           attributes: [
@@ -174,7 +181,7 @@ describe("Flute", () => {
       const json = JSON.stringify({
         name: "Flute #0",
         description:
-          "I hear that you and your bard have sold your lutes and bought flutes. I hear that you and your bard have sold your flutes and bought lutes.",
+          "I hear that you and your bard have sold your lutes and bought flutes.",
         image:
           "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkdvbGQgU29wcmFubyBQYW5waXBlczwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNDAiIGNsYXNzPSJiYXNlIj5PbmUgUGlwZTwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNjAiIGNsYXNzPSJiYXNlIj5Gb3VyIEhvbGVzPC90ZXh0Pjx0ZXh0IHg9IjEwIiB5PSI4MCIgY2xhc3M9ImJhc2UiPkRlY29yYXRpdmUgRW5ncmF2aW5nPC90ZXh0Pjwvc3ZnPg==",
         attributes: [

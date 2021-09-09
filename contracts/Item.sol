@@ -4,18 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "./lib/Base64.sol";
+import "./lib/ItemLib.sol";
 
 contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
-    using Strings for uint256;
-    using Counters for Counters.Counter;
-
     bytes32 public constant CRAFTER_ROLE = keccak256("CRAFTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
-    Counters.Counter private tokenIds;
+    uint256 private nextId;
 
     string[3] private materials;
     string[3] private types;
@@ -58,8 +53,8 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
         onlyRole(CRAFTER_ROLE)
         nonReentrant
     {
-        uint256 id = tokenIds.current();
-        tokenIds.increment();
+        uint256 id = nextId;
+        nextId++;
         _safeMint(recipient, id);
     }
 
@@ -68,11 +63,11 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
     }
 
     function getMaterial(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "MATERIAL", materials);
+        return ItemLib.getMaterial(tokenId, materials);
     }
 
     function getType(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "TYPE", types);
+        return ItemLib.getType(tokenId, types);
     }
 
     function getMajorModifier(uint256 tokenId)
@@ -80,7 +75,7 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
         view
         returns (string memory)
     {
-        return pluck(tokenId, "MAJORMOD", majorModifiers);
+        return ItemLib.getMajorModifier(tokenId, majorModifiers);
     }
 
     function getMinorModifier(uint256 tokenId)
@@ -88,11 +83,11 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
         view
         returns (string memory)
     {
-        return pluck(tokenId, "MINORMOD", minorModifiers);
+        return ItemLib.getMinorModifier(tokenId, minorModifiers);
     }
 
     function getRange(uint256 tokenId) public view returns (string memory) {
-        return pluck(tokenId, "RANGE", ranges);
+        return ItemLib.getRange(tokenId, ranges);
     }
 
     function getDecoration(uint256 tokenId)
@@ -100,49 +95,23 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
         view
         returns (string memory)
     {
-        return pluck(tokenId, "DECORATION", decorations);
+        return ItemLib.getDecoration(tokenId, decorations);
     }
 
     function getName(uint256 tokenId) public view returns (string memory) {
-        return
-            string(
-                abi.encodePacked(
-                    getMaterial(tokenId),
-                    " ",
-                    getRange(tokenId),
-                    " ",
-                    getType(tokenId)
-                )
-            );
+        return ItemLib.getName(tokenId, materials, ranges, types);
     }
 
     function tokenSVG(uint256 tokenId) public view returns (string memory) {
-        string[9] memory parts;
-        parts[
-            0
-        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
-        parts[1] = getName(tokenId);
-        parts[2] = '</text><text x="10" y="40" class="base">';
-        parts[3] = getMajorModifier(tokenId);
-        parts[4] = '</text><text x="10" y="60" class="base">';
-        parts[5] = getMinorModifier(tokenId);
-        parts[6] = '</text><text x="10" y="80" class="base">';
-        parts[7] = getDecoration(tokenId);
-        parts[8] = "</text></svg>";
-
         return
-            string(
-                abi.encodePacked(
-                    parts[0],
-                    parts[1],
-                    parts[2],
-                    parts[3],
-                    parts[4],
-                    parts[5],
-                    parts[6],
-                    parts[7],
-                    parts[8]
-                )
+            ItemLib.tokenSVG(
+                tokenId,
+                materials,
+                types,
+                majorModifiers,
+                minorModifiers,
+                ranges,
+                decorations
             );
     }
 
@@ -152,45 +121,28 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
         returns (string memory)
     {
         return
-            string(
-                abi.encodePacked(
-                    "[",
-                    encodeAttribute("Type", getType(tokenId)),
-                    ",",
-                    encodeAttribute("Range", getRange(tokenId)),
-                    ",",
-                    encodeAttribute("Material", getMaterial(tokenId)),
-                    ",",
-                    encodeAttribute(
-                        "Major Modifier",
-                        getMajorModifier(tokenId)
-                    ),
-                    ",",
-                    encodeAttribute(
-                        "Minor Modifier",
-                        getMinorModifier(tokenId)
-                    ),
-                    ",",
-                    encodeAttribute("Decoration", getDecoration(tokenId)),
-                    "]"
-                )
+            ItemLib.attributesJSON(
+                tokenId,
+                materials,
+                types,
+                majorModifiers,
+                minorModifiers,
+                ranges,
+                decorations
             );
     }
 
     function tokenJSON(uint256 tokenId) public view returns (string memory) {
         return
-            string(
-                abi.encodePacked(
-                    '{"name":"',
-                    name(),
-                    " #",
-                    tokenId.toString(),
-                    '","description":"I hear that you and your bard have sold your lutes and bought flutes. I hear that you and your bard have sold your flutes and bought lutes.","image":"data:image/svg+xml;base64,',
-                    Base64.encode(bytes(tokenSVG(tokenId))),
-                    '","attributes":',
-                    attributesJSON(tokenId),
-                    "}"
-                )
+            ItemLib.tokenJSON(
+                tokenId,
+                name(),
+                materials,
+                types,
+                majorModifiers,
+                minorModifiers,
+                ranges,
+                decorations
             );
     }
 
@@ -201,44 +153,15 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
         returns (string memory)
     {
         return
-            string(
-                abi.encodePacked(
-                    "data:application/json;base64,",
-                    Base64.encode(bytes(tokenJSON(tokenId)))
-                )
+            ItemLib.tokenURI(
+                tokenId,
+                name(),
+                materials,
+                types,
+                majorModifiers,
+                minorModifiers,
+                ranges,
+                decorations
             );
-    }
-
-    function encodeAttribute(string memory attr, string memory value)
-        internal
-        pure
-        returns (string memory)
-    {
-        return
-            string(
-                abi.encodePacked(
-                    '{"trait_type":"',
-                    attr,
-                    '","value":"',
-                    value,
-                    '"}'
-                )
-            );
-    }
-
-    function random(string memory input) internal pure returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(input)));
-    }
-
-    function pluck(
-        uint256 tokenId,
-        string memory keyPrefix,
-        string[3] memory sourceArray
-    ) internal pure returns (string memory) {
-        uint256 rand = random(
-            string(abi.encodePacked(keyPrefix, tokenId.toString()))
-        );
-        string memory output = sourceArray[rand % sourceArray.length];
-        return output;
     }
 }

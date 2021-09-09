@@ -3,25 +3,22 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "./interfaces/IItem.sol";
 
 contract LuteDrop is Ownable, ReentrancyGuard {
-    using Counters for Counters.Counter;
-
     IItem public lute;
     IItem public flute;
 
     mapping(address => uint256) public dropId;
     mapping(uint256 => Drop) public drops;
 
-    Counters.Counter private nextId;
+    uint256 private nextId;
 
     struct Drop {
         IERC721Enumerable token;
         uint256 claimableSupply;
-        Counters.Counter claimedSupply;
+        uint256 claimedSupply;
         mapping(uint256 => bool) claims;
     }
 
@@ -41,7 +38,7 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         lute = IItem(_lute);
         flute = IItem(_flute);
 
-        nextId.increment();
+        nextId++;
         _addDrop(_loot, _lootClaimableSupply);
         _addDrop(_mloot, _mlootClaimableSupply);
     }
@@ -62,11 +59,11 @@ contract LuteDrop is Ownable, ReentrancyGuard {
             "Must own specified token to claim"
         );
         require(
-            drop.claimedSupply.current() < drop.claimableSupply,
+            drop.claimedSupply < drop.claimableSupply,
             "Token holder supply fully claimed"
         );
 
-        drop.claimedSupply.increment();
+        drop.claimedSupply++;
         drop.claims[tokenId] = true;
         _claimItem(item, msg.sender);
     }
@@ -80,8 +77,8 @@ contract LuteDrop is Ownable, ReentrancyGuard {
     }
 
     function _addDrop(address token, uint256 claimableSupply) internal {
-        uint256 id = nextId.current();
-        nextId.increment();
+        uint256 id = nextId;
+        nextId++;
         dropId[token] = id;
         drops[id].token = IERC721Enumerable(token);
         drops[id].claimableSupply = claimableSupply;

@@ -29,10 +29,21 @@ async function deploy(): Promise<Contracts> {
     await MockERC721Factory.deploy("Mock Future Loot", "MLOOT")
   ).deployed()) as MockERC721;
 
-  const LuteFactory = await ethers.getContractFactory("Lute");
+  const ItemLibFactory = await ethers.getContractFactory("ItemLib");
+  const itemlib = await (await ItemLibFactory.deploy()).deployed();
+
+  const LuteFactory = await ethers.getContractFactory("Lute", {
+    libraries: {
+      ItemLib: itemlib.address,
+    },
+  });
   const lute = (await (await LuteFactory.deploy()).deployed()) as Lute;
 
-  const FluteFactory = await ethers.getContractFactory("Flute");
+  const FluteFactory = await ethers.getContractFactory("Flute", {
+    libraries: {
+      ItemLib: itemlib.address,
+    },
+  });
   const flute = (await (await FluteFactory.deploy()).deployed()) as Flute;
 
   const LuteDropFactory = await ethers.getContractFactory("LuteDrop");
