@@ -30,79 +30,83 @@ describe("Lute", () => {
 
   describe("material", () => {
     it("gets lute material", async function () {
-      expect(await contracts.lute.getMaterial(0)).to.equal("Ebony");
+      expect(await contracts.lute.getMaterial(0)).to.equal("Cherry");
     });
 
     it("lutes have different materials", async function () {
       expect(await contracts.lute.getMaterial(1)).to.equal("Ebony");
-      expect(await contracts.lute.getMaterial(2)).to.equal("Walnut");
-      expect(await contracts.lute.getMaterial(3)).to.equal("Walnut");
-      expect(await contracts.lute.getMaterial(4)).to.equal("Walnut");
-      expect(await contracts.lute.getMaterial(5)).to.equal("Ebony");
-      expect(await contracts.lute.getMaterial(6)).to.equal("Ebony");
-      expect(await contracts.lute.getMaterial(7)).to.equal("Pine");
-      expect(await contracts.lute.getMaterial(8)).to.equal("Pine");
-      expect(await contracts.lute.getMaterial(9)).to.equal("Walnut");
+      expect(await contracts.lute.getMaterial(2)).to.equal("Yew");
+      expect(await contracts.lute.getMaterial(3)).to.equal("Spruce");
+      expect(await contracts.lute.getMaterial(4)).to.equal("Spruce");
+      expect(await contracts.lute.getMaterial(5)).to.equal("Cherry");
+      expect(await contracts.lute.getMaterial(6)).to.equal("Cedar");
+      expect(await contracts.lute.getMaterial(7)).to.equal("Bone");
+      expect(await contracts.lute.getMaterial(8)).to.equal("Ash");
+      expect(await contracts.lute.getMaterial(9)).to.equal("Spruce");
     });
   });
 
   describe("type", () => {
     it("gets lute type", async function () {
-      expect(await contracts.lute.getType(0)).to.equal("Oud");
+      expect(await contracts.lute.getType(0)).to.equal("Qinqin");
     });
 
     it("lutes have different types", async function () {
-      expect(await contracts.lute.getType(1)).to.equal("Oud");
+      expect(await contracts.lute.getType(1)).to.equal("Bouzouki");
       expect(await contracts.lute.getType(2)).to.equal("Lute");
-      expect(await contracts.lute.getType(3)).to.equal("Mandolin");
-      expect(await contracts.lute.getType(4)).to.equal("Mandolin");
-      expect(await contracts.lute.getType(5)).to.equal("Oud");
-      expect(await contracts.lute.getType(6)).to.equal("Lute");
+      expect(await contracts.lute.getType(3)).to.equal("Theorbo");
+      expect(await contracts.lute.getType(4)).to.equal("Dombra");
+      expect(await contracts.lute.getType(5)).to.equal("Vihuela");
+      expect(await contracts.lute.getType(6)).to.equal("Kobza");
       expect(await contracts.lute.getType(7)).to.equal("Oud");
-      expect(await contracts.lute.getType(8)).to.equal("Mandolin");
+      expect(await contracts.lute.getType(8)).to.equal("Theorbo");
       expect(await contracts.lute.getType(9)).to.equal("Mandolin");
     });
   });
 
   describe("major modifier", () => {
     it("gets lute major modifier", async function () {
-      expect(await contracts.lute.getMajorModifier(0)).to.equal("Two Strings");
+      expect(await contracts.lute.getMajorModifier(0)).to.equal(
+        "Twelve Strings"
+      );
     });
 
     it("lutes have different major modifiers", async function () {
-      expect(await contracts.lute.getMajorModifier(1)).to.equal("Two Strings");
-      expect(await contracts.lute.getMajorModifier(2)).to.equal("Four Strings");
-      expect(await contracts.lute.getMajorModifier(3)).to.equal("Four Strings");
-      expect(await contracts.lute.getMajorModifier(4)).to.equal("Four Strings");
-      expect(await contracts.lute.getMajorModifier(5)).to.equal("Four Strings");
-      expect(await contracts.lute.getMajorModifier(6)).to.equal(
+      expect(await contracts.lute.getMajorModifier(1)).to.equal("One String");
+      expect(await contracts.lute.getMajorModifier(2)).to.equal("Nine Strings");
+      expect(await contracts.lute.getMajorModifier(3)).to.equal(
+        "Triple-Necked"
+      );
+      expect(await contracts.lute.getMajorModifier(4)).to.equal("Nine Strings");
+      expect(await contracts.lute.getMajorModifier(5)).to.equal(
         "Three Strings"
       );
+      expect(await contracts.lute.getMajorModifier(6)).to.equal("Two Strings");
       expect(await contracts.lute.getMajorModifier(7)).to.equal(
-        "Three Strings"
+        "Eight Strings"
       );
-      expect(await contracts.lute.getMajorModifier(8)).to.equal("Two Strings");
-      expect(await contracts.lute.getMajorModifier(9)).to.equal(
-        "Three Strings"
-      );
+      expect(await contracts.lute.getMajorModifier(8)).to.equal("One String");
+      expect(await contracts.lute.getMajorModifier(9)).to.equal("Two Strings");
     });
   });
 
   describe("minor modifier", () => {
     it("gets lute minor modifier", async function () {
-      expect(await contracts.lute.getMinorModifier(0)).to.equal("Five Frets");
+      expect(await contracts.lute.getMinorModifier(0)).to.equal("Ten Frets");
     });
 
     it("lutes have different minor modifiers", async function () {
-      expect(await contracts.lute.getMinorModifier(1)).to.equal("Six Frets");
-      expect(await contracts.lute.getMinorModifier(2)).to.equal("Five Frets");
-      expect(await contracts.lute.getMinorModifier(3)).to.equal("Six Frets");
-      expect(await contracts.lute.getMinorModifier(4)).to.equal("Seven Frets");
-      expect(await contracts.lute.getMinorModifier(5)).to.equal("Six Frets");
-      expect(await contracts.lute.getMinorModifier(6)).to.equal("Seven Frets");
-      expect(await contracts.lute.getMinorModifier(7)).to.equal("Five Frets");
-      expect(await contracts.lute.getMinorModifier(8)).to.equal("Five Frets");
-      expect(await contracts.lute.getMinorModifier(9)).to.equal("Six Frets");
+      expect(await contracts.lute.getMinorModifier(1)).to.equal("Twelve Frets");
+      expect(await contracts.lute.getMinorModifier(2)).to.equal("Ten Frets");
+      expect(await contracts.lute.getMinorModifier(3)).to.equal("Eight Frets");
+      expect(await contracts.lute.getMinorModifier(4)).to.equal("Six Frets");
+      expect(await contracts.lute.getMinorModifier(5)).to.equal("Five Frets");
+      expect(await contracts.lute.getMinorModifier(6)).to.equal("Long Neck");
+      expect(await contracts.lute.getMinorModifier(7)).to.equal("Short Neck");
+      expect(await contracts.lute.getMinorModifier(8)).to.equal("Ten Frets");
+      expect(await contracts.lute.getMinorModifier(9)).to.equal(
+        "Triangular Body"
+      );
     });
   });
 
@@ -126,7 +130,9 @@ describe("Lute", () => {
 
   describe("name", () => {
     it("constructs full name", async function () {
-      expect(await contracts.lute.getName(0)).to.equal("Ebony Baritone Oud");
+      expect(await contracts.lute.getName(0)).to.equal(
+        "Cherry Baritone Qinqin"
+      );
     });
   });
 
@@ -135,10 +141,10 @@ describe("Lute", () => {
       expect(await contracts.lute.tokenSVG(0)).to.equal(
         [
           '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" />',
-          '<text x="10" y="20" class="base">Ebony Baritone Oud</text>',
-          '<text x="10" y="40" class="base">Two Strings</text>',
-          '<text x="10" y="60" class="base">Five Frets</text>',
-          '<text x="10" y="80" class="base">Decorative Carving</text>',
+          '<text x="10" y="20" class="base">Cherry Baritone Qinqin</text>',
+          '<text x="10" y="40" class="base">Twelve Strings</text>',
+          '<text x="10" y="60" class="base">Ten Frets</text>',
+          '<text x="10" y="80" class="base">Jade Inlay</text>',
           "</svg>",
         ].join("")
       );
@@ -149,12 +155,12 @@ describe("Lute", () => {
     it("returns attributes JSON as string", async function () {
       expect(await contracts.lute.attributesJSON(0)).to.equal(
         JSON.stringify([
-          { trait_type: "Type", value: "Oud" },
+          { trait_type: "Type", value: "Qinqin" },
           { trait_type: "Range", value: "Baritone" },
-          { trait_type: "Material", value: "Ebony" },
-          { trait_type: "Major Modifier", value: "Two Strings" },
-          { trait_type: "Minor Modifier", value: "Five Frets" },
-          { trait_type: "Decoration", value: "Decorative Carving" },
+          { trait_type: "Material", value: "Cherry" },
+          { trait_type: "Major Modifier", value: "Twelve Strings" },
+          { trait_type: "Minor Modifier", value: "Ten Frets" },
+          { trait_type: "Decoration", value: "Jade Inlay" },
         ])
       );
     });
@@ -166,14 +172,14 @@ describe("Lute", () => {
           description:
             "I hear that you and your bard have sold your lutes and bought flutes.",
           image:
-            "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkVib255IEJhcml0b25lIE91ZDwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNDAiIGNsYXNzPSJiYXNlIj5Ud28gU3RyaW5nczwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNjAiIGNsYXNzPSJiYXNlIj5GaXZlIEZyZXRzPC90ZXh0Pjx0ZXh0IHg9IjEwIiB5PSI4MCIgY2xhc3M9ImJhc2UiPkRlY29yYXRpdmUgQ2FydmluZzwvdGV4dD48L3N2Zz4=",
+            "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkNoZXJyeSBCYXJpdG9uZSBRaW5xaW48L3RleHQ+PHRleHQgeD0iMTAiIHk9IjQwIiBjbGFzcz0iYmFzZSI+VHdlbHZlIFN0cmluZ3M8L3RleHQ+PHRleHQgeD0iMTAiIHk9IjYwIiBjbGFzcz0iYmFzZSI+VGVuIEZyZXRzPC90ZXh0Pjx0ZXh0IHg9IjEwIiB5PSI4MCIgY2xhc3M9ImJhc2UiPkphZGUgSW5sYXk8L3RleHQ+PC9zdmc+",
           attributes: [
-            { trait_type: "Type", value: "Oud" },
+            { trait_type: "Type", value: "Qinqin" },
             { trait_type: "Range", value: "Baritone" },
-            { trait_type: "Material", value: "Ebony" },
-            { trait_type: "Major Modifier", value: "Two Strings" },
-            { trait_type: "Minor Modifier", value: "Five Frets" },
-            { trait_type: "Decoration", value: "Decorative Carving" },
+            { trait_type: "Material", value: "Cherry" },
+            { trait_type: "Major Modifier", value: "Twelve Strings" },
+            { trait_type: "Minor Modifier", value: "Ten Frets" },
+            { trait_type: "Decoration", value: "Jade Inlay" },
           ],
         })
       );
@@ -187,14 +193,14 @@ describe("Lute", () => {
         description:
           "I hear that you and your bard have sold your lutes and bought flutes.",
         image:
-          "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkVib255IEJhcml0b25lIE91ZDwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNDAiIGNsYXNzPSJiYXNlIj5Ud28gU3RyaW5nczwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNjAiIGNsYXNzPSJiYXNlIj5GaXZlIEZyZXRzPC90ZXh0Pjx0ZXh0IHg9IjEwIiB5PSI4MCIgY2xhc3M9ImJhc2UiPkRlY29yYXRpdmUgQ2FydmluZzwvdGV4dD48L3N2Zz4=",
+          "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkNoZXJyeSBCYXJpdG9uZSBRaW5xaW48L3RleHQ+PHRleHQgeD0iMTAiIHk9IjQwIiBjbGFzcz0iYmFzZSI+VHdlbHZlIFN0cmluZ3M8L3RleHQ+PHRleHQgeD0iMTAiIHk9IjYwIiBjbGFzcz0iYmFzZSI+VGVuIEZyZXRzPC90ZXh0Pjx0ZXh0IHg9IjEwIiB5PSI4MCIgY2xhc3M9ImJhc2UiPkphZGUgSW5sYXk8L3RleHQ+PC9zdmc+",
         attributes: [
-          { trait_type: "Type", value: "Oud" },
+          { trait_type: "Type", value: "Qinqin" },
           { trait_type: "Range", value: "Baritone" },
-          { trait_type: "Material", value: "Ebony" },
-          { trait_type: "Major Modifier", value: "Two Strings" },
-          { trait_type: "Minor Modifier", value: "Five Frets" },
-          { trait_type: "Decoration", value: "Decorative Carving" },
+          { trait_type: "Material", value: "Cherry" },
+          { trait_type: "Major Modifier", value: "Twelve Strings" },
+          { trait_type: "Minor Modifier", value: "Ten Frets" },
+          { trait_type: "Decoration", value: "Jade Inlay" },
         ],
       });
       const base64 = Buffer.from(json).toString("base64");

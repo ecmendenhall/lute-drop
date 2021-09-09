@@ -12,29 +12,33 @@ contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
 
     uint256 private nextId;
 
-    string[3] private materials;
-    string[3] private types;
-    string[3] private majorModifiers;
-    string[3] private minorModifiers;
-    string[3] private ranges;
-    string[3] private decorations;
+    string[] private materials;
+    string[] private types;
+    string[] private majorModifiers;
+    string[] private minorModifiers;
+    string[] private ranges;
+    string[] private decorations;
 
     constructor(
         string memory name,
         string memory symbol,
-        string[3] memory _materials,
-        string[3] memory _types,
-        string[3] memory _majorModifiers,
-        string[3] memory _minorModifiers,
+        string[12] memory _materials,
+        string[12] memory _types,
+        string[12] memory _majorModifiers,
+        string[12] memory _minorModifiers,
         string[3] memory _ranges,
-        string[3] memory _decorations
+        string[12] memory _decorations
     ) ERC721(name, symbol) {
-        materials = _materials;
-        types = _types;
-        majorModifiers = _majorModifiers;
-        minorModifiers = _minorModifiers;
-        ranges = _ranges;
-        decorations = _decorations;
+        for (uint8 i = 0; i < 12; i++) {
+            materials.push(_materials[i]);
+            types.push(_types[i]);
+            majorModifiers.push(_majorModifiers[i]);
+            minorModifiers.push(_minorModifiers[i]);
+            decorations.push(_decorations[i]);
+        }
+        for (uint8 i = 0; i < 3; i++) {
+            ranges.push(_ranges[i]);
+        }
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 

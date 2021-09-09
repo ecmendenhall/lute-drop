@@ -21,12 +21,12 @@ async function deploy(): Promise<Contracts> {
     await ItemFactory.deploy(
       "Item",
       "ITEM",
-      new Array(3).fill("Material"),
-      new Array(3).fill("Type"),
-      new Array(3).fill("Major Modifier"),
-      new Array(3).fill("Minor Modifier"),
+      new Array(12).fill("Material"),
+      new Array(12).fill("Type"),
+      new Array(12).fill("Major Modifier"),
+      new Array(12).fill("Minor Modifier"),
       new Array(3).fill("Range"),
-      new Array(3).fill("Decoration")
+      new Array(12).fill("Decoration")
     )
   ).deployed()) as Item;
 

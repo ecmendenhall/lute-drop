@@ -30,15 +30,15 @@ async function logToken(token: Contract, i: number) {
   console.log(material, range, type, majorModifier, minorModifier);
 }
 
-async function logTokens(flute: Contract, lute: Contract) {
-  console.log("\nFlutes:");
-  for (let i = 0; i < 100; i++) {
-    await logToken(flute, i);
-  }
-
+async function logTokens(lute: Contract, flute: Contract) {
   console.log("\nLutes:");
   for (let i = 0; i < 100; i++) {
     await logToken(lute, i);
+  }
+
+  console.log("\nFlutes:");
+  for (let i = 0; i < 100; i++) {
+    await logToken(flute, i);
   }
 }
 
@@ -73,13 +73,24 @@ async function deployCoreContracts(
   lootSupply: number,
   mlootSupply: number
 ) {
-  const Lute = await ethers.getContractFactory("Lute");
+  const ItemLibFactory = await ethers.getContractFactory("ItemLib");
+  const itemlib = await (await ItemLibFactory.deploy()).deployed();
+
+  const Lute = await ethers.getContractFactory("Lute", {
+    libraries: {
+      ItemLib: itemlib.address,
+    },
+  });
   const lute = await Lute.deploy();
   await lute.deployed();
 
   console.log("Lute deployed to:", lute.address);
 
-  const Flute = await ethers.getContractFactory("Flute");
+  const Flute = await ethers.getContractFactory("Flute", {
+    libraries: {
+      ItemLib: itemlib.address,
+    },
+  });
   const flute = await Flute.deploy();
   await flute.deployed();
 
@@ -164,4 +175,5 @@ export async function deployLocal(ethers: Ethers) {
   );
   await grantRoles(lute, flute, luteDrop, lutiswap);
   await craftItems(lute, flute, owner);
+  await logTokens(lute, flute);
 }
