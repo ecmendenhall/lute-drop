@@ -10,7 +10,7 @@ abstract contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
     bytes32 public constant CRAFTER_ROLE = keccak256("CRAFTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
-    uint256 private nextId;
+    uint256 public nextId;
 
     constructor(string memory name, string memory symbol) ERC721(name, symbol) {
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);

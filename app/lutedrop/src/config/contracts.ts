@@ -1,33 +1,53 @@
 import { Interface } from "ethers/lib/utils";
 
-const LUTE = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
-const FLUTE = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
-const LUTE_DROP = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
-const LUTISWAP = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
-const LOOT = "0xFF9C1b15B16263C61d017ee9F65C50e4AE0113D7";
-const MLOOT = "0x1dfe7ca09e99d10835bf73044a23b73fc20623df";
+const LUTE_HARDHAT = "0xFD471836031dc5108809D173A067e8486B9047A3";
+const FLUTE_HARDHAT = "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc";
+const LUTE_DROP_HARDHAT = "0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f";
+const LUTISWAP_HARDHAT = "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07";
+const LOOT_HARDHAT = "0xFF9C1b15B16263C61d017ee9F65C50e4AE0113D7";
+const MLOOT_HARDHAT = "0x1dfe7ca09e99d10835bf73044a23b73fc20623df";
+
+const LUTE_RINKEBY = "0xE58CeDE7C5413D8096564ed53c2Ea803a6f15139";
+const FLUTE_RINKEBY = "0x0c5AF98785d52858DA21EE62E144dE39A49cB14D";
+const LUTE_DROP_RINKEBY = "0x6644b74Ab53e816FE71b79462E355Cd44c357FeD";
+const LUTISWAP_RINKEBY = "0xE2757d6197B55239cf1D229Bb766fC85f8Bbf29f";
+const LOOT_RINKEBY = "0x56689336863f1917f301830b377B583dB39d6C4D";
+const MLOOT_RINKEBY = "0x64e5BBb7242eE28183D27B3936F8A419712eb272";
+
+const LUTE = LUTE_RINKEBY;
+const FLUTE = FLUTE_RINKEBY;
+const LUTE_DROP = LUTE_DROP_RINKEBY;
+const LUTISWAP = LUTISWAP_RINKEBY;
+const LOOT = LOOT_RINKEBY;
+const MLOOT = MLOOT_RINKEBY;
 
 const config = {
   lute: {
     address: LUTE,
     abi: new Interface([
+      "function balanceOf(address owner) returns (uint256)",
       "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
       "function tokenURI(uint256 tokenId) returns (string)",
       "function totalSupply() returns (uint256)",
+      "function nextId() returns(uint256)",
     ]),
   },
   flute: {
     address: FLUTE,
     abi: new Interface([
+      "function balanceOf(address owner) returns (uint256)",
       "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
       "function tokenURI(uint256 tokenId) returns (string)",
       "function totalSupply() returns (uint256)",
+      "function nextId() returns(uint256)",
     ]),
   },
   luteDrop: {
     address: LUTE_DROP,
     abi: new Interface([
       "function claim(uint8 item, uint8 claimType, uint256 tokenId)",
+      "function dropId(address token) returns (uint256)",
+      "function drops(uint256 dropId) returns (address, uint256, uint256)",
     ]),
   },
   lutiswap: {
@@ -41,9 +61,19 @@ const config = {
   },
   loot: {
     address: LOOT,
+    abi: new Interface([
+      "function balanceOf(address owner) returns (uint256)",
+      "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
+      "function tokenURI(uint256 tokenId) returns (string)",
+    ]),
   },
   mloot: {
     address: MLOOT,
+    abi: new Interface([
+      "function balanceOf(address owner) returns (uint256)",
+      "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
+      "function tokenURI(uint256 tokenId) returns (string)",
+    ]),
   },
 };
 

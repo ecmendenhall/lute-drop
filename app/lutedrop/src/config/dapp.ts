@@ -4,9 +4,11 @@ const config: Config = {
   readOnlyChainId: ChainId.Hardhat,
   readOnlyUrls: {
     [ChainId.Hardhat]: "http://localhost:8545",
+    [ChainId.Rinkeby]:
+      "https://eth-rinkeby.alchemyapi.io/v2/",
   },
   multicallAddresses: {
-    [ChainId.Hardhat]: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    [ChainId.Hardhat]: "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650",
     ...MULTICALL_ADDRESSES,
   },
 };

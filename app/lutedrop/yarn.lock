@@ -2512,7 +2512,14 @@
     "@typescript-eslint/types" "4.15.2"
     eslint-visitor-keys "^2.0.0"
 
-"@usedapp/core@^0.4.7":
+"@usedapp/coingecko@^0.3.22":
+  version "0.3.22"
+  resolved "https://registry.yarnpkg.com/@usedapp/coingecko/-/coingecko-0.3.22.tgz#82bab0f84a3b24a66d6a7bc0e7496cae6a9f49ec"
+  integrity sha512-iMY8fVBFEQFq/eLM9MypKeBvLnp7AnfrpOC32na8iw6OvDaHoKUAE1Y/MT0H65AsglWpAua2Er2rXsqDClvPdA==
+  dependencies:
+    "@usedapp/core" "^0.4.0"
+
+"@usedapp/core@^0.4.0", "@usedapp/core@^0.4.7":
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/@usedapp/core/-/core-0.4.7.tgz#87964abf14ba87edd4fe068ee73fe0cb9fcdee2d"
   integrity sha512-0JpzUPUHFgmq8GWTl9EGZKR5nS8HQ2e5wwaIG8GBE2VUS40uKwlNhlqkIwD2mkFhpMj8EssMArzcZRzLqZmEPA==

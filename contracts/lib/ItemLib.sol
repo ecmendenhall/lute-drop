@@ -23,19 +23,17 @@ library ItemLib {
         return pluck(tokenId, "TYPE", types);
     }
 
-    function getMajorModifier(uint256 tokenId, string[12] calldata majorModifiers)
-        public
-        pure
-        returns (string memory)
-    {
+    function getMajorModifier(
+        uint256 tokenId,
+        string[12] calldata majorModifiers
+    ) public pure returns (string memory) {
         return pluck(tokenId, "MAJORMOD", majorModifiers);
     }
 
-    function getMinorModifier(uint256 tokenId, string[12] calldata minorModifiers)
-        public
-        pure
-        returns (string memory)
-    {
+    function getMinorModifier(
+        uint256 tokenId,
+        string[12] calldata minorModifiers
+    ) public pure returns (string memory) {
         return pluck(tokenId, "MINORMOD", minorModifiers);
     }
 

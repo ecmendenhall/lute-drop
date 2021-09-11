@@ -1,7 +1,18 @@
 import Button from "./Button";
+import SelectLoot from "./SelectLoot";
+
+interface Item {
+  name: string;
+}
+
+interface Holdings {
+  name: string;
+  holdings: Item[];
+}
 
 interface Props {
   claimed: number;
+  holdings: Holdings[];
   imgSrc: string;
   imgAlt: string;
   imgStyle: string;
@@ -11,6 +22,7 @@ interface Props {
 
 const ClaimPanel = ({
   claimed,
+  holdings,
   imgSrc,
   imgAlt,
   imgStyle,
@@ -20,7 +32,7 @@ const ClaimPanel = ({
   const imgClass = `h-72 transform ${imgStyle}`;
   return (
     <div className="flex flex-col text-center text-xl font-body">
-      <div className="my-2">
+      <div className="mb-4">
         Claimed: {claimed}
         <img src={imgSrc} alt={imgAlt} className={imgClass} />
       </div>
