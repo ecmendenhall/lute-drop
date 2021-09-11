@@ -1,104 +1,60 @@
-import { useContractFunction, useContractCall } from "@usedapp/core";
-import { Contract } from "@usedapp/core/node_modules/@ethersproject/contracts";
-import { BigNumber } from "@usedapp/core/node_modules/ethers";
-import { formatEther, formatUnits } from "ethers/lib/utils";
-import config from "../config/contracts";
+import { formatUnits } from '@ethersproject/units'
+import { useContractCall, useContractCalls } from '@usedapp/core'
+import { Falsy } from '@usedapp/core/dist/esm/src/model/types'
+import { BigNumber } from '@usedapp/core/node_modules/ethers'
+import config from '../config/contracts'
 
-const luteDrop = new Contract(config.luteDrop.address, config.luteDrop.abi);
-const lutiswap = new Contract(config.lutiswap.address, config.lutiswap.abi);
+type Item = 'flute' | 'lute'
+type SwapFee = BigNumber | undefined;
 
-export function useClaimItem() {
-  return useContractFunction(luteDrop, "claim", {});
+interface LutiswapState {
+    luteSwapFee: SwapFee;
+    fluteSwapFee: SwapFee;
 }
 
-export function useSwapFlute() {
-  return useContractFunction(lutiswap, "swapExactFluteForLute", {});
-}
-
-export function useSwapLute() {
-  return useContractFunction(lutiswap, "swapExactLuteForFlute", {});
-}
-
-export function useLatestFluteSwapPrice() {
-  const [price]: any =
-    useContractCall({
-      abi: config.lutiswap.abi,
-      address: config.lutiswap.address,
-      method: "latestFluteSwapPrice",
-      args: [],
-    }) ?? [];
-  return price;
-}
-
-export function useLatestLuteSwapPrice() {
-  const [price]: any =
-    useContractCall({
-      abi: config.lutiswap.abi,
-      address: config.lutiswap.address,
-      method: "latestLuteSwapPrice",
-      args: [],
-    }) ?? [];
-  return price;
-}
-
-export function useFluteTokenIds(
-  fluteBalance: BigNumber | undefined,
-  owner: string | null | undefined,
-  index: number
-) {
-  const [token]: any =
+export function useItemSupply(item: Item | Falsy) {
+  const [totalSupply] =
     useContractCall(
-      fluteBalance &&
-        fluteBalance.toNumber() > 0 && {
-          abi: config.flute.abi,
-          address: config.flute.address,
-          method: "tokenOfOwnerByIndex",
-          args: [owner, index],
-        }
-    ) ?? [];
-  return token && formatUnits(token, "wei");
+      item && {
+        abi: config[item].abi,
+        address: config[item].address,
+        method: 'totalSupply',
+        args: [],
+      },
+    ) ?? []
+  return totalSupply && formatUnits(totalSupply, 'wei')
 }
 
-export function useFluteTokenUri(tokenId: string) {
-  const [uri]: any =
-    useContractCall({
-      abi: config.flute.abi,
-      address: config.flute.address,
-      method: "tokenURI",
-      args: [tokenId],
-    }) ?? [];
-  return uri;
-}
-
-export function useLuteTokenIds(
-  luteBalance: BigNumber | undefined,
-  owner: string | null | undefined,
-  index: number
-) {
-  const [token]: any =
+export function useItem(item: Item, id: number) {
+  const [tokenURI] =
     useContractCall(
-      luteBalance &&
-        luteBalance.toNumber() > 0 && {
-          abi: config.lute.abi,
-          address: config.lute.address,
-          method: "tokenOfOwnerByIndex",
-          args: [owner, index],
-        }
-    ) ?? [];
-  return token && formatUnits(token, "wei");
+      item && {
+        abi: config[item].abi,
+        address: config[item].address,
+        method: 'tokenURI',
+        args: [id],
+      },
+    ) ?? []
+  return tokenURI && JSON.parse(atob(tokenURI.substring(29)))
 }
 
-export function useLuteTokenUri(tokenId: string) {
-  const [uri]: any =
-    useContractCall({
-      abi: config.lute.abi,
-      address: config.lute.address,
-      method: "tokenURI",
-      args: [tokenId],
-    }) ?? [];
-  return uri;
-}
-
-export function useTokenImageSrc(tokenUri: string) {
-  return tokenUri && JSON.parse(atob(tokenUri.substring(29)))["image"];
+export function useLutiswap() : LutiswapState {
+  const [luteSwapFeeResponse, fluteSwapFeeResponse] =
+    useContractCalls([
+      {
+        abi: config.lutiswap.abi,
+        address: config.lutiswap.address,
+        method: 'latestLuteSwapPrice',
+        args: [],
+      },
+      {
+        abi: config.lutiswap.abi,
+        address: config.lutiswap.address,
+        method: 'latestFluteSwapPrice',
+        args: [],
+      },
+    ]) as SwapFee[][] ?? [] as SwapFee[][]
+    const [luteSwapFee] = luteSwapFeeResponse ?? [];
+    const [fluteSwapFee] = fluteSwapFeeResponse ?? [];
+  return { luteSwapFee, fluteSwapFee }
 }

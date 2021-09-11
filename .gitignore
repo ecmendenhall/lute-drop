@@ -112,3 +112,5 @@ artifacts
 typechain
 
 coverage.json
+
+.DS_Store

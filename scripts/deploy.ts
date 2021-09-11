@@ -9,7 +9,7 @@ const MLOOT_ADDRESS = "0x1dfe7ca09e99d10835bf73044a23b73fc20623df";
 const LOOT_ADDRESS_ROPSTEN = "0x0bC5ade1c02E930F625C8C74408bc87C770B5b9b";
 const MLOOT_ADDRESS_ROPSTEN = "";
 const LOOT_ADDRESS_RINKEBY = "0x56689336863f1917f301830b377B583dB39d6C4D";
-const MLOOT_ADDRESS_RINKEBY = "0x56689336863f1917f301830b377B583dB39d6C4D";
+const MLOOT_ADDRESS_RINKEBY = "0x64e5BBb7242eE28183D27B3936F8A419712eb272";
 const LOOT_SUPPLY = 1000;
 const MLOOT_SUPPLY = 10000;
 
@@ -154,12 +154,14 @@ export async function deployTestnet(ethers: Ethers) {
   const { loot, mloot } = await deployLoot(ethers);
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(
     ethers,
-    loot.address,
-    mloot.address,
+    LOOT_ADDRESS_RINKEBY,
+    MLOOT_ADDRESS_RINKEBY,
     LOOT_SUPPLY,
     MLOOT_SUPPLY
   );
   await grantRoles(lute, flute, luteDrop, lutiswap);
+  await craftItems(lute, flute, owner);
+
 }
 
 export async function deployLocal(ethers: Ethers) {
