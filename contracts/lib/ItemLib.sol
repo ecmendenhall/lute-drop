@@ -7,7 +7,7 @@ import "./Base64.sol";
 library ItemLib {
     using Strings for uint256;
 
-    function getMaterial(uint256 tokenId, string[] memory materials)
+    function getMaterial(uint256 tokenId, string[12] calldata materials)
         public
         pure
         returns (string memory)
@@ -15,7 +15,7 @@ library ItemLib {
         return pluck(tokenId, "MATERIAL", materials);
     }
 
-    function getType(uint256 tokenId, string[] memory types)
+    function getType(uint256 tokenId, string[12] calldata types)
         public
         pure
         returns (string memory)
@@ -23,7 +23,7 @@ library ItemLib {
         return pluck(tokenId, "TYPE", types);
     }
 
-    function getMajorModifier(uint256 tokenId, string[] memory majorModifiers)
+    function getMajorModifier(uint256 tokenId, string[12] calldata majorModifiers)
         public
         pure
         returns (string memory)
@@ -31,7 +31,7 @@ library ItemLib {
         return pluck(tokenId, "MAJORMOD", majorModifiers);
     }
 
-    function getMinorModifier(uint256 tokenId, string[] memory minorModifiers)
+    function getMinorModifier(uint256 tokenId, string[12] calldata minorModifiers)
         public
         pure
         returns (string memory)
@@ -39,7 +39,7 @@ library ItemLib {
         return pluck(tokenId, "MINORMOD", minorModifiers);
     }
 
-    function getRange(uint256 tokenId, string[] memory ranges)
+    function getRange(uint256 tokenId, string[12] calldata ranges)
         public
         pure
         returns (string memory)
@@ -47,7 +47,7 @@ library ItemLib {
         return pluck(tokenId, "RANGE", ranges);
     }
 
-    function getDecoration(uint256 tokenId, string[] memory decorations)
+    function getDecoration(uint256 tokenId, string[12] calldata decorations)
         public
         pure
         returns (string memory)
@@ -56,43 +56,30 @@ library ItemLib {
     }
 
     function getName(
-        uint256 tokenId,
-        string[] memory materials,
-        string[] memory ranges,
-        string[] memory types
+        string memory material,
+        string memory range,
+        string memory itemType
     ) public pure returns (string memory) {
-        return
-            string(
-                abi.encodePacked(
-                    getMaterial(tokenId, materials),
-                    " ",
-                    getRange(tokenId, ranges),
-                    " ",
-                    getType(tokenId, types)
-                )
-            );
+        return string(abi.encodePacked(material, " ", range, " ", itemType));
     }
 
     function tokenSVG(
-        uint256 tokenId,
-        string[] memory materials,
-        string[] memory types,
-        string[] memory majorModifiers,
-        string[] memory minorModifiers,
-        string[] memory ranges,
-        string[] memory decorations
+        string memory name,
+        string memory majorModifier,
+        string memory minorModifier,
+        string memory decoration
     ) public pure returns (string memory) {
         string[9] memory parts;
         parts[
             0
         ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
-        parts[1] = getName(tokenId, materials, ranges, types);
+        parts[1] = name;
         parts[2] = '</text><text x="10" y="40" class="base">';
-        parts[3] = getMajorModifier(tokenId, majorModifiers);
+        parts[3] = majorModifier;
         parts[4] = '</text><text x="10" y="60" class="base">';
-        parts[5] = getMinorModifier(tokenId, minorModifiers);
+        parts[5] = minorModifier;
         parts[6] = '</text><text x="10" y="80" class="base">';
-        parts[7] = getDecoration(tokenId, decorations);
+        parts[7] = decoration;
         parts[8] = "</text></svg>";
 
         return
@@ -112,41 +99,28 @@ library ItemLib {
     }
 
     function attributesJSON(
-        uint256 tokenId,
-        string[] memory materials,
-        string[] memory types,
-        string[] memory majorModifiers,
-        string[] memory minorModifiers,
-        string[] memory ranges,
-        string[] memory decorations
+        string memory itemType,
+        string memory range,
+        string memory material,
+        string memory majorModifier,
+        string memory minorModifier,
+        string memory decoration
     ) public pure returns (string memory) {
         return
             string(
                 abi.encodePacked(
                     "[",
-                    encodeAttribute("Type", getType(tokenId, types)),
+                    encodeAttribute("Type", itemType),
                     ",",
-                    encodeAttribute("Range", getRange(tokenId, ranges)),
+                    encodeAttribute("Range", range),
                     ",",
-                    encodeAttribute(
-                        "Material",
-                        getMaterial(tokenId, materials)
-                    ),
+                    encodeAttribute("Material", material),
                     ",",
-                    encodeAttribute(
-                        "Major Modifier",
-                        getMajorModifier(tokenId, majorModifiers)
-                    ),
+                    encodeAttribute("Major Modifier", majorModifier),
                     ",",
-                    encodeAttribute(
-                        "Minor Modifier",
-                        getMinorModifier(tokenId, minorModifiers)
-                    ),
+                    encodeAttribute("Minor Modifier", minorModifier),
                     ",",
-                    encodeAttribute(
-                        "Decoration",
-                        getDecoration(tokenId, decorations)
-                    ),
+                    encodeAttribute("Decoration", decoration),
                     "]"
                 )
             );
@@ -155,12 +129,12 @@ library ItemLib {
     function tokenJSON(
         uint256 tokenId,
         string memory name,
-        string[] memory materials,
-        string[] memory types,
-        string[] memory majorModifiers,
-        string[] memory minorModifiers,
-        string[] memory ranges,
-        string[] memory decorations
+        string memory material,
+        string memory itemType,
+        string memory majorModifier,
+        string memory minorModifier,
+        string memory range,
+        string memory decoration
     ) public pure returns (string memory) {
         return
             string(
@@ -173,25 +147,21 @@ library ItemLib {
                     Base64.encode(
                         bytes(
                             tokenSVG(
-                                tokenId,
-                                materials,
-                                types,
-                                majorModifiers,
-                                minorModifiers,
-                                ranges,
-                                decorations
+                                getName(material, range, itemType),
+                                majorModifier,
+                                minorModifier,
+                                decoration
                             )
                         )
                     ),
                     '","attributes":',
                     attributesJSON(
-                        tokenId,
-                        materials,
-                        types,
-                        majorModifiers,
-                        minorModifiers,
-                        ranges,
-                        decorations
+                        itemType,
+                        range,
+                        material,
+                        majorModifier,
+                        minorModifier,
+                        decoration
                     ),
                     "}"
                 )
@@ -201,12 +171,12 @@ library ItemLib {
     function tokenURI(
         uint256 tokenId,
         string memory name,
-        string[] memory materials,
-        string[] memory types,
-        string[] memory majorModifiers,
-        string[] memory minorModifiers,
-        string[] memory ranges,
-        string[] memory decorations
+        string memory material,
+        string memory itemType,
+        string memory majorModifier,
+        string memory minorModifier,
+        string memory range,
+        string memory decoration
     ) public pure returns (string memory) {
         return
             string(
@@ -217,12 +187,12 @@ library ItemLib {
                             tokenJSON(
                                 tokenId,
                                 name,
-                                materials,
-                                types,
-                                majorModifiers,
-                                minorModifiers,
-                                ranges,
-                                decorations
+                                material,
+                                itemType,
+                                majorModifier,
+                                minorModifier,
+                                range,
+                                decoration
                             )
                         )
                     )
@@ -254,7 +224,7 @@ library ItemLib {
     function pluck(
         uint256 tokenId,
         string memory keyPrefix,
-        string[] memory sourceArray
+        string[12] memory sourceArray
     ) internal pure returns (string memory) {
         uint256 rand = random(
             string(abi.encodePacked(keyPrefix, tokenId.toString()))

@@ -1,10 +1,10 @@
-import ClaimPanel from '../components/ClaimPanel'
-import { useItemSupply } from '../hooks/contracts'
-import FullPage from '../layouts/FullPage'
+import ClaimPanel from "../components/ClaimPanel";
+import { useItemSupply } from "../hooks/contracts";
+import FullPage from "../layouts/FullPage";
 
 const Claim = () => {
-  const fluteSupply = useItemSupply('flute');
-  const luteSupply = useItemSupply('lute');
+  const fluteSupply = useItemSupply("flute");
+  const luteSupply = useItemSupply("lute");
 
   return (
     <FullPage
@@ -32,7 +32,7 @@ const Claim = () => {
         </div>
       </div>
     </FullPage>
-  )
-}
+  );
+};
 
-export default Claim
+export default Claim;

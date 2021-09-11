@@ -1,12 +1,12 @@
-import Button from './Button'
+import Button from "./Button";
 
 interface Props {
-  itemName: string
-  swapPrice: string
-  imgSrc: string
-  imgAlt: string
-  color: string
-  buttonText: string
+  itemName: string;
+  swapPrice: string;
+  imgSrc: string;
+  imgAlt: string;
+  color: string;
+  buttonText: string;
 }
 
 const SwapPanel = ({
@@ -28,7 +28,7 @@ const SwapPanel = ({
         <Button color={color}>{buttonText}</Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SwapPanel
+export default SwapPanel;

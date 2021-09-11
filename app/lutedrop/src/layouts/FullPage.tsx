@@ -1,5 +1,5 @@
-import Connect from '../components/Connect'
-import Nav from '../components/Nav'
+import Connect from "../components/Connect";
+import Nav from "../components/Nav";
 
 interface Props {
   subhed: React.ReactNode;
@@ -14,14 +14,14 @@ const FullPage = ({ subhed, children }: Props) => {
           Lute Drop
         </h1>
         <div className="font-body text-center text-lg">
-          <p>{ subhed }</p>
+          <p>{subhed}</p>
         </div>
       </div>
       <Connect />
       <Nav />
       {children}
     </div>
-  )
-}
+  );
+};
 
-export default FullPage
+export default FullPage;

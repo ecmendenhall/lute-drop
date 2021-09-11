@@ -1,15 +1,15 @@
-import { formatUnits } from '@ethersproject/units'
-import { useContractCall, useContractCalls } from '@usedapp/core'
-import { Falsy } from '@usedapp/core/dist/esm/src/model/types'
-import { BigNumber } from '@usedapp/core/node_modules/ethers'
-import config from '../config/contracts'
+import { formatUnits } from "@ethersproject/units";
+import { useContractCall, useContractCalls } from "@usedapp/core";
+import { Falsy } from "@usedapp/core/dist/esm/src/model/types";
+import { BigNumber } from "@usedapp/core/node_modules/ethers";
+import config from "../config/contracts";
 
-type Item = 'flute' | 'lute'
+type Item = "flute" | "lute";
 type SwapFee = BigNumber | undefined;
 
 interface LutiswapState {
-    luteSwapFee: SwapFee;
-    fluteSwapFee: SwapFee;
+  luteSwapFee: SwapFee;
+  fluteSwapFee: SwapFee;
 }
 
 export function useItemSupply(item: Item | Falsy) {
@@ -18,11 +18,11 @@ export function useItemSupply(item: Item | Falsy) {
       item && {
         abi: config[item].abi,
         address: config[item].address,
-        method: 'totalSupply',
+        method: "totalSupply",
         args: [],
-      },
-    ) ?? []
-  return totalSupply && formatUnits(totalSupply, 'wei')
+      }
+    ) ?? [];
+  return totalSupply && formatUnits(totalSupply, "wei");
 }
 
 export function useItem(item: Item, id: number) {
@@ -31,30 +31,30 @@ export function useItem(item: Item, id: number) {
       item && {
         abi: config[item].abi,
         address: config[item].address,
-        method: 'tokenURI',
+        method: "tokenURI",
         args: [id],
-      },
-    ) ?? []
-  return tokenURI && JSON.parse(atob(tokenURI.substring(29)))
+      }
+    ) ?? [];
+  return tokenURI && JSON.parse(atob(tokenURI.substring(29)));
 }
 
-export function useLutiswap() : LutiswapState {
+export function useLutiswap(): LutiswapState {
   const [luteSwapFeeResponse, fluteSwapFeeResponse] =
-    useContractCalls([
+    (useContractCalls([
       {
         abi: config.lutiswap.abi,
         address: config.lutiswap.address,
-        method: 'latestLuteSwapPrice',
+        method: "latestLuteSwapPrice",
         args: [],
       },
       {
         abi: config.lutiswap.abi,
         address: config.lutiswap.address,
-        method: 'latestFluteSwapPrice',
+        method: "latestFluteSwapPrice",
         args: [],
       },
-    ]) as SwapFee[][] ?? [] as SwapFee[][]
-    const [luteSwapFee] = luteSwapFeeResponse ?? [];
-    const [fluteSwapFee] = fluteSwapFeeResponse ?? [];
-  return { luteSwapFee, fluteSwapFee }
+    ]) as SwapFee[][]) ?? ([] as SwapFee[][]);
+  const [luteSwapFee] = luteSwapFeeResponse ?? [];
+  const [fluteSwapFee] = fluteSwapFeeResponse ?? [];
+  return { luteSwapFee, fluteSwapFee };
 }

@@ -10,11 +10,14 @@ const Connect = () => {
 
   return (
     <div className="md:fixed md:top-12 md:right-12">
-      <button className="font-body text-xl px-4 py-2 bg-yellow-200 text-gray-800 hover:bg-yellow-400 rounded-md shadow" onClick={activateWallet}>
-        { account ? shortenAddress(account) : "Connect"}
+      <button
+        className="font-body text-xl px-4 py-2 bg-yellow-200 text-gray-800 hover:bg-yellow-400 rounded-md shadow"
+        onClick={activateWallet}
+      >
+        {account ? shortenAddress(account) : "Connect"}
       </button>
     </div>
-  )
-}
+  );
+};
 
 export default Connect;

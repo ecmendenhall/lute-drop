@@ -1,22 +1,23 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation } from "react-router-dom";
 
 interface Props {
-  path: string
-  text: string
+  path: string;
+  text: string;
 }
 
 const NavItem = ({ path, text }: Props) => {
-  const { pathname } = useLocation()
+  const { pathname } = useLocation();
 
-  const background = path === pathname ? 'bg-yellow-200' : 'hover:text-yellow-700';
+  const background =
+    path === pathname ? "bg-yellow-200" : "hover:text-yellow-700";
   const className = `px-4 py-1 rounded-md ${background}`;
 
   return (
     <Link to={path}>
       <li className={className}>{text}</li>
     </Link>
-  )
-}
+  );
+};
 
 const Nav = () => {
   return (
@@ -27,7 +28,7 @@ const Nav = () => {
         <NavItem path="/about" text="About" />
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default Nav
+export default Nav;

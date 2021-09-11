@@ -161,7 +161,6 @@ export async function deployTestnet(ethers: Ethers) {
   );
   await grantRoles(lute, flute, luteDrop, lutiswap);
   await craftItems(lute, flute, owner);
-
 }
 
 export async function deployLocal(ethers: Ethers) {

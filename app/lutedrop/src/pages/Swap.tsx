@@ -1,11 +1,11 @@
-import SwapPanel from '../components/SwapPanel'
-import { roundEther } from '../helpers'
-import { useItem, useLutiswap } from '../hooks/contracts'
-import FullPage from '../layouts/FullPage'
+import SwapPanel from "../components/SwapPanel";
+import { roundEther } from "../helpers";
+import { useItem, useLutiswap } from "../hooks/contracts";
+import FullPage from "../layouts/FullPage";
 
 const Swap = () => {
-  const nextLute = useItem('lute', 669)
-  const nextFlute = useItem('flute', 669)
+  const nextLute = useItem("lute", 669);
+  const nextFlute = useItem("flute", 669);
   const { luteSwapFee, fluteSwapFee } = useLutiswap();
 
   return (
@@ -41,7 +41,7 @@ const Swap = () => {
         </div>
       </div>
     </FullPage>
-  )
-}
+  );
+};
 
-export default Swap
+export default Swap;

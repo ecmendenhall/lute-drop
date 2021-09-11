@@ -12,23 +12,12 @@ async function deploy(): Promise<Contracts> {
   const ItemLibFactory = await ethers.getContractFactory("ItemLib");
   const itemlib = await (await ItemLibFactory.deploy()).deployed();
 
-  const ItemFactory = await ethers.getContractFactory("Item", {
+  const ItemFactory = await ethers.getContractFactory("GenericItem", {
     libraries: {
       ItemLib: itemlib.address,
     },
   });
-  const item = (await (
-    await ItemFactory.deploy(
-      "Item",
-      "ITEM",
-      new Array(12).fill("Material"),
-      new Array(12).fill("Type"),
-      new Array(12).fill("Major Modifier"),
-      new Array(12).fill("Minor Modifier"),
-      new Array(3).fill("Range"),
-      new Array(12).fill("Decoration")
-    )
-  ).deployed()) as Item;
+  const item = (await (await ItemFactory.deploy()).deployed()) as Item;
 
   return { item };
 }
