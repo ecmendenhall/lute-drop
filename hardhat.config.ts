@@ -43,12 +43,8 @@ module.exports = {
   networks: {
     hardhat: {
       initialBaseFeePerGas: 0,
-      mining: {
-        auto: false,
-        interval: 500,
-      },
       forking: {
-        enabled: true,
+        enabled: false,
         url: process.env.ALCHEMY_API_KEY,
       },
     },

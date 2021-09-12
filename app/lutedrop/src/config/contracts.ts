@@ -59,7 +59,7 @@ const config = {
   },
   [ChainId.Rinkeby]: {
     lute: {
-      address: "0xE58CeDE7C5413D8096564ed53c2Ea803a6f15139",
+      address: "0x662A31660f430eB5F93d28Af484045a196653e6d",
       abi: new Interface([
         "function balanceOf(address owner) returns (uint256)",
         "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
@@ -69,7 +69,7 @@ const config = {
       ]),
     },
     flute: {
-      address: "0x0c5AF98785d52858DA21EE62E144dE39A49cB14D",
+      address: "0x6f3218395776A27696eAae0E6244a77C2a770761",
       abi: new Interface([
         "function balanceOf(address owner) returns (uint256)",
         "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
@@ -79,7 +79,7 @@ const config = {
       ]),
     },
     luteDrop: {
-      address: "0x6644b74Ab53e816FE71b79462E355Cd44c357FeD",
+      address: "0x71DCbA7E75E974704868CDB657a43444C41c0405",
       abi: new Interface([
         "function claim(uint8 item, address token, uint256 tokenId) payable",
         "function dropId(address token) returns (uint256)",
@@ -88,7 +88,7 @@ const config = {
       ]),
     },
     lutiswap: {
-      address: "0xE2757d6197B55239cf1D229Bb766fC85f8Bbf29f",
+      address: "0x1bf657Cde28bfc08BE56B86F732bDFEf3358AB6e",
       abi: new Interface([
         "function latestSwapPrice() view returns (uint256, uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) payable",

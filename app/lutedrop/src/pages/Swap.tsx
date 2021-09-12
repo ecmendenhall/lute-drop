@@ -1,8 +1,6 @@
-import { useEthers, useTokenBalance } from "@usedapp/core";
-import { useReducer } from "react";
+import { useEthers } from "@usedapp/core";
 import SwapPanel from "../components/SwapPanel";
 import TransactionStatus from "../components/TransactionStatus";
-import config from "../config/contracts";
 import { roundEther } from "../helpers";
 import {
   useNextItem,
@@ -10,7 +8,6 @@ import {
   useTokenHoldings,
   useSwapExactFluteForLute,
   useSwapExactLuteForFlute,
-  useItemSupply,
 } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
