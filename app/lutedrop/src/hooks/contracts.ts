@@ -319,3 +319,13 @@ export function useClaimItem() {
   const contract = new Contract(config.luteDrop.address, config.luteDrop.abi);
   return useContractFunction(contract, "claim");
 }
+
+export function useSwapExactFluteForLute() {
+  const contract = new Contract(config.lutiswap.address, config.lutiswap.abi);
+  return useContractFunction(contract, "swapExactFluteForLute");
+}
+
+export function useSwapExactLuteForFlute() {
+  const contract = new Contract(config.lutiswap.address, config.lutiswap.abi);
+  return useContractFunction(contract, "swapExactLuteForFlute");
+}

@@ -18,6 +18,7 @@ interface Props {
   total: number;
   holdings: Holdings[];
   onSelectLoot: (tokenIndex: number, itemIndex: number) => void;
+  onTipChange: (tip: string) => void;
 }
 
 const ClaimForm = ({
@@ -26,9 +27,10 @@ const ClaimForm = ({
   total,
   holdings,
   onSelectLoot,
+  onTipChange,
 }: Props) => {
   return (
-    <div className="flex flex-col place-content-start text-center p-8">
+    <div className="flex flex-col md:w-1/4 place-content-start text-center p-8">
       <div className="my-2">
         <h4 className="font-body font-bold mb-2">Claimable:</h4>
         <p>
@@ -47,7 +49,7 @@ const ClaimForm = ({
           </div>
           <div className="my-2">
             <h4 className="font-body font-bold mb-2">Tip your Luthier:</h4>
-            <Tip defaultTip={20.0} />
+            <Tip defaultTip="20.0" onTipChange={onTipChange} />
           </div>
         </>
       )}

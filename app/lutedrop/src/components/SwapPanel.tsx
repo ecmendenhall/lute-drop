@@ -1,4 +1,5 @@
 import { BigNumber } from "@usedapp/core/node_modules/ethers";
+import { useState } from "react";
 import Button from "./Button";
 import SelectLoot from "./SelectLoot";
 
@@ -20,6 +21,7 @@ interface Props {
   imgAlt: string;
   color: string;
   buttonText: string;
+  onSwap: (tokenId: number) => void;
 }
 
 const SwapPanel = ({
@@ -30,7 +32,24 @@ const SwapPanel = ({
   imgAlt,
   color,
   buttonText,
+  onSwap,
 }: Props) => {
+  const [selectedItem, setSelectedItem] = useState<number>();
+
+  const onClick = () => {
+    if (selectedItem) {
+      onSwap(selectedItem);
+    }
+  };
+
+  const onSelect = (tokenIndex: number, itemIndex: number) => {
+    if (holdings) {
+      const token = holdings[tokenIndex];
+      const item = token.holdings[itemIndex];
+      setSelectedItem(item.id.toNumber());
+    }
+  };
+
   return (
     <div className="flex flex-col place-content-center text-center p-4">
       <div className="mb-4 bg-yellow-50 p-4 shadow w-60">
@@ -43,12 +62,14 @@ const SwapPanel = ({
           <SelectLoot
             showTokenName={false}
             holdings={holdings}
-            onSelectLoot={() => {}}
+            onSelectLoot={onSelect}
           />
         </div>
       )}
       <div>
-        <Button color={color}>{buttonText}</Button>
+        <Button color={color} onClick={onClick}>
+          {buttonText}
+        </Button>
       </div>
     </div>
   );

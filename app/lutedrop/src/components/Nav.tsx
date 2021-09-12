@@ -21,7 +21,7 @@ const NavItem = ({ path, text }: Props) => {
 
 const Nav = () => {
   return (
-    <div className="lg:fixed lg:top-12 lg:left-12 lg:mb-0 mb-8 font-body text-xl cursor-pointer">
+    <div className="lg:fixed lg:top-12 lg:left-12 lg:mb-0 lg:z-50 mb-8 font-body text-xl cursor-pointer">
       <ul className="flex flex-row p-2 bg-yellow-50 justify-around rounded-md shadow">
         <NavItem path="/claim" text="Claim" />
         <NavItem path="/swap" text="Swap" />

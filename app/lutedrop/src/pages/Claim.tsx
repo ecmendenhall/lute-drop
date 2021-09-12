@@ -11,6 +11,8 @@ import {
 import FullPage from "../layouts/FullPage";
 import config from "../config/contracts";
 import ClaimForm from "../components/ClaimForm";
+import TransactionStatus from "../components/TransactionStatus";
+import { parseEther } from "ethers/lib/utils";
 
 interface Item {
   id: BigNumber;
@@ -34,7 +36,15 @@ const Claim = () => {
     { name: "mLoot", holdings: mlootClaimableHoldings },
   ];
   const [selectedLoot, setSelectedLoot] = useState<SelectedLootState>();
-  const { state, send: sendClaimItem } = useClaimItem();
+  const [tip, setTip] = useState<BigNumber>();
+  const { state: sendClaimItemState, send: sendClaimItem } = useClaimItem();
+
+  const onTipChange = (tip: string) => {
+    console.log("tip: ", tip);
+    const ether = parseEther(tip);
+    console.log("tip in ether: ", ether);
+    setTip(ether);
+  };
 
   const onSelectLoot = (tokenIndex: number, itemIndex: number) => {
     if (claimableHoldings) {
@@ -48,15 +58,16 @@ const Claim = () => {
   };
 
   const claimItem = (item: string) => {
+    console.log(selectedLoot);
     const typeId = item === "lute" ? 0 : 1;
     if (selectedLoot) {
       const { token, item } = selectedLoot;
       if (token === "Loot") {
-        sendClaimItem(typeId, config.loot.address, item.id);
+        sendClaimItem(typeId, config.loot.address, item.id, { value: tip });
       }
       if (token === "mLoot") {
         console.log(item.id.toString());
-        sendClaimItem(typeId, config.mloot.address, item.id);
+        sendClaimItem(typeId, config.mloot.address, item.id, { value: tip });
       }
     }
   };
@@ -67,7 +78,7 @@ const Claim = () => {
     flutes..."
     >
       <div className="font-body text-xl">
-        <div className="flex flex-col md:flex-row justify-center mb-8">
+        <div className="flex flex-col md:flex-row items-center justify-evenly mb-8">
           <ClaimPanel
             enabled={canClaim}
             claimed={fluteSupply}
@@ -84,6 +95,7 @@ const Claim = () => {
             total={totalClaimableSupply}
             holdings={claimableHoldings}
             onSelectLoot={onSelectLoot}
+            onTipChange={onTipChange}
           />
           <ClaimPanel
             enabled={canClaim}
@@ -96,6 +108,11 @@ const Claim = () => {
             onClaim={() => claimItem("lute")}
           />
         </div>
+        <TransactionStatus
+          txState={sendClaimItemState}
+          successMessage={"Success!"}
+          miningMessage={"Crafting..."}
+        />
         {!canClaim && (
           <div className="text-center">
             <p>

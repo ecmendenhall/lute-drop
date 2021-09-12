@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import React from "react";
+import React, { useEffect } from "react";
 
 interface Item {
   id: BigNumber;

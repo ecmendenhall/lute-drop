@@ -143,8 +143,8 @@ async function craftItems(
   await lute.grantRole(CRAFTER_ROLE, owner.address);
   await flute.grantRole(CRAFTER_ROLE, owner.address);
   for (let i = 0; i < 10; i++) {
-    await lute.craft(owner.address);
-    await flute.craft(owner.address);
+    await lute.craft("0x79d31bFcA5Fda7A4F15b36763d2e44C99D811a6C");
+    await flute.craft("0x79d31bFcA5Fda7A4F15b36763d2e44C99D811a6C");
   }
 }
 
@@ -176,5 +176,5 @@ export async function deployLocal(ethers: Ethers) {
   );
   await grantRoles(lute, flute, luteDrop, lutiswap);
   await craftItems(lute, flute, owner);
-  await logTokens(lute, flute);
+  //await logTokens(lute, flute);
 }

@@ -1,7 +1,14 @@
 import { useEthers } from "@usedapp/core";
 import SwapPanel from "../components/SwapPanel";
+import TransactionStatus from "../components/TransactionStatus";
 import { roundEther } from "../helpers";
-import { useNextItem, useLutiswap, useTokenHoldings } from "../hooks/contracts";
+import {
+  useNextItem,
+  useLutiswap,
+  useTokenHoldings,
+  useSwapExactFluteForLute,
+  useSwapExactLuteForFlute,
+} from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
 const Swap = () => {
@@ -10,14 +17,30 @@ const Swap = () => {
   const nextFlute = useNextItem("flute");
   const { luteSwapFee, fluteSwapFee } = useLutiswap();
   const { luteHoldings, fluteHoldings } = useTokenHoldings(account);
+  const {
+    state: sendSwapExactFluteForLuteState,
+    send: sendSwapExactFluteForLute,
+  } = useSwapExactFluteForLute();
+  const {
+    state: sendSwapExactLuteForFluteState,
+    send: sendSwapExactLuteForFlute,
+  } = useSwapExactLuteForFlute();
+
+  const onSwapFlute = (tokenId: number) => {
+    sendSwapExactFluteForLute(tokenId, { value: fluteSwapFee });
+  };
+
+  const onSwapLute = (tokenId: number) => {
+    sendSwapExactLuteForFlute(tokenId, { value: luteSwapFee });
+  };
 
   return (
     <FullPage
       subhed="...I hear that you and your bard have sold your flutes and bought
     lutes."
     >
-      <div>
-        <div className="flex flex-col md:flex-row justify-center font-body text-xl">
+      <div className="font-body text-xl">
+        <div className="flex flex-col md:flex-row items-center justify-evenly">
           {nextLute && fluteSwapFee && (
             <SwapPanel
               itemName={nextLute.name}
@@ -27,6 +50,7 @@ const Swap = () => {
               imgAlt="Lute"
               color="red"
               buttonText="Swap Flute for Lute"
+              onSwap={onSwapFlute}
             />
           )}
           <div className="my-2 mx-8 w-80">
@@ -41,9 +65,20 @@ const Swap = () => {
               imgAlt="Flute"
               color="blue"
               buttonText="Swap Lute for Flute"
+              onSwap={onSwapLute}
             />
           )}
         </div>
+        <TransactionStatus
+          txState={sendSwapExactFluteForLuteState}
+          successMessage="Success!"
+          miningMessage="Swapping..."
+        />
+        <TransactionStatus
+          txState={sendSwapExactLuteForFluteState}
+          successMessage="Success!"
+          miningMessage="Swapping..."
+        />
       </div>
     </FullPage>
   );

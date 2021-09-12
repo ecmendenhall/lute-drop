@@ -45,7 +45,7 @@ const config = {
   luteDrop: {
     address: LUTE_DROP,
     abi: new Interface([
-      "function claim(uint8 item, address token, uint256 tokenId)",
+      "function claim(uint8 item, address token, uint256 tokenId) payable",
       "function dropId(address token) returns (uint256)",
       "function drops(uint256 dropId) returns (address, uint256, uint256)",
       "function isClaimed(address token, uint256 tokenId) returns (bool)",

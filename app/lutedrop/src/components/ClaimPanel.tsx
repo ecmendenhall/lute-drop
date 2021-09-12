@@ -21,11 +21,11 @@ const ClaimPanel = ({
   buttonText,
   onClaim,
 }: Props) => {
-  const imgClass = `h-72 transform ${imgStyle}`;
+  const imgClass = `h-72 p-0 m-0 transform ${imgStyle}`;
   return (
-    <div className="flex flex-col text-center text-xl font-body">
+    <div className="flex flex-col md:w-1/3 items-center text-center text-xl font-body">
       <div className="mb-4">
-        Claimed: {claimed}
+        <span className="font-bold">Claimed:</span> {claimed}
         <img src={imgSrc} alt={imgAlt} className={imgClass} />
       </div>
       {enabled && (
