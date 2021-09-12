@@ -1,3 +1,4 @@
+import BlockCounter from "../components/BlockCounter";
 import Connect from "../components/Connect";
 import Nav from "../components/Nav";
 
@@ -22,6 +23,7 @@ const FullPage = ({ subhed, children }: Props) => {
         <Nav />
         {children}
       </div>
+      <BlockCounter />
     </div>
   );
 };

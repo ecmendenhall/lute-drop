@@ -3,10 +3,12 @@ import {
   useContractCall,
   useContractCalls,
   useContractFunction,
+  useEthers,
+  useTokenBalance,
 } from "@usedapp/core";
 import { Interface } from "@usedapp/core/node_modules/@ethersproject/abi";
 import { BigNumber, Contract } from "@usedapp/core/node_modules/ethers";
-import config from "../config/contracts";
+import { getConfig } from "../config/contracts";
 
 type Item = "flute" | "lute";
 type SwapFee = BigNumber | undefined;
@@ -50,6 +52,8 @@ const parseMetadata = (tokenURI: string) => {
 };
 
 export function useItemSupply(item: Item) {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const [totalSupply] =
     useContractCall({
       abi: config[item].abi,
@@ -61,6 +65,8 @@ export function useItemSupply(item: Item) {
 }
 
 export function useItem(item: Item, id: number) {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const [tokenURI] =
     useContractCall({
       abi: config[item].abi,
@@ -72,6 +78,8 @@ export function useItem(item: Item, id: number) {
 }
 
 export function useNextItem(item: Item) {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const [tokenId] =
     useContractCall({
       abi: config[item].abi,
@@ -92,6 +100,8 @@ export function useNextItem(item: Item) {
 }
 
 export function useLutiswap(): LutiswapState {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const [luteSwapFee, fluteSwapFee] =
     (useContractCall({
       abi: config.lutiswap.abi,
@@ -103,6 +113,8 @@ export function useLutiswap(): LutiswapState {
 }
 
 export function useLuteDrop(): LuteDropState {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const dropIdsResponse =
     useContractCalls([
       {
@@ -163,6 +175,8 @@ export function useLuteDrop(): LuteDropState {
 export function useTokenBalances(
   owner: string | null | undefined
 ): TokenBalanceState {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const [
     luteBalanceResponse,
     fluteBalanceResponse,
@@ -244,6 +258,8 @@ export function useERC721Holdings(
 }
 
 export function useTokenHoldings(owner: string | null | undefined) {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const { luteBalance, fluteBalance, lootBalance, mlootBalance } =
     useTokenBalances(owner);
   const { tokenData: luteHoldings } = useERC721Holdings(
@@ -301,6 +317,8 @@ export function useClaims(
   tokenAddress: string,
   tokenHoldings: ERC721Holding[]
 ) {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const isClaimedCalls = tokenHoldings.map((holding) => {
     return {
       abi: config.luteDrop.abi,
@@ -316,16 +334,22 @@ export function useClaims(
 }
 
 export function useClaimItem() {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const contract = new Contract(config.luteDrop.address, config.luteDrop.abi);
   return useContractFunction(contract, "claim");
 }
 
 export function useSwapExactFluteForLute() {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const contract = new Contract(config.lutiswap.address, config.lutiswap.abi);
   return useContractFunction(contract, "swapExactFluteForLute");
 }
 
 export function useSwapExactLuteForFlute() {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
   const contract = new Contract(config.lutiswap.address, config.lutiswap.abi);
   return useContractFunction(contract, "swapExactLuteForFlute");
 }

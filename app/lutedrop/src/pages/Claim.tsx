@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useEthers } from "@usedapp/core";
 import { useCoingeckoPrice } from "@usedapp/coingecko";
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import ClaimPanel from "../components/ClaimPanel";
 import {
   useClaimItem,
@@ -10,7 +10,7 @@ import {
   useTokenHoldings,
 } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
-import config from "../config/contracts";
+import { getConfig } from "../config/contracts";
 import ClaimForm from "../components/ClaimForm";
 import TransactionStatus from "../components/TransactionStatus";
 import { parseEther } from "ethers/lib/utils";
@@ -26,7 +26,8 @@ interface SelectedLootState {
 }
 
 const Claim = () => {
-  const { account } = useEthers();
+  const { chainId, account } = useEthers();
+  const config = getConfig(chainId);
   const etherPrice = useCoingeckoPrice("ethereum", "usd");
   const fluteSupply = useItemSupply("flute");
   const luteSupply = useItemSupply("lute");
@@ -71,7 +72,6 @@ const Claim = () => {
         sendClaimItem(typeId, config.loot.address, item.id, { value: tip });
       }
       if (token === "mLoot") {
-        console.log(item.id.toString());
         sendClaimItem(typeId, config.mloot.address, item.id, { value: tip });
       }
     }

@@ -5,7 +5,7 @@ import FullPage from "./FullPage";
 test("renders subhed", () => {
   render(
     <MemoryRouter>
-      <FullPage subhed="Subhed text" />
+      <FullPage subhed="Subhed text">Page content</FullPage>
     </MemoryRouter>
   );
   const subhed = screen.getByText(/Subhed text/i);

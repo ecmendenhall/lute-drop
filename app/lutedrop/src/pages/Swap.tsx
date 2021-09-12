@@ -1,6 +1,8 @@
-import { useEthers } from "@usedapp/core";
+import { useEthers, useTokenBalance } from "@usedapp/core";
+import { useReducer } from "react";
 import SwapPanel from "../components/SwapPanel";
 import TransactionStatus from "../components/TransactionStatus";
+import config from "../config/contracts";
 import { roundEther } from "../helpers";
 import {
   useNextItem,
@@ -8,6 +10,7 @@ import {
   useTokenHoldings,
   useSwapExactFluteForLute,
   useSwapExactLuteForFlute,
+  useItemSupply,
 } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
@@ -15,8 +18,8 @@ const Swap = () => {
   const { account } = useEthers();
   const nextLute = useNextItem("lute");
   const nextFlute = useNextItem("flute");
-  const { luteSwapFee, fluteSwapFee } = useLutiswap();
   const { luteHoldings, fluteHoldings } = useTokenHoldings(account);
+  const { luteSwapFee, fluteSwapFee } = useLutiswap();
   const {
     state: sendSwapExactFluteForLuteState,
     send: sendSwapExactFluteForLute,
