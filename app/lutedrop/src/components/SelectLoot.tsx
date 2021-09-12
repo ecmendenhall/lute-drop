@@ -1,5 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Item {
   id: BigNumber;
@@ -18,6 +18,21 @@ interface Props {
 }
 
 const SelectLoot = ({ showTokenName, holdings, onSelectLoot }: Props) => {
+  const [defaultSet, setDefaultSet] = useState(false);
+
+  useEffect(() => {
+    if (holdings && !defaultSet) {
+      setDefaultSet(true);
+      const [tokenIndex, itemIndex] = getFirstItemIndex(holdings);
+      tokenIndex >= 0 && onSelectLoot(tokenIndex, itemIndex);
+    }
+  }, [holdings]);
+
+  const getFirstItemIndex = (holdings: Holdings[]) => {
+    const tokenIndex = holdings.findIndex((h) => h.holdings.length > 0);
+    return [tokenIndex, 0];
+  };
+
   const onSelectItem = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const [tokenIndex, itemIndex] = e.target.value
       .split(",")

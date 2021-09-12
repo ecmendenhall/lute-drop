@@ -17,6 +17,7 @@ interface Props {
   remaining: number;
   total: number;
   holdings: Holdings[];
+  etherPrice?: string;
   onSelectLoot: (tokenIndex: number, itemIndex: number) => void;
   onTipChange: (tip: string) => void;
 }
@@ -26,6 +27,7 @@ const ClaimForm = ({
   remaining,
   total,
   holdings,
+  etherPrice,
   onSelectLoot,
   onTipChange,
 }: Props) => {
@@ -37,7 +39,7 @@ const ClaimForm = ({
           {remaining} / {total}
         </p>
       </div>
-      {enabled && (
+      {enabled && etherPrice && (
         <>
           <div className="my-2">
             <h4 className="font-body font-bold mb-2">Claim with:</h4>
@@ -48,8 +50,12 @@ const ClaimForm = ({
             />
           </div>
           <div className="my-2">
-            <h4 className="font-body font-bold mb-2">Tip your Luthier:</h4>
-            <Tip defaultTip="20.0" onTipChange={onTipChange} />
+            <h4 className="font-body font-bold mb-2">Tip your luthier:</h4>
+            <Tip
+              defaultTip="20.0"
+              etherPrice={etherPrice}
+              onTipChange={onTipChange}
+            />
           </div>
         </>
       )}

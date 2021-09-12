@@ -1,5 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useEthers } from "@usedapp/core";
+import { useCoingeckoPrice } from "@usedapp/coingecko";
 import { useState } from "react";
 import ClaimPanel from "../components/ClaimPanel";
 import {
@@ -26,6 +27,7 @@ interface SelectedLootState {
 
 const Claim = () => {
   const { account } = useEthers();
+  const etherPrice = useCoingeckoPrice("ethereum", "usd");
   const fluteSupply = useItemSupply("flute");
   const luteSupply = useItemSupply("lute");
   const { lootClaimableHoldings, mlootClaimableHoldings, canClaim } =
@@ -48,12 +50,15 @@ const Claim = () => {
 
   const onSelectLoot = (tokenIndex: number, itemIndex: number) => {
     if (claimableHoldings) {
+      console.log("in heeeeeere: ", claimableHoldings);
       const token = claimableHoldings[tokenIndex];
       const item = token.holdings[itemIndex];
-      setSelectedLoot({
-        token: token.name,
-        item: item,
-      });
+      token &&
+        item &&
+        setSelectedLoot({
+          token: token.name,
+          item: item,
+        });
     }
   };
 
@@ -94,6 +99,7 @@ const Claim = () => {
             remaining={remainingClaimableSupply}
             total={totalClaimableSupply}
             holdings={claimableHoldings}
+            etherPrice={etherPrice}
             onSelectLoot={onSelectLoot}
             onTipChange={onTipChange}
           />
