@@ -17,11 +17,11 @@ const Tip = ({ defaultTip, etherPrice, onTipChange }: Props) => {
     if (!defaultSet) {
       setDefaultSet(true);
       const tipAmount = parseFloat(defaultTip) / parseFloat(etherPrice);
-      const roundedTip = roundETH(tipAmount.toString());
+      const roundedTip = roundETH(tipAmount.toFixed(18));
       setTip(roundedTip);
       onTipChange(roundedTip);
     }
-  }, []);
+  }, [defaultSet, defaultTip, etherPrice, onTipChange]);
 
   const roundETH = (amount: string) => {
     return roundEther(parseEther(amount || "0.0"));

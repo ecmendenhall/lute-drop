@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useEthers } from "@usedapp/core";
 import { useCoingeckoPrice } from "@usedapp/coingecko";
-import { useReducer, useState } from "react";
+import { useState } from "react";
 import ClaimPanel from "../components/ClaimPanel";
 import {
   useClaimItem,
@@ -43,15 +43,12 @@ const Claim = () => {
   const { state: sendClaimItemState, send: sendClaimItem } = useClaimItem();
 
   const onTipChange = (tip: string) => {
-    console.log("tip: ", tip);
     const ether = parseEther(tip);
-    console.log("tip in ether: ", ether);
     setTip(ether);
   };
 
   const onSelectLoot = (tokenIndex: number, itemIndex: number) => {
     if (claimableHoldings) {
-      console.log("in heeeeeere: ", claimableHoldings);
       const token = claimableHoldings[tokenIndex];
       const item = token.holdings[itemIndex];
       token &&
@@ -64,7 +61,6 @@ const Claim = () => {
   };
 
   const claimItem = (item: string) => {
-    console.log(selectedLoot);
     const typeId = item === "lute" ? 0 : 1;
     if (selectedLoot) {
       const { token, item } = selectedLoot;

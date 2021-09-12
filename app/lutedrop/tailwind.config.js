@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   purge: {
     content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
@@ -14,6 +16,7 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
+      mono: [...defaultTheme.fontFamily.mono],
       display: ["Almendra SC"],
       body: ["Almendra"],
     },

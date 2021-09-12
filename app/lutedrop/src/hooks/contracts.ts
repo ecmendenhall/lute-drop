@@ -4,7 +4,6 @@ import {
   useContractCalls,
   useContractFunction,
   useEthers,
-  useTokenBalance,
 } from "@usedapp/core";
 import { Interface } from "@usedapp/core/node_modules/@ethersproject/abi";
 import { BigNumber, Contract } from "@usedapp/core/node_modules/ethers";
