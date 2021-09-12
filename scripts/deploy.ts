@@ -151,7 +151,7 @@ async function craftItems(
 export async function deployTestnet(ethers: Ethers) {
   const [owner] = await ethers.getSigners();
 
-  const { loot, mloot } = await deployLoot(ethers);
+  //const { loot, mloot } = await deployLoot(ethers);
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(
     ethers,
     LOOT_ADDRESS_RINKEBY,
@@ -160,7 +160,7 @@ export async function deployTestnet(ethers: Ethers) {
     MLOOT_SUPPLY
   );
   await grantRoles(lute, flute, luteDrop, lutiswap);
-  await craftItems(lute, flute, owner);
+  //await craftItems(lute, flute, owner);
 }
 
 export async function deployLocal(ethers: Ethers) {
