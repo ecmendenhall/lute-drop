@@ -1,24 +1,15 @@
 import { useEthers } from "@usedapp/core";
-import ItemBalance from "../components/ItemBalance";
 import SwapPanel from "../components/SwapPanel";
 import { roundEther } from "../helpers";
-import {
-  useNextItem,
-  useLutiswap,
-  useTokenHoldings,
-  useItemSupply,
-} from "../hooks/contracts";
+import { useNextItem, useLutiswap, useTokenHoldings } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
 const Swap = () => {
   const { account } = useEthers();
-  const luteSupply = useItemSupply("lute");
-  const fluteSupply = useItemSupply("flute");
   const nextLute = useNextItem("lute");
   const nextFlute = useNextItem("flute");
   const { luteSwapFee, fluteSwapFee } = useLutiswap();
-  const { luteBalance, luteHoldings, fluteBalance, fluteHoldings } =
-    useTokenHoldings(account);
+  const { luteHoldings, fluteHoldings } = useTokenHoldings(account);
 
   return (
     <FullPage
@@ -27,16 +18,11 @@ const Swap = () => {
     >
       <div>
         <div className="flex flex-col md:flex-row justify-center font-body text-xl">
-          <ItemBalance
-            itemName="Flutes"
-            balance={fluteBalance}
-            holdings={fluteHoldings}
-          />
           {nextLute && fluteSwapFee && (
             <SwapPanel
               itemName={nextLute.name}
               swapPrice={roundEther(fluteSwapFee)}
-              holdings={fluteHoldings}
+              holdings={[{ name: "Flute", holdings: fluteHoldings }]}
               imgSrc={nextLute.image}
               imgAlt="Lute"
               color="red"
@@ -50,18 +36,13 @@ const Swap = () => {
             <SwapPanel
               itemName={nextFlute.name}
               swapPrice={roundEther(luteSwapFee)}
-              holdings={luteHoldings}
+              holdings={[{ name: "Lute", holdings: luteHoldings }]}
               imgSrc={nextFlute.image}
               imgAlt="Flute"
               color="blue"
               buttonText="Swap Lute for Flute"
             />
           )}
-          <ItemBalance
-            itemName="Lutes"
-            balance={luteBalance}
-            holdings={luteHoldings}
-          />
         </div>
       </div>
     </FullPage>

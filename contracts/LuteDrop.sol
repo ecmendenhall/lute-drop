@@ -68,6 +68,17 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         _claimItem(item, msg.sender);
     }
 
+    function isClaimed(address token, uint256 tokenId)
+        public
+        view
+        returns (bool)
+    {
+        uint256 id = dropId[token];
+        require(id != 0, "Invalid token address");
+        Drop storage drop = drops[id];
+        return drop.claims[tokenId];
+    }
+
     function addDrop(address token, uint256 claimableSupply) public onlyOwner {
         _addDrop(token, claimableSupply);
     }

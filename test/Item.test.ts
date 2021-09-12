@@ -203,4 +203,18 @@ describe("Item", () => {
       expect(await contracts.item.totalSupply()).to.equal(0);
     });
   });
+
+  describe("nextId", () => {
+    beforeEach(async () => {
+      await contracts.item
+        .connect(owner)
+        .grantRole(CRAFTER_ROLE, crafter.address);
+    });
+
+    it("returns next ID", async function () {
+      expect(await contracts.item.nextId()).to.equal(0);
+      await contracts.item.connect(crafter).craft(recipient.address);
+      expect(await contracts.item.nextId()).to.equal(1);
+    });
+  });
 });

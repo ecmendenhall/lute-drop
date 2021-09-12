@@ -30,28 +30,16 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         return swap(tokenId, lute, flute);
     }
 
-    function latestFluteSwapPrice() public view returns (uint256) {
-        return fluteSwapPrice(lute.totalSupply(), flute.totalSupply());
+    function latestSwapPrice() public view returns (uint256, uint256) {
+        return swapPrice(lute.totalSupply(), flute.totalSupply());
     }
 
-    function latestLuteSwapPrice() public view returns (uint256) {
-        return luteSwapPrice(lute.totalSupply(), flute.totalSupply());
-    }
-
-    function fluteSwapPrice(uint256 _l, uint256 _f)
+    function swapPrice(uint256 l, uint256 f)
         public
         pure
-        returns (uint256)
+        returns (uint256, uint256)
     {
-        return _swapPrice(_f, _l);
-    }
-
-    function luteSwapPrice(uint256 _l, uint256 _f)
-        public
-        pure
-        returns (uint256)
-    {
-        return _swapPrice(_l, _f);
+        return (_swapPrice(l, f), _swapPrice(f, l));
     }
 
     function swap(

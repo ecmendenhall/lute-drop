@@ -1,14 +1,21 @@
+import { BigNumber } from "@usedapp/core/node_modules/ethers";
 import Button from "./Button";
 import SelectLoot from "./SelectLoot";
 
 interface Item {
+  id: BigNumber;
   name: string;
+}
+
+interface Holdings {
+  name: string;
+  holdings: Item[];
 }
 
 interface Props {
   itemName: string;
   swapPrice: string;
-  holdings?: Item[];
+  holdings?: Holdings[];
   imgSrc: string;
   imgAlt: string;
   color: string;
@@ -26,14 +33,18 @@ const SwapPanel = ({
 }: Props) => {
   return (
     <div className="flex flex-col place-content-center text-center p-4">
-      <div className="my-4 bg-yellow-50 p-4 shadow w-60">
+      <div className="mb-4 bg-yellow-50 p-4 shadow w-60">
         <h4 className="font-bold">{itemName}</h4>
         <img src={imgSrc} alt={imgAlt} className="my-2" />
         <p>{swapPrice} ETH</p>
       </div>
       {holdings && holdings.length > 0 && (
-        <div>
-          <SelectLoot holdings={[{ name: itemName, holdings: holdings }]} />
+        <div className="mb-4">
+          <SelectLoot
+            showTokenName={false}
+            holdings={holdings}
+            onSelectLoot={() => {}}
+          />
         </div>
       )}
       <div>

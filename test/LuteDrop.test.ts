@@ -168,6 +168,12 @@ describe("LuteDrop", () => {
       ).to.be.revertedWith("Invalid token address");
     });
 
+    it("isClaimed reverts on invalid token address", async () => {
+      await expect(
+        contracts.luteDrop.isClaimed(owner.address, 10)
+      ).to.be.revertedWith("Invalid token address");
+    });
+
     describe("loot holders", () => {
       it("loot holders can claim a lute", async () => {
         await contracts.luteDrop
@@ -226,6 +232,22 @@ describe("LuteDrop", () => {
             .connect(lootWhale)
             .claim(0, contracts.loot.address, 0)
         ).to.be.revertedWith("Must own specified token to claim");
+      });
+
+      it("isClaimed returns true for claimed tokens", async () => {
+        await contracts.luteDrop
+          .connect(lootWhale)
+          .claim(0, contracts.loot.address, 2);
+        expect(await contracts.luteDrop.isClaimed(contracts.loot.address, 2)).to
+          .be.true;
+      });
+
+      it("isClaimed returns false for unclaimed tokens", async () => {
+        await contracts.luteDrop
+          .connect(lootWhale)
+          .claim(0, contracts.loot.address, 2);
+        expect(await contracts.luteDrop.isClaimed(contracts.loot.address, 10))
+          .to.be.false;
       });
     });
 
@@ -299,6 +321,22 @@ describe("LuteDrop", () => {
             .connect(mlootWhale)
             .claim(0, contracts.mloot.address, 0)
         ).to.be.revertedWith("Must own specified token to claim");
+      });
+
+      it("isClaimed returns true for claimed tokens", async () => {
+        await contracts.luteDrop
+          .connect(mlootWhale)
+          .claim(0, contracts.mloot.address, 2);
+        expect(await contracts.luteDrop.isClaimed(contracts.mloot.address, 2))
+          .to.be.true;
+      });
+
+      it("isClaimed returns false for unclaimed tokens", async () => {
+        await contracts.luteDrop
+          .connect(mlootWhale)
+          .claim(0, contracts.mloot.address, 2);
+        expect(await contracts.luteDrop.isClaimed(contracts.mloot.address, 10))
+          .to.be.false;
       });
     });
   });

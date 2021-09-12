@@ -22,7 +22,7 @@ const Tip = ({ defaultTip }: Props) => {
   }, [etherPrice]);
 
   const roundETH = (amount: string) => {
-    return roundEther(parseEther(amount || "0"));
+    return roundEther(parseEther(amount || "0.0"));
   };
 
   const roundUSD = (amount: number) => {

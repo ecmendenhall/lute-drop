@@ -13,7 +13,7 @@ const FullPage = ({ subhed, children }: Props) => {
         <h1 className="font-display text-gray-700 font-bold tracking-wider text-6xl lg:text-8xl text-center">
           Lute Drop
         </h1>
-        <div className="font-body text-center text-lg">
+        <div className="font-body text-center text-xl">
           <p>{subhed}</p>
         </div>
       </div>

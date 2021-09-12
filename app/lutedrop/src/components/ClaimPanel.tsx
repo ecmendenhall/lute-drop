@@ -1,33 +1,25 @@
 import Button from "./Button";
-import SelectLoot from "./SelectLoot";
-
-interface Item {
-  name: string;
-}
-
-interface Holdings {
-  name: string;
-  holdings: Item[];
-}
 
 interface Props {
+  enabled: boolean;
   claimed: number;
-  holdings: Holdings[];
   imgSrc: string;
   imgAlt: string;
   imgStyle: string;
   color: string;
   buttonText: string;
+  onClaim: () => void;
 }
 
 const ClaimPanel = ({
+  enabled,
   claimed,
-  holdings,
   imgSrc,
   imgAlt,
   imgStyle,
   color,
   buttonText,
+  onClaim,
 }: Props) => {
   const imgClass = `h-72 transform ${imgStyle}`;
   return (
@@ -36,9 +28,13 @@ const ClaimPanel = ({
         Claimed: {claimed}
         <img src={imgSrc} alt={imgAlt} className={imgClass} />
       </div>
-      <div>
-        <Button color={color}>{buttonText}</Button>
-      </div>
+      {enabled && (
+        <div>
+          <Button color={color} onClick={onClaim}>
+            {buttonText}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

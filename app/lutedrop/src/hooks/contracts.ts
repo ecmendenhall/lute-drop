@@ -1,12 +1,20 @@
 import { formatUnits } from "@ethersproject/units";
-import { useContractCall, useContractCalls } from "@usedapp/core";
+import {
+  useContractCall,
+  useContractCalls,
+  useContractFunction,
+} from "@usedapp/core";
 import { Interface } from "@usedapp/core/node_modules/@ethersproject/abi";
-import { BigNumber } from "@usedapp/core/node_modules/ethers";
+import { BigNumber, Contract } from "@usedapp/core/node_modules/ethers";
 import config from "../config/contracts";
 
 type Item = "flute" | "lute";
 type SwapFee = BigNumber | undefined;
 type Balance = BigNumber | undefined;
+
+interface ERC721Holding {
+  id: number;
+}
 
 interface LutiswapState {
   luteSwapFee: SwapFee;
@@ -21,6 +29,9 @@ interface Drop {
 
 interface LuteDropState {
   drops: Drop[];
+  totalClaimableSupply: number;
+  totalClaimedSupply: number;
+  remainingClaimableSupply: number;
 }
 
 interface TokenBalanceState {
@@ -68,7 +79,6 @@ export function useNextItem(item: Item) {
       method: "nextId",
       args: [],
     }) ?? [];
-  console.log(tokenId);
   const [tokenURI] =
     useContractCall(
       tokenId && {
@@ -82,23 +92,13 @@ export function useNextItem(item: Item) {
 }
 
 export function useLutiswap(): LutiswapState {
-  const [luteSwapFeeResponse, fluteSwapFeeResponse] =
-    (useContractCalls([
-      {
-        abi: config.lutiswap.abi,
-        address: config.lutiswap.address,
-        method: "latestLuteSwapPrice",
-        args: [],
-      },
-      {
-        abi: config.lutiswap.abi,
-        address: config.lutiswap.address,
-        method: "latestFluteSwapPrice",
-        args: [],
-      },
-    ]) as SwapFee[][]) ?? ([] as SwapFee[][]);
-  const [luteSwapFee] = luteSwapFeeResponse ?? [];
-  const [fluteSwapFee] = fluteSwapFeeResponse ?? [];
+  const [luteSwapFee, fluteSwapFee] =
+    (useContractCall({
+      abi: config.lutiswap.abi,
+      address: config.lutiswap.address,
+      method: "latestSwapPrice",
+      args: [],
+    }) as SwapFee[]) ?? ([] as SwapFee[]);
   return { luteSwapFee, fluteSwapFee };
 }
 
@@ -130,7 +130,6 @@ export function useLuteDrop(): LuteDropState {
     };
   });
   const dropDataResponse = useContractCalls(dropDataCalls) ?? [];
-  console.log(dropDataResponse);
   const isDrop = (item: Drop | undefined): item is Drop => {
     return !!item;
   };
@@ -144,7 +143,21 @@ export function useLuteDrop(): LuteDropState {
         }
     )
     .filter(isDrop);
-  return { drops };
+  const totalClaimableSupply = drops.reduce(
+    (acc, d) => d.claimableSupply.toNumber() + acc,
+    0
+  );
+  const totalClaimedSupply = drops.reduce(
+    (acc, d) => d.claimedSupply.toNumber() + acc,
+    0
+  );
+  const remainingClaimableSupply = totalClaimableSupply - totalClaimedSupply;
+  return {
+    drops,
+    totalClaimableSupply,
+    totalClaimedSupply,
+    remainingClaimableSupply,
+  };
 }
 
 export function useTokenBalances(
@@ -257,6 +270,16 @@ export function useTokenHoldings(owner: string | null | undefined) {
     config.mloot.abi,
     config.mloot.address
   );
+  const lootClaims = useClaims(config.loot.address, lootHoldings);
+  const lootClaimableHoldings = lootHoldings.filter(
+    (h) => !lootClaims.includes(h)
+  );
+  const mlootClaims = useClaims(config.mloot.address, mlootHoldings);
+  const mlootClaimableHoldings = mlootHoldings.filter(
+    (h) => !mlootClaims.includes(h)
+  );
+  const canClaim =
+    lootClaimableHoldings.length > 0 || mlootClaimableHoldings.length > 0;
   return {
     luteBalance,
     luteHoldings,
@@ -264,7 +287,35 @@ export function useTokenHoldings(owner: string | null | undefined) {
     fluteHoldings,
     lootBalance,
     lootHoldings,
+    lootClaims,
+    lootClaimableHoldings,
     mlootBalance,
     mlootHoldings,
+    mlootClaims,
+    mlootClaimableHoldings,
+    canClaim,
   };
+}
+
+export function useClaims(
+  tokenAddress: string,
+  tokenHoldings: ERC721Holding[]
+) {
+  const isClaimedCalls = tokenHoldings.map((holding) => {
+    return {
+      abi: config.luteDrop.abi,
+      address: config.luteDrop.address,
+      method: "isClaimed",
+      args: [tokenAddress, holding.id],
+    };
+  });
+  const isClaimedResponse = useContractCalls(isClaimedCalls) ?? [];
+  const claims = isClaimedResponse.map((res) => res && res[0] === true);
+  const claimedHoldings = tokenHoldings.filter((_holding, i) => claims[i]);
+  return claimedHoldings;
+}
+
+export function useClaimItem() {
+  const contract = new Contract(config.luteDrop.address, config.luteDrop.abi);
+  return useContractFunction(contract, "claim");
 }

@@ -1,46 +1,65 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { useEthers } from "@usedapp/core";
-import { formatUnits } from "ethers/lib/utils";
+import { useState } from "react";
 import ClaimPanel from "../components/ClaimPanel";
-import ItemBalance from "../components/ItemBalance";
-import SelectLoot from "../components/SelectLoot";
-import Tip from "../components/Tip";
 import {
+  useClaimItem,
   useItemSupply,
   useLuteDrop,
-  useTokenBalances,
   useTokenHoldings,
 } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
+import config from "../config/contracts";
+import ClaimForm from "../components/ClaimForm";
+
+interface Item {
+  id: BigNumber;
+  name: string;
+}
+
+interface SelectedLootState {
+  token: string;
+  item: Item;
+}
 
 const Claim = () => {
   const { account } = useEthers();
   const fluteSupply = useItemSupply("flute");
   const luteSupply = useItemSupply("lute");
-  const {
-    luteBalance,
-    luteHoldings,
-    fluteBalance,
-    fluteHoldings,
-    lootBalance,
-    lootHoldings,
-    mlootBalance,
-    mlootHoldings,
-  } = useTokenHoldings(account);
-  const { drops } = useLuteDrop();
-  const holdings = [
-    { name: "Loot", holdings: lootHoldings },
-    { name: "mLoot", holdings: mlootHoldings },
+  const { lootClaimableHoldings, mlootClaimableHoldings, canClaim } =
+    useTokenHoldings(account);
+  const { totalClaimableSupply, remainingClaimableSupply } = useLuteDrop();
+  const claimableHoldings = [
+    { name: "Loot", holdings: lootClaimableHoldings },
+    { name: "mLoot", holdings: mlootClaimableHoldings },
   ];
+  const [selectedLoot, setSelectedLoot] = useState<SelectedLootState>();
+  const { state, send: sendClaimItem } = useClaimItem();
 
-  const totalClaimableSupply = drops.reduce(
-    (acc, d) => d.claimableSupply.toNumber() + acc,
-    0
-  );
-  const totalClaimedSupply = drops.reduce(
-    (acc, d) => d.claimedSupply.toNumber() + acc,
-    0
-  );
-  const remainingClaimableSupply = totalClaimableSupply - totalClaimedSupply;
+  const onSelectLoot = (tokenIndex: number, itemIndex: number) => {
+    if (claimableHoldings) {
+      const token = claimableHoldings[tokenIndex];
+      const item = token.holdings[itemIndex];
+      setSelectedLoot({
+        token: token.name,
+        item: item,
+      });
+    }
+  };
+
+  const claimItem = (item: string) => {
+    const typeId = item === "lute" ? 0 : 1;
+    if (selectedLoot) {
+      const { token, item } = selectedLoot;
+      if (token === "Loot") {
+        sendClaimItem(typeId, config.loot.address, item.id);
+      }
+      if (token === "mLoot") {
+        console.log(item.id.toString());
+        sendClaimItem(typeId, config.mloot.address, item.id);
+      }
+    }
+  };
 
   return (
     <FullPage
@@ -48,53 +67,43 @@ const Claim = () => {
     flutes..."
     >
       <div className="font-body text-xl">
-        <div className="flex flex-col md:flex-row justify-center">
-          <ItemBalance
-            itemName="Flutes"
-            balance={fluteBalance}
-            holdings={fluteHoldings}
-          />
+        <div className="flex flex-col md:flex-row justify-center mb-8">
           <ClaimPanel
+            enabled={canClaim}
             claimed={fluteSupply}
-            holdings={holdings}
             imgSrc="img/flutes.png"
             imgAlt="Flutes"
             imgStyle="scale-105"
             color="red"
             buttonText="Claim a Flute"
+            onClaim={() => claimItem("flute")}
           />
-          <div className="flex flex-col place-content-start text-center p-8">
-            <div className="my-2">
-              <h4 className="font-body font-bold mb-2">Claimable:</h4>
-              <p>
-                {remainingClaimableSupply} / {totalClaimableSupply}
-              </p>
-            </div>
-            <div className="my-2">
-              <h4 className="font-body font-bold mb-2">Claim with:</h4>
-              <SelectLoot holdings={holdings} />
-            </div>
-            <div className="my-2">
-              <h4 className="font-body font-bold mb-2">Tip your Luthier:</h4>
-              <Tip defaultTip={20.0} />
-            </div>
-          </div>
+          <ClaimForm
+            enabled={canClaim}
+            remaining={remainingClaimableSupply}
+            total={totalClaimableSupply}
+            holdings={claimableHoldings}
+            onSelectLoot={onSelectLoot}
+          />
           <ClaimPanel
+            enabled={canClaim}
             claimed={luteSupply}
-            holdings={holdings}
             imgSrc="img/lutes.png"
             imgAlt="Lutes"
             imgStyle="translate-x-4"
             color="blue"
             buttonText="Claim a Lute"
-          />
-          <ItemBalance
-            itemName="Lutes"
-            balance={luteBalance}
-            holdings={luteHoldings}
-            className="pl-4 pr-8"
+            onClaim={() => claimItem("lute")}
           />
         </div>
+        {!canClaim && (
+          <div className="text-center">
+            <p>
+              Loot and mLoot holders may claim one Lute or Flute per token,
+              while supplies last.
+            </p>
+          </div>
+        )}
       </div>
     </FullPage>
   );

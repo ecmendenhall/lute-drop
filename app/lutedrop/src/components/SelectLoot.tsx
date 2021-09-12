@@ -1,4 +1,8 @@
+import { BigNumber } from "@ethersproject/bignumber";
+import React from "react";
+
 interface Item {
+  id: BigNumber;
   name: string;
 }
 
@@ -8,18 +12,28 @@ interface Holdings {
 }
 
 interface Props {
+  showTokenName: boolean;
   holdings?: Holdings[];
+  onSelectLoot: (tokenIndex: number, itemIndex: number) => void;
 }
 
-const SelectLoot = ({ holdings }: Props) => {
+const SelectLoot = ({ showTokenName, holdings, onSelectLoot }: Props) => {
+  const onSelectItem = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const [tokenIndex, itemIndex] = e.target.value
+      .split(",")
+      .map((n) => parseInt(n));
+    onSelectLoot(tokenIndex, itemIndex);
+  };
+
   return (
-    <select className="bg-yellow-50 shadow p-1">
+    <select className="bg-yellow-50 shadow p-1" onChange={onSelectItem}>
       {holdings &&
-        holdings.map((token) => {
-          return token.holdings.map((item) => {
+        holdings.map((token, tokenIndex) => {
+          return token.holdings.map((item, itemIndex) => {
+            const key = `${tokenIndex},${itemIndex}`;
             return (
-              <option>
-                {token.name} {item.name}
+              <option value={key} key={key}>
+                {showTokenName && token.name} {item.name}
               </option>
             );
           });

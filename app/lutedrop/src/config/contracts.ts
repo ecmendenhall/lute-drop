@@ -14,12 +14,12 @@ const LUTISWAP_RINKEBY = "0xE2757d6197B55239cf1D229Bb766fC85f8Bbf29f";
 const LOOT_RINKEBY = "0x56689336863f1917f301830b377B583dB39d6C4D";
 const MLOOT_RINKEBY = "0x64e5BBb7242eE28183D27B3936F8A419712eb272";
 
-const LUTE = LUTE_RINKEBY;
-const FLUTE = FLUTE_RINKEBY;
-const LUTE_DROP = LUTE_DROP_RINKEBY;
-const LUTISWAP = LUTISWAP_RINKEBY;
-const LOOT = LOOT_RINKEBY;
-const MLOOT = MLOOT_RINKEBY;
+const LUTE = LUTE_HARDHAT;
+const FLUTE = FLUTE_HARDHAT;
+const LUTE_DROP = LUTE_DROP_HARDHAT;
+const LUTISWAP = LUTISWAP_HARDHAT;
+const LOOT = LOOT_HARDHAT;
+const MLOOT = MLOOT_HARDHAT;
 
 const config = {
   lute: {
@@ -45,16 +45,16 @@ const config = {
   luteDrop: {
     address: LUTE_DROP,
     abi: new Interface([
-      "function claim(uint8 item, uint8 claimType, uint256 tokenId)",
+      "function claim(uint8 item, address token, uint256 tokenId)",
       "function dropId(address token) returns (uint256)",
       "function drops(uint256 dropId) returns (address, uint256, uint256)",
+      "function isClaimed(address token, uint256 tokenId) returns (bool)",
     ]),
   },
   lutiswap: {
     address: LUTISWAP,
     abi: new Interface([
-      "function latestLuteSwapPrice() view returns (uint256)",
-      "function latestFluteSwapPrice() view returns (uint256)",
+      "function latestSwapPrice() view returns (uint256, uint256)",
       "function swapExactLuteForFlute(uint256 tokenId) payable",
       "function swapExactFluteForLute(uint256 tokenId) payable",
     ]),

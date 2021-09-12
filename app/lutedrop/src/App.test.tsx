@@ -13,14 +13,14 @@ test("renders connect button", () => {
   expect(claimLute).toBeInTheDocument();
 });
 
-test("renders claim lute button", () => {
+test("renders nav links", () => {
   render(<App />);
-  const claimLute = screen.getByText(/Claim a Lute/i);
-  expect(claimLute).toBeInTheDocument();
-});
+  const claimLink = screen.getByText(/Claim$/);
+  expect(claimLink).toBeInTheDocument();
 
-test("renders claim flute button", () => {
-  render(<App />);
-  const claimLute = screen.getByText(/Claim a Flute/i);
-  expect(claimLute).toBeInTheDocument();
+  const swapLink = screen.getByText(/Swap$/);
+  expect(swapLink).toBeInTheDocument();
+
+  const aboutLink = screen.getByText(/About$/);
+  expect(aboutLink).toBeInTheDocument();
 });
