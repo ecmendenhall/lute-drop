@@ -76,7 +76,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         uint256 f = _from * 1e18;
         uint256 t = _to * 1e18;
         uint256 k = f * t;
-        uint256 baseFee = ((k / (f - 1e18)) - t) / 1e2;
+        return ((k / (f - 1e18)) - t) / 1e2;
     }
 
     function _safeTransferETH(address to, uint256 value) internal {
