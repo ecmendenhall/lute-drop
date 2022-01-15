@@ -1,20 +1,20 @@
-import Contracts from '../components/Contracts'
-import Stats from '../components/Stats'
-import { useItemSupply, useLuteDrop } from '../hooks/contracts'
-import FullPage from '../layouts/FullPage'
+import Contracts from "../components/Contracts";
+import Stats from "../components/Stats";
+import { useItemSupply, useLuteDrop } from "../hooks/contracts";
+import FullPage from "../layouts/FullPage";
 
 const About = () => {
-  const luteSupply = useItemSupply('lute')
-  const fluteSupply = useItemSupply('flute')
+  const luteSupply = useItemSupply("lute");
+  const fluteSupply = useItemSupply("flute");
   const {
     drops: [lootDrop, mlootDrop],
-  } = useLuteDrop()
+  } = useLuteDrop();
 
   return (
     <FullPage
       subhed={
         <span>
-          I hear that every drop that you mint is more relevant than{' '}
+          I hear that every drop that you mint is more relevant than{" "}
           <em>every drop that I mint.</em>
         </span>
       }
@@ -38,14 +38,14 @@ const About = () => {
               minted item.
             </p>
             <p className="mb-4">
-              The swap fee is a function of the total supply of each item.
-              When one item is plentiful, swapping it for the other will be cheap.
+              The swap fee is a function of the total supply of each item. When
+              one item is plentiful, swapping it for the other will be cheap.
             </p>
           </div>
         </div>
       </div>
     </FullPage>
-  )
-}
+  );
+};
 
-export default About
+export default About;

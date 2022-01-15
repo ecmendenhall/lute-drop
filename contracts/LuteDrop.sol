@@ -9,17 +9,19 @@ import "./interfaces/IItem.sol";
 contract LuteDrop is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
-
-    mapping(address => uint256) public dropId;
+    address public lutiswap;
     mapping(uint256 => Drop) public drops;
 
     uint256 private nextId;
+    uint256 private totalClaimableSupply;
+    uint256 private constant MAX_CLAIMABLE_SUPPLY = 2500;
 
     struct Drop {
-        IERC721Enumerable token;
+        uint256 fee;
         uint256 claimableSupply;
         uint256 claimedSupply;
-        mapping(uint256 => bool) claims;
+        uint256 claimsPerAddress;
+        mapping(address => uint256) claims;
     }
 
     enum ItemType {
@@ -30,81 +32,83 @@ contract LuteDrop is Ownable, ReentrancyGuard {
     constructor(
         address _lute,
         address _flute,
-        address _loot,
-        address _mloot,
-        uint256 _lootClaimableSupply,
-        uint256 _mlootClaimableSupply
+        address _lutiswap
     ) {
         lute = IItem(_lute);
         flute = IItem(_flute);
-
-        nextId++;
-        _addDrop(_loot, _lootClaimableSupply);
-        _addDrop(_mloot, _mlootClaimableSupply);
+        lutiswap = _lutiswap;
     }
 
-    function claim(
-        ItemType item,
-        address token,
-        uint256 tokenId
-    ) public payable nonReentrant {
-        uint256 id = dropId[token];
-        require(id != 0, "Invalid token address");
+    function claim(ItemType item, uint256 dropId) public payable nonReentrant {
+        Drop storage drop = drops[dropId];
 
-        Drop storage drop = drops[id];
-
-        require(!drop.claims[tokenId], "Item already claimed for this tokenId");
+        require(drop.claimableSupply > 0, "Invalid drop ID");
         require(
-            drop.token.ownerOf(tokenId) == msg.sender,
-            "Must own specified token to claim"
+            drop.claims[msg.sender] < drop.claimsPerAddress,
+            "Already claimed max"
         );
         require(
             drop.claimedSupply < drop.claimableSupply,
-            "Token holder supply fully claimed"
+            "Supply fully claimed"
         );
+        require(msg.value >= drop.fee, "Insufficient payment");
 
+        drop.claims[msg.sender]++;
         drop.claimedSupply++;
-        drop.claims[tokenId] = true;
         _claimItem(item, msg.sender);
     }
 
-    function isClaimed(address token, uint256 tokenId)
+    function claims(address claimant, uint256 dropId)
         public
         view
-        returns (bool)
+        returns (uint256)
     {
-        uint256 id = dropId[token];
-        require(id != 0, "Invalid token address");
-        Drop storage drop = drops[id];
-        return drop.claims[tokenId];
+        Drop storage drop = drops[dropId];
+        require(drop.claimableSupply > 0, "Invalid drop ID");
+        return drop.claims[claimant];
     }
 
-    function addDrop(address token, uint256 claimableSupply) public onlyOwner {
-        _addDrop(token, claimableSupply);
+    function addDrop(
+        uint256 fee,
+        uint256 claimsPerAddress,
+        uint256 claimableSupply
+    ) public onlyOwner {
+        _addDrop(fee, claimsPerAddress, claimableSupply);
     }
 
     function withdraw(address to, uint256 value) public onlyOwner {
-        _safeTransferETH(to, value);
+        _safeTransfer(to, value);
     }
 
-    function _addDrop(address token, uint256 claimableSupply) internal {
-        uint256 id = nextId;
+    function _addDrop(
+        uint256 fee,
+        uint256 claimsPerAddress,
+        uint256 claimableSupply
+    ) internal {
+        require(claimableSupply > 0, "Supply must be > 0");
+        require(
+            totalClaimableSupply + claimableSupply <= MAX_CLAIMABLE_SUPPLY,
+            "Exceeds max supply"
+        );
         nextId++;
-        dropId[token] = id;
-        drops[id].token = IERC721Enumerable(token);
-        drops[id].claimableSupply = claimableSupply;
+        totalClaimableSupply += claimableSupply;
+        drops[nextId].fee = fee;
+        drops[nextId].claimsPerAddress = claimsPerAddress;
+        drops[nextId].claimableSupply = claimableSupply;
     }
 
     function _claimItem(ItemType item, address recipient) internal {
         if (item == ItemType.LUTE) {
             lute.craft(recipient);
+            flute.craft(lutiswap);
         }
         if (item == ItemType.FLUTE) {
             flute.craft(recipient);
+            lute.craft(lutiswap);
         }
     }
 
-    function _safeTransferETH(address to, uint256 value) internal {
+    function _safeTransfer(address to, uint256 value) internal {
         (bool success, ) = to.call{value: value}(new bytes(0));
         require(success, "Transfer failed");
     }

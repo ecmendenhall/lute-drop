@@ -3,10 +3,9 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./lib/ItemLib.sol";
 
-abstract contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
+abstract contract Item is ERC721Enumerable, AccessControl {
     bytes32 public constant CRAFTER_ROLE = keccak256("CRAFTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
@@ -26,17 +25,13 @@ abstract contract Item is ERC721Enumerable, AccessControl, ReentrancyGuard {
         return super.supportsInterface(interfaceId);
     }
 
-    function craft(address recipient)
-        public
-        onlyRole(CRAFTER_ROLE)
-        nonReentrant
-    {
+    function craft(address recipient) public onlyRole(CRAFTER_ROLE) {
         uint256 id = nextId;
         nextId++;
-        _safeMint(recipient, id);
+        _mint(recipient, id);
     }
 
-    function burn(uint256 tokenId) public onlyRole(BURNER_ROLE) nonReentrant {
+    function burn(uint256 tokenId) public onlyRole(BURNER_ROLE) {
         _burn(tokenId);
     }
 

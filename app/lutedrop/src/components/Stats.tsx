@@ -1,16 +1,16 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import { BigNumber } from "@ethersproject/bignumber";
 
 interface Props {
-  luteSupply: number
-  fluteSupply: number
+  luteSupply: number;
+  fluteSupply: number;
   lootDrop: {
-    claimableSupply: BigNumber
-    claimedSupply: BigNumber
-  }
+    claimableSupply: BigNumber;
+    claimedSupply: BigNumber;
+  };
   mlootDrop: {
-    claimableSupply: BigNumber
-    claimedSupply: BigNumber
-  }
+    claimableSupply: BigNumber;
+    claimedSupply: BigNumber;
+  };
 }
 
 const Stats = ({ luteSupply, fluteSupply, lootDrop, mlootDrop }: Props) => {
@@ -26,13 +26,15 @@ const Stats = ({ luteSupply, fluteSupply, lootDrop, mlootDrop }: Props) => {
         Items claimed with Loot: {lootDrop && lootDrop.claimedSupply.toNumber()}
       </p>
       <p className="my-2">
-        mLoot claimable supply: {mlootDrop && mlootDrop.claimableSupply.toNumber()}
+        mLoot claimable supply:{" "}
+        {mlootDrop && mlootDrop.claimableSupply.toNumber()}
       </p>
       <p className="my-2">
-        Items claimed with mLoot: {mlootDrop && mlootDrop.claimedSupply.toNumber()}
+        Items claimed with mLoot:{" "}
+        {mlootDrop && mlootDrop.claimedSupply.toNumber()}
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default Stats
+export default Stats;
