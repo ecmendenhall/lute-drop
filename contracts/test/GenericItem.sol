@@ -8,7 +8,7 @@ contract GenericItem is Item {
 
     function getMaterial(uint256 tokenId)
         public
-        view
+        pure
         override
         returns (string memory)
     {
@@ -38,7 +38,7 @@ contract GenericItem is Item {
 
     function getType(uint256 tokenId)
         public
-        view
+        pure
         override
         returns (string memory)
     {
@@ -68,7 +68,7 @@ contract GenericItem is Item {
 
     function getMajorModifier(uint256 tokenId)
         public
-        view
+        pure
         override
         returns (string memory)
     {
@@ -98,7 +98,7 @@ contract GenericItem is Item {
 
     function getMinorModifier(uint256 tokenId)
         public
-        view
+        pure
         override
         returns (string memory)
     {
@@ -128,7 +128,7 @@ contract GenericItem is Item {
 
     function getRange(uint256 tokenId)
         public
-        view
+        pure
         override
         returns (string memory)
     {
@@ -158,7 +158,7 @@ contract GenericItem is Item {
 
     function getDecoration(uint256 tokenId)
         public
-        view
+        pure
         override
         returns (string memory)
     {

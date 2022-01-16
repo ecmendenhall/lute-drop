@@ -185,14 +185,14 @@ describe("Flute", () => {
       expect(await contracts.flute.tokenSVG(0)).to.equal(
         [
           '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-          '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="white"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs>',
+          '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="rgb(254 251 248)"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs>',
           '<style>.base { fill: rgb(153 27 27); font-family: Luminari, serif; font-size: 16px; }</style>',
           '<rect width="100%" height="100%" fill="url(#b)" />',
-          '<text x="340" y="25" class="base" text-anchor="end">Wood Soprano Flute of Brilliance</text>',
-          '<text x="340" y="50" class="base" text-anchor="end">Reed</text>',
-          '<text x="340" y="75" class="base" text-anchor="end">Three Holes</text>',
-          '<text x="340" y="100" class="base" text-anchor="end">Pearl Inlay</text>',
-          '<image href="https://lutedrop.com/img/flutes.png" x="140" y="110" width="200" />',
+          '<text x="10" y="25" class="base" text-anchor="start">Wood Soprano Flute of Brilliance</text>',
+          '<text x="10" y="50" class="base" text-anchor="start">Reed</text>',
+          '<text x="10" y="75" class="base" text-anchor="start">Three Holes</text>',
+          '<text x="10" y="100" class="base" text-anchor="start">Pearl Inlay</text>',
+          '<g transform="rotate(25 6.116 294.42) scale(.5)"><path style="fill:#ff9811" d="M204.8 0h102.4v512H204.8z"/><path style="fill:#bf720d" d="M256 0h51.2v512H256z"/><path style="fill:#50412e" d="M238.933 34.133h34.133v22.756h-34.133zm0 147.911h34.133v34.133h-34.133z"/><circle style="fill:#50412e" cx="256" cy="136.533" r="17.067"/><circle style="fill:#50412e" cx="256" cy="261.689" r="17.067"/><circle style="fill:#50412e" cx="256" cy="318.578" r="17.067"/><circle style="fill:#50412e" cx="256" cy="375.467" r="17.067"/><path style="fill:#786145" d="M204.8 443.733h102.4v34.133H204.8z"/><path style="fill:#50412e" d="M256 443.733h51.2v34.133H256z"/></g>',
           "</svg>",
         ].join("")
       );

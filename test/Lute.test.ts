@@ -191,14 +191,14 @@ describe("Lute", () => {
       expect(await contracts.lute.tokenSVG(0)).to.equal(
         [
           '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-          '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="white"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs>',
+          '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="rgb(254 251 248)"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs>',
           '<style>.base { fill: rgb(30 58 138); font-family: Luminari, serif; font-size: 16px; }</style>',
           '<rect width="100%" height="100%" fill="url(#b)" />',
-          '<text x="10" y="25" class="base" text-anchor="start">Pine Baritone Lute of Brilliance</text>',
-          '<text x="10" y="50" class="base" text-anchor="start">Twelve Strings</text>',
-          '<text x="10" y="75" class="base" text-anchor="start">Eight Frets</text>',
-          '<text x="10" y="100" class="base" text-anchor="start">Hardwood Inlay</text>',
-          '<image href="https://lutedrop.com/img/lutes.png" x="0" y="120" width="270" />',
+          '<text x="340" y="25" class="base" text-anchor="end">Pine Baritone Lute of Brilliance</text>',
+          '<text x="340" y="50" class="base" text-anchor="end">Twelve Strings</text>',
+          '<text x="340" y="75" class="base" text-anchor="end">Eight Frets</text>',
+          '<text x="340" y="100" class="base" text-anchor="end">Hardwood Inlay</text>',
+          '<g transform="rotate(-25 269.42 118.884) scale(.5)"><path style="fill:#ff9811" d="M266.238 239.229 256 231.685l-10.238 7.544c-4.515 3.326-110.571 82.512-110.571 172.852 0 27.435 13.076 52.983 36.82 71.937C194.615 502.063 224.442 512 256 512s61.385-9.937 83.989-27.98c23.744-18.953 36.82-44.501 36.82-71.937 0-90.341-106.056-169.527-110.571-172.854z"/><path style="fill:#bf720d" d="M266.238 239.229 256 231.685V512c31.558 0 61.385-9.937 83.989-27.98 23.744-18.953 36.82-44.501 36.82-71.937 0-90.341-106.056-169.527-110.571-172.854z"/><path style="fill:#50412e" d="M284.764 0h-57.528v103.551h11.506v207.101h34.516V103.551h11.506zm-74.786 396.944h92.045v34.517h-92.045z"/><circle style="fill:#50412e" cx="256" cy="350.921" r="17.258"/></g>',
           "</svg>",
         ].join("")
       );

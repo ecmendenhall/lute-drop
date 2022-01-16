@@ -223,9 +223,9 @@ contract Flute is Item {
                 getDecoration(tokenId),
                 [
                     "rgb(153 27 27)",
-                    "340",
-                    "end",
-                    '<image href="https://lutedrop.com/img/flutes.png" x="140" y="110" width="200" />'
+                    "10",
+                    "start",
+                    '<g transform="rotate(25 6.116 294.42) scale(.5)"><path style="fill:#ff9811" d="M204.8 0h102.4v512H204.8z"/><path style="fill:#bf720d" d="M256 0h51.2v512H256z"/><path style="fill:#50412e" d="M238.933 34.133h34.133v22.756h-34.133zm0 147.911h34.133v34.133h-34.133z"/><circle style="fill:#50412e" cx="256" cy="136.533" r="17.067"/><circle style="fill:#50412e" cx="256" cy="261.689" r="17.067"/><circle style="fill:#50412e" cx="256" cy="318.578" r="17.067"/><circle style="fill:#50412e" cx="256" cy="375.467" r="17.067"/><path style="fill:#786145" d="M204.8 443.733h102.4v34.133H204.8z"/><path style="fill:#50412e" d="M256 443.733h51.2v34.133H256z"/></g>'
                 ]
             );
     }

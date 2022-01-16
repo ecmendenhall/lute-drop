@@ -130,7 +130,7 @@ library ItemLib {
         return
             string(
                 abi.encodePacked(
-                    '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="white"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs><style>.base { fill: ',
+                    '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="rgb(254 251 248)"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs><style>.base { fill: ',
                     svgParams[0],
                     '; font-family: Luminari, serif; font-size: 16px; }</style><rect width="100%" height="100%" fill="url(#b)" />'
                 )
