@@ -21,14 +21,14 @@ async function deploy(): Promise<Contracts> {
       ItemLib: itemlib.address,
     },
   });
-  const lute = (await (await LuteFactory.deploy()).deployed()) as Lute;
+  const lute = (await (await LuteFactory.deploy(true)).deployed()) as Lute;
 
   const FluteFactory = await ethers.getContractFactory("Flute", {
     libraries: {
       ItemLib: itemlib.address,
     },
   });
-  const flute = (await (await FluteFactory.deploy()).deployed()) as Flute;
+  const flute = (await (await FluteFactory.deploy(true)).deployed()) as Flute;
 
   const LutiswapFactory = await ethers.getContractFactory("Lutiswap");
   const lutiswap = (await (
@@ -105,6 +105,18 @@ describe("Lutiswap", () => {
       expect(await contracts.lutiswap.flute()).to.equal(
         contracts.flute.address
       );
+    });
+  });
+
+  describe("nextFlute", () => {
+    it("returns next flute", async () => {
+      expect(await contracts.lutiswap.nextLute()).to.equal(0);
+    });
+  });
+
+  describe("nextLute", () => {
+    it("returns next lute", async () => {
+      expect(await contracts.lutiswap.nextFlute()).to.equal(1);
     });
   });
 
@@ -671,6 +683,25 @@ describe("Lutiswap", () => {
     it("non-owner cannot withdraw stored fees", async () => {
       await expect(
         contracts.lutiswap.connect(nonOwner).withdraw(nonOwner.address, fee)
+      ).to.be.revertedWith("caller is not the owner");
+    });
+  });
+
+  describe("base fee", () => {
+    it("baseFee returns base fee", async () => {
+      const baseFee = await contracts.lutiswap.baseFee();
+      expect(baseFee).to.equal(4);
+    });
+
+    it("owner can set base fee", async () => {
+      await contracts.lutiswap.connect(owner).setBaseFee(10);
+      const baseFee = await contracts.lutiswap.baseFee();
+      expect(baseFee).to.equal(10);
+    });
+
+    it("non-owner cannot set base fee", async () => {
+      await expect(
+        contracts.lutiswap.connect(nonOwner).setBaseFee(0)
       ).to.be.revertedWith("caller is not the owner");
     });
   });

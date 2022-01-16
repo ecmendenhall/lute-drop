@@ -11,11 +11,35 @@ contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
 
-    uint256 private constant BASE_PRICE = 4;
+    uint256 public baseFee = 4;
 
     constructor(address _lute, address _flute) {
         lute = IItem(_lute);
         flute = IItem(_flute);
+    }
+
+    function nextLute() public view returns (uint256) {
+        return _nextToken(lute);
+    }
+
+    function nextFlute() public view returns (uint256) {
+        return _nextToken(flute);
+    }
+
+    function latestSwapPrice() public view returns (uint256, uint256) {
+        return
+            swapPrice(
+                lute.balanceOf(address(this)),
+                flute.balanceOf(address(this))
+            );
+    }
+
+    function swapPrice(uint256 l, uint256 f)
+        public
+        view
+        returns (uint256, uint256)
+    {
+        return (_swapPrice(l, f), _swapPrice(f, l));
     }
 
     function swapExactFluteForLute(uint256 tokenId)
@@ -34,20 +58,8 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         return _swap(tokenId, lute, flute);
     }
 
-    function latestSwapPrice() public view returns (uint256, uint256) {
-        return
-            swapPrice(
-                lute.balanceOf(address(this)),
-                flute.balanceOf(address(this))
-            );
-    }
-
-    function swapPrice(uint256 l, uint256 f)
-        public
-        pure
-        returns (uint256, uint256)
-    {
-        return (_swapPrice(l, f), _swapPrice(f, l));
+    function _nextToken(IItem token) internal view returns (uint256) {
+        return token.tokenOfOwnerByIndex(address(this), 0);
     }
 
     function _swap(
@@ -61,7 +73,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         uint256 fee = _swapPrice(fromReserve, toReserve);
         require(msg.value >= fee, "Insufficient payment");
         from.transferFrom(msg.sender, address(this), tokenId);
-        uint256 outTokenId = to.tokenOfOwnerByIndex(address(this), 0);
+        uint256 outTokenId = _nextToken(to);
         to.transferFrom(address(this), msg.sender, outTokenId);
         require(
             (fromReserve + toReserve) ==
@@ -73,20 +85,24 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         }
     }
 
+    function setBaseFee(uint256 newBaseFee) public onlyOwner {
+        baseFee = newBaseFee;
+    }
+
     function withdraw(address to, uint256 value) public onlyOwner {
         _safeTransferETH(to, value);
     }
 
     function _swapPrice(uint256 _from, uint256 _to)
         internal
-        pure
+        view
         returns (uint256)
     {
         require(_from > 1 && _to > 1, "Invalid swap");
         uint256 f = _from * 1e18;
         uint256 t = _to * 1e18;
         uint256 k = f * t;
-        return ((k / (t - 1e18)) - f) * BASE_PRICE;
+        return ((k / (t - 1e18)) - f) * baseFee;
     }
 
     function _safeTransferETH(address to, uint256 value) internal {

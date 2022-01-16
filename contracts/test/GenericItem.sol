@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import "../Item.sol";
 
 contract GenericItem is Item {
-    constructor() Item("Generic Item", "ITEM") {}
+    constructor(bool _useSeeds) Item("Generic Item", "ITEM", _useSeeds) {}
 
     function getMaterial(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -27,6 +27,10 @@ contract GenericItem is Item {
                     "Material",
                     "Material",
                     "Material",
+                    "Material",
+                    "Material",
+                    "Material",
+                    "Material",
                     "Material"
                 ]
             );
@@ -34,7 +38,7 @@ contract GenericItem is Item {
 
     function getType(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -53,6 +57,10 @@ contract GenericItem is Item {
                     "Type",
                     "Type",
                     "Type",
+                    "Type",
+                    "Type",
+                    "Type",
+                    "Type",
                     "Type"
                 ]
             );
@@ -60,7 +68,7 @@ contract GenericItem is Item {
 
     function getMajorModifier(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -79,6 +87,10 @@ contract GenericItem is Item {
                     "Major Modifier",
                     "Major Modifier",
                     "Major Modifier",
+                    "Major Modifier",
+                    "Major Modifier",
+                    "Major Modifier",
+                    "Major Modifier",
                     "Major Modifier"
                 ]
             );
@@ -86,7 +98,7 @@ contract GenericItem is Item {
 
     function getMinorModifier(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -105,6 +117,10 @@ contract GenericItem is Item {
                     "Minor Modifier",
                     "Minor Modifier",
                     "Minor Modifier",
+                    "Minor Modifier",
+                    "Minor Modifier",
+                    "Minor Modifier",
+                    "Minor Modifier",
                     "Minor Modifier"
                 ]
             );
@@ -112,7 +128,7 @@ contract GenericItem is Item {
 
     function getRange(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -131,6 +147,10 @@ contract GenericItem is Item {
                     "Range",
                     "Range",
                     "Range",
+                    "Range",
+                    "Range",
+                    "Range",
+                    "Range",
                     "Range"
                 ]
             );
@@ -138,7 +158,7 @@ contract GenericItem is Item {
 
     function getDecoration(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -157,6 +177,10 @@ contract GenericItem is Item {
                     "Decoration",
                     "Decoration",
                     "Decoration",
+                    "Decoration",
+                    "Decoration",
+                    "Decoration",
+                    "Decoration",
                     "Decoration"
                 ]
             );
@@ -164,7 +188,7 @@ contract GenericItem is Item {
 
     function getName(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -172,13 +196,14 @@ contract GenericItem is Item {
             ItemLib.getName(
                 getMaterial(tokenId),
                 getRange(tokenId),
-                getType(tokenId)
+                getType(tokenId),
+                getOrder(tokenId)
             );
     }
 
     function tokenSVG(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -187,13 +212,19 @@ contract GenericItem is Item {
                 getName(tokenId),
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                [
+                    "rgb(0 0 0)",
+                    "0",
+                    "start",
+                    '<image href="https://example.com/fake.png" x="0" y="0" width="100" />'
+                ]
             );
     }
 
     function attributesJSON(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -204,13 +235,14 @@ contract GenericItem is Item {
                 getMaterial(tokenId),
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId)
             );
     }
 
     function tokenJSON(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -223,13 +255,15 @@ contract GenericItem is Item {
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
                 getRange(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId),
+                tokenSVG(tokenId)
             );
     }
 
     function tokenURI(uint256 tokenId)
         public
-        pure
+        view
         override
         returns (string memory)
     {
@@ -242,7 +276,9 @@ contract GenericItem is Item {
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
                 getRange(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId),
+                tokenSVG(tokenId)
             );
     }
 }

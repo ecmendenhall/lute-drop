@@ -4,20 +4,24 @@ pragma solidity ^0.8.0;
 import "./Item.sol";
 
 contract Lute is Item {
-    constructor() Item("Lute", "LUTE") {}
+    constructor(bool _useSeeds) Item("Lute", "LUTE", _useSeeds) {}
 
     function getMaterial(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getMaterial(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "Pine",
+                    "Pine",
                     "Spruce",
+                    "Spruce",
+                    "Cedar",
                     "Cedar",
                     "Ash",
                     "Yew",
@@ -27,23 +31,29 @@ contract Lute is Item {
                     "Ebony",
                     "Bone",
                     "Gold",
-                    "Iron"
+                    "Iron",
+                    "Crystal"
                 ]
             );
     }
 
     function getType(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getType(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "Lute",
+                    "Lute",
+                    "Guitar",
                     "Mandolin",
+                    "Mandolin",
+                    "Oud",
                     "Oud",
                     "Kwitra",
                     "Theorbo",
@@ -60,19 +70,24 @@ contract Lute is Item {
 
     function getMajorModifier(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getMajorModifier(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "One String",
                     "Two Strings",
                     "Three Strings",
                     "Four Strings",
+                    "Four Strings",
                     "Five Strings",
+                    "Five Strings",
+                    "Five Strings",
+                    "Six Strings",
                     "Six Strings",
                     "Seven Strings",
                     "Eight Strings",
@@ -86,24 +101,29 @@ contract Lute is Item {
 
     function getMinorModifier(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getMinorModifier(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
-                    "Four Frets",
-                    "Five Frets",
                     "Six Frets",
                     "Seven Frets",
                     "Eight Frets",
                     "Nine Frets",
                     "Ten Frets",
+                    "Ten Frets",
                     "Twelve Frets",
+                    "Twelve Frets",
+                    "Sixteen Frets",
+                    "Sixteen Frets",
+                    "Eighteen Frets",
                     "Long Neck",
                     "Short Neck",
+                    "Oval Body",
                     "Triangular Body",
                     "Square Body"
                 ]
@@ -112,13 +132,14 @@ contract Lute is Item {
 
     function getRange(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getRange(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "Tenor",
                     "Baritone",
@@ -131,32 +152,42 @@ contract Lute is Item {
                     "Bass",
                     "Tenor",
                     "Baritone",
-                    "Bass"
+                    "Bass",
+                    "Tenor",
+                    "Baritone",
+                    "Bass",
+                    "Tenor"
                 ]
             );
     }
 
     function getDecoration(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getDecoration(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "Whimsical Pegs",
+                    "Whimsical Pegs",
+                    "Hardwood Inlay",
                     "Pearl Inlay",
                     "Jade Inlay",
                     "Ivory Inlay",
+                    "Brass Frets",
                     "Silver Frets",
                     "Gold Frets",
                     "Silver Strings",
                     "Gold Strings",
                     "Decorative Carving",
                     "Silver Pegs",
+                    "Brass Pegs",
                     "Gold Pegs",
+                    "Colorful Ribbon"
                     "Colorful Ribbon"
                 ]
             );
@@ -164,22 +195,25 @@ contract Lute is Item {
 
     function getName(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getName(
                 getMaterial(tokenId),
                 getRange(tokenId),
-                getType(tokenId)
+                getType(tokenId),
+                getOrder(tokenId)
             );
     }
 
     function tokenSVG(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -187,14 +221,21 @@ contract Lute is Item {
                 getName(tokenId),
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                [
+                    "rgb(30 58 138)",
+                    "10",
+                    "start",
+                    '<image href="https://lutedrop.com/img/lutes.png" x="0" y="120" width="270" />'
+                ]
             );
     }
 
     function attributesJSON(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -204,14 +245,16 @@ contract Lute is Item {
                 getMaterial(tokenId),
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId)
             );
     }
 
     function tokenJSON(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -223,14 +266,17 @@ contract Lute is Item {
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
                 getRange(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId),
+                tokenSVG(tokenId)
             );
     }
 
     function tokenURI(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -242,7 +288,9 @@ contract Lute is Item {
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
                 getRange(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId),
+                tokenSVG(tokenId)
             );
     }
 }

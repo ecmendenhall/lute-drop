@@ -4,23 +4,28 @@ pragma solidity ^0.8.0;
 import "./Item.sol";
 
 contract Flute is Item {
-    constructor() Item("Flute", "FLUTE") {}
+    constructor(bool _useSeeds) Item("Flute", "FLUTE", _useSeeds) {}
 
     function getMaterial(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getMaterial(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
+                    "Wood",
                     "Wood",
                     "Bone",
                     "Bamboo",
                     "Tin",
+                    "Tin",
                     "Clay",
+                    "Clay",
+                    "Brass",
                     "Brass",
                     "Silver",
                     "Gold",
@@ -34,18 +39,23 @@ contract Flute is Item {
 
     function getType(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getType(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
+                    "Flute",
                     "Flute",
                     "Ocarina",
                     "Panpipes",
+                    "Panpipes",
                     "Whistle",
+                    "Whistle",
+                    "Recorder",
                     "Recorder",
                     "Fife",
                     "Ney",
@@ -60,16 +70,20 @@ contract Flute is Item {
 
     function getMajorModifier(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getMajorModifier(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "One Pipe",
+                    "One Pipe",
                     "Two Pipes",
+                    "Two Pipes",
+                    "Three Pipes",
                     "Three Pipes",
                     "Four Pipes",
                     "Five Pipes",
@@ -79,6 +93,7 @@ contract Flute is Item {
                     "Cross Blown",
                     "End Blown",
                     "Reed",
+                    "Reed",
                     "Double Reed"
                 ]
             );
@@ -86,24 +101,29 @@ contract Flute is Item {
 
     function getMinorModifier(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getMinorModifier(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "One Hole",
                     "Two Holes",
                     "Three Holes",
+                    "Three Holes",
                     "Four Holes",
+                    "Four Holes",
+                    "Five Holes",
                     "Five Holes",
                     "Six Holes",
                     "Seven Holes",
                     "Eight Holes",
                     "Nine Holes",
                     "Ten Holes",
+                    "Slide",
                     "Slide",
                     "Double Slide"
                 ]
@@ -112,13 +132,14 @@ contract Flute is Item {
 
     function getRange(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getRange(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
                     "Piccolo",
                     "Soprano",
@@ -131,32 +152,41 @@ contract Flute is Item {
                     "Alto",
                     "Piccolo",
                     "Soprano",
-                    "Alto"
+                    "Alto",
+                    "Piccolo",
+                    "Soprano",
+                    "Alto",
+                    "Piccolo"
                 ]
             );
     }
 
     function getDecoration(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getDecoration(
-                tokenId,
+                seedsByTokenId[tokenId],
                 [
+                    "Wooden Mouthpiece",
                     "Wooden Mouthpiece",
                     "Pearl Inlay",
                     "Jade Inlay",
                     "Ivory Inlay",
+                    "Brass Keys",
                     "Silver Keys",
                     "Gold Keys",
+                    "Brass Mouthpiece",
                     "Silver Mouthpiece",
                     "Gold Mouthpiece",
                     "Decorative Engraving",
                     "Silver Trim",
                     "Gold Trim",
+                    "Colorful Ribbon",
                     "Colorful Ribbon"
                 ]
             );
@@ -164,22 +194,25 @@ contract Flute is Item {
 
     function getName(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
             ItemLib.getName(
                 getMaterial(tokenId),
                 getRange(tokenId),
-                getType(tokenId)
+                getType(tokenId),
+                getOrder(tokenId)
             );
     }
 
     function tokenSVG(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -187,14 +220,21 @@ contract Flute is Item {
                 getName(tokenId),
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                [
+                    "rgb(153 27 27)",
+                    "340",
+                    "end",
+                    '<image href="https://lutedrop.com/img/flutes.png" x="140" y="110" width="200" />'
+                ]
             );
     }
 
     function attributesJSON(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -204,14 +244,16 @@ contract Flute is Item {
                 getMaterial(tokenId),
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId)
             );
     }
 
     function tokenJSON(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -223,14 +265,17 @@ contract Flute is Item {
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
                 getRange(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId),
+                tokenSVG(tokenId)
             );
     }
 
     function tokenURI(uint256 tokenId)
         public
-        pure
+        view
         override
+        requireTokenExists(tokenId)
         returns (string memory)
     {
         return
@@ -242,7 +287,9 @@ contract Flute is Item {
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
                 getRange(tokenId),
-                getDecoration(tokenId)
+                getDecoration(tokenId),
+                getOrder(tokenId),
+                tokenSVG(tokenId)
             );
     }
 }

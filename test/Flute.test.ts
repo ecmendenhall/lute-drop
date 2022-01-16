@@ -16,86 +16,94 @@ async function deploy(): Promise<Contracts> {
       ItemLib: itemlib.address,
     },
   });
-  const flute = (await (await FluteFactory.deploy()).deployed()) as Flute;
+  const flute = (await (await FluteFactory.deploy(false)).deployed()) as Flute;
 
   return { flute };
 }
 
+const CRAFTER_ROLE = ethers.utils.keccak256(
+  ethers.utils.toUtf8Bytes("CRAFTER_ROLE")
+);
 let contracts: Contracts;
 
 describe("Flute", () => {
   beforeEach(async () => {
+    const [owner] = await ethers.getSigners();
     contracts = await deploy();
+    await contracts.flute.grantRole(CRAFTER_ROLE, owner.address);
+    for (let i = 0; i < 10; i++) {
+      await contracts.flute.craft(owner.address);
+    }
   });
 
   describe("material", () => {
     it("gets flute material", async function () {
-      expect(await contracts.flute.getMaterial(0)).to.equal("Brass");
+      expect(await contracts.flute.getMaterial(0)).to.equal("Wood");
     });
 
     it("flutes have different materials", async function () {
-      expect(await contracts.flute.getMaterial(1)).to.equal("Jade");
-      expect(await contracts.flute.getMaterial(2)).to.equal("Clay");
-      expect(await contracts.flute.getMaterial(3)).to.equal("Bone");
-      expect(await contracts.flute.getMaterial(4)).to.equal("Bone");
-      expect(await contracts.flute.getMaterial(5)).to.equal("Brass");
-      expect(await contracts.flute.getMaterial(6)).to.equal("Bamboo");
-      expect(await contracts.flute.getMaterial(7)).to.equal("Ivory");
-      expect(await contracts.flute.getMaterial(8)).to.equal("Tin");
-      expect(await contracts.flute.getMaterial(9)).to.equal("Bone");
+      expect(await contracts.flute.getMaterial(1)).to.equal("Tin");
+      expect(await contracts.flute.getMaterial(2)).to.equal("Brass");
+      expect(await contracts.flute.getMaterial(3)).to.equal("Ivory");
+      expect(await contracts.flute.getMaterial(4)).to.equal("Brass");
+      expect(await contracts.flute.getMaterial(5)).to.equal("Ivory");
+      expect(await contracts.flute.getMaterial(6)).to.equal("Crystal");
+      expect(await contracts.flute.getMaterial(7)).to.equal("Brass");
+      expect(await contracts.flute.getMaterial(8)).to.equal("Gold");
+      expect(await contracts.flute.getMaterial(9)).to.equal("Tin");
     });
   });
 
   describe("type", () => {
     it("gets flute type", async function () {
-      expect(await contracts.flute.getType(0)).to.equal("Dizi");
+      expect(await contracts.flute.getType(0)).to.equal("Flute");
     });
 
     it("flutes have different types", async function () {
       expect(await contracts.flute.getType(1)).to.equal("Fife");
       expect(await contracts.flute.getType(2)).to.equal("Flute");
-      expect(await contracts.flute.getType(3)).to.equal("Recorder");
-      expect(await contracts.flute.getType(4)).to.equal("Piccolo");
-      expect(await contracts.flute.getType(5)).to.equal("Bombard");
-      expect(await contracts.flute.getType(6)).to.equal("Ney");
-      expect(await contracts.flute.getType(7)).to.equal("Panpipes");
-      expect(await contracts.flute.getType(8)).to.equal("Recorder");
-      expect(await contracts.flute.getType(9)).to.equal("Ocarina");
+      expect(await contracts.flute.getType(3)).to.equal("Panpipes");
+      expect(await contracts.flute.getType(4)).to.equal("Bombard");
+      expect(await contracts.flute.getType(5)).to.equal("Recorder");
+      expect(await contracts.flute.getType(6)).to.equal("Whistle");
+      expect(await contracts.flute.getType(7)).to.equal("Ney");
+      expect(await contracts.flute.getType(8)).to.equal("Panpipes");
+      expect(await contracts.flute.getType(9)).to.equal("Flute");
     });
   });
 
   describe("major modifier", () => {
     it("gets flute major modifier", async function () {
-      expect(await contracts.flute.getMajorModifier(0)).to.equal("End Blown");
+      expect(await contracts.flute.getMajorModifier(0)).to.equal("Reed");
     });
 
     it("flutes have different major modifiers", async function () {
-      expect(await contracts.flute.getMajorModifier(1)).to.equal("One Pipe");
-      expect(await contracts.flute.getMajorModifier(2)).to.equal("Cross Blown");
+      expect(await contracts.flute.getMajorModifier(1)).to.equal("End Blown");
+      expect(await contracts.flute.getMajorModifier(2)).to.equal("Three Pipes");
       expect(await contracts.flute.getMajorModifier(3)).to.equal("Double Reed");
-      expect(await contracts.flute.getMajorModifier(4)).to.equal("Cross Blown");
-      expect(await contracts.flute.getMajorModifier(5)).to.equal("Three Pipes");
-      expect(await contracts.flute.getMajorModifier(6)).to.equal("Two Pipes");
-      expect(await contracts.flute.getMajorModifier(7)).to.equal("Side Blown");
+      expect(await contracts.flute.getMajorModifier(4)).to.equal("Three Pipes");
+      expect(await contracts.flute.getMajorModifier(5)).to.equal("Reed");
+      expect(await contracts.flute.getMajorModifier(6)).to.equal("Reed");
+      expect(await contracts.flute.getMajorModifier(7)).to.equal("Two Pipes");
       expect(await contracts.flute.getMajorModifier(8)).to.equal("One Pipe");
-      expect(await contracts.flute.getMajorModifier(9)).to.equal("Two Pipes");
+      expect(await contracts.flute.getMajorModifier(9)).to.equal("Three Pipes");
     });
   });
 
   describe("minor modifier", () => {
     it("gets flute minor modifier", async function () {
-      expect(await contracts.flute.getMinorModifier(0)).to.equal("Seven Holes");
+      expect(await contracts.flute.getMinorModifier(0)).to.equal("Three Holes");
     });
 
     it("flutes have different minor modifiers", async function () {
-      expect(await contracts.flute.getMinorModifier(1)).to.equal("Eight Holes");
-      expect(await contracts.flute.getMinorModifier(2)).to.equal("Seven Holes");
-      expect(await contracts.flute.getMinorModifier(3)).to.equal("Five Holes");
-      expect(await contracts.flute.getMinorModifier(4)).to.equal("Three Holes");
-      expect(await contracts.flute.getMinorModifier(5)).to.equal("Two Holes");
-      expect(await contracts.flute.getMinorModifier(6)).to.equal("Nine Holes");
-      expect(await contracts.flute.getMinorModifier(7)).to.equal("Ten Holes");
-      expect(await contracts.flute.getMinorModifier(8)).to.equal("Seven Holes");
+      expect(await contracts.flute.getMinorModifier(1)).to.equal("Three Holes");
+      expect(await contracts.flute.getMinorModifier(2)).to.equal("Three Holes");
+      expect(await contracts.flute.getMinorModifier(3)).to.equal("Six Holes");
+      expect(await contracts.flute.getMinorModifier(4)).to.equal("Slide");
+      expect(await contracts.flute.getMinorModifier(5)).to.equal("Slide");
+      expect(await contracts.flute.getMinorModifier(6)).to.equal("Four Holes");
+      expect(await contracts.flute.getMinorModifier(7)).to.equal("Two Holes");
+      expect(await contracts.flute.getMinorModifier(8)).to.equal("Slide");
       expect(await contracts.flute.getMinorModifier(9)).to.equal("Slide");
     });
   });
@@ -106,21 +114,69 @@ describe("Flute", () => {
     });
 
     it("flutes have different ranges", async function () {
-      expect(await contracts.flute.getRange(1)).to.equal("Soprano");
-      expect(await contracts.flute.getRange(2)).to.equal("Alto");
-      expect(await contracts.flute.getRange(3)).to.equal("Alto");
-      expect(await contracts.flute.getRange(4)).to.equal("Piccolo");
-      expect(await contracts.flute.getRange(5)).to.equal("Soprano");
-      expect(await contracts.flute.getRange(6)).to.equal("Alto");
-      expect(await contracts.flute.getRange(7)).to.equal("Piccolo");
-      expect(await contracts.flute.getRange(8)).to.equal("Soprano");
+      expect(await contracts.flute.getRange(1)).to.equal("Alto");
+      expect(await contracts.flute.getRange(2)).to.equal("Piccolo");
+      expect(await contracts.flute.getRange(3)).to.equal("Piccolo");
+      expect(await contracts.flute.getRange(4)).to.equal("Soprano");
+      expect(await contracts.flute.getRange(5)).to.equal("Alto");
+      expect(await contracts.flute.getRange(6)).to.equal("Piccolo");
+      expect(await contracts.flute.getRange(7)).to.equal("Alto");
+      expect(await contracts.flute.getRange(8)).to.equal("Alto");
       expect(await contracts.flute.getRange(9)).to.equal("Alto");
+    });
+  });
+
+  describe("decoration", () => {
+    it("gets flute decoration", async function () {
+      expect(await contracts.flute.getDecoration(0)).to.equal("Pearl Inlay");
+    });
+
+    it("flutes have different decorations", async function () {
+      expect(await contracts.flute.getDecoration(1)).to.equal(
+        "Colorful Ribbon"
+      );
+      expect(await contracts.flute.getDecoration(2)).to.equal("Pearl Inlay");
+      expect(await contracts.flute.getDecoration(3)).to.equal(
+        "Brass Mouthpiece"
+      );
+      expect(await contracts.flute.getDecoration(4)).to.equal(
+        "Colorful Ribbon"
+      );
+      expect(await contracts.flute.getDecoration(5)).to.equal(
+        "Silver Mouthpiece"
+      );
+      expect(await contracts.flute.getDecoration(6)).to.equal("Brass Keys");
+      expect(await contracts.flute.getDecoration(7)).to.equal("Gold Keys");
+      expect(await contracts.flute.getDecoration(8)).to.equal(
+        "Brass Mouthpiece"
+      );
+      expect(await contracts.flute.getDecoration(9)).to.equal("Silver Trim");
+    });
+  });
+
+  describe("order", () => {
+    it("gets flute order", async function () {
+      expect(await contracts.flute.getOrder(0)).to.equal("Brilliance");
+    });
+
+    it("flutes have different ranges", async function () {
+      expect(await contracts.flute.getOrder(1)).to.equal("Fury");
+      expect(await contracts.flute.getOrder(2)).to.equal("Anger");
+      expect(await contracts.flute.getOrder(3)).to.equal("the Twins");
+      expect(await contracts.flute.getOrder(4)).to.equal("Perfection");
+      expect(await contracts.flute.getOrder(5)).to.equal("Rage");
+      expect(await contracts.flute.getOrder(6)).to.equal("the Twins");
+      expect(await contracts.flute.getOrder(7)).to.equal("the Fox");
+      expect(await contracts.flute.getOrder(8)).to.equal("Titans");
+      expect(await contracts.flute.getOrder(9)).to.equal("Perfection");
     });
   });
 
   describe("name", () => {
     it("constructs full name", async function () {
-      expect(await contracts.flute.getName(0)).to.equal("Brass Soprano Dizi");
+      expect(await contracts.flute.getName(0)).to.equal(
+        "Wood Soprano Flute of Brilliance"
+      );
     });
   });
 
@@ -128,11 +184,15 @@ describe("Flute", () => {
     it("returns SVG as string", async function () {
       expect(await contracts.flute.tokenSVG(0)).to.equal(
         [
-          '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" />',
-          '<text x="10" y="20" class="base">Brass Soprano Dizi</text>',
-          '<text x="10" y="40" class="base">End Blown</text>',
-          '<text x="10" y="60" class="base">Seven Holes</text>',
-          '<text x="10" y="80" class="base">Jade Inlay</text>',
+          '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
+          '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="white"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs>',
+          '<style>.base { fill: rgb(153 27 27); font-family: Luminari, serif; font-size: 16px; }</style>',
+          '<rect width="100%" height="100%" fill="url(#b)" />',
+          '<text x="340" y="25" class="base" text-anchor="end">Wood Soprano Flute of Brilliance</text>',
+          '<text x="340" y="50" class="base" text-anchor="end">Reed</text>',
+          '<text x="340" y="75" class="base" text-anchor="end">Three Holes</text>',
+          '<text x="340" y="100" class="base" text-anchor="end">Pearl Inlay</text>',
+          '<image href="https://lutedrop.com/img/flutes.png" x="140" y="110" width="200" />',
           "</svg>",
         ].join("")
       );
@@ -143,17 +203,18 @@ describe("Flute", () => {
     it("returns attributes JSON as string", async function () {
       expect(await contracts.flute.attributesJSON(0)).to.equal(
         JSON.stringify([
-          { trait_type: "Type", value: "Dizi" },
+          { trait_type: "Type", value: "Flute" },
           { trait_type: "Range", value: "Soprano" },
-          { trait_type: "Material", value: "Brass" },
-          { trait_type: "Major Modifier", value: "End Blown" },
-          { trait_type: "Minor Modifier", value: "Seven Holes" },
-          { trait_type: "Decoration", value: "Jade Inlay" },
+          { trait_type: "Material", value: "Wood" },
+          { trait_type: "Major Modifier", value: "Reed" },
+          { trait_type: "Minor Modifier", value: "Three Holes" },
+          { trait_type: "Decoration", value: "Pearl Inlay" },
+          { trait_type: "Order", value: "Brilliance" },
         ])
       );
     });
 
-    it("returns JSON as string", async function () {
+    xit("returns JSON as string", async function () {
       expect(await contracts.flute.tokenJSON(0)).to.equal(
         JSON.stringify({
           name: "Flute #0",
@@ -162,19 +223,20 @@ describe("Flute", () => {
           image:
             "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAzNTAgMzUwIj48c3R5bGU+LmJhc2UgeyBmaWxsOiB3aGl0ZTsgZm9udC1mYW1pbHk6IHNlcmlmOyBmb250LXNpemU6IDE0cHg7IH08L3N0eWxlPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9ImJsYWNrIiAvPjx0ZXh0IHg9IjEwIiB5PSIyMCIgY2xhc3M9ImJhc2UiPkJyYXNzIFNvcHJhbm8gRGl6aTwvdGV4dD48dGV4dCB4PSIxMCIgeT0iNDAiIGNsYXNzPSJiYXNlIj5FbmQgQmxvd248L3RleHQ+PHRleHQgeD0iMTAiIHk9IjYwIiBjbGFzcz0iYmFzZSI+U2V2ZW4gSG9sZXM8L3RleHQ+PHRleHQgeD0iMTAiIHk9IjgwIiBjbGFzcz0iYmFzZSI+SmFkZSBJbmxheTwvdGV4dD48L3N2Zz4=",
           attributes: [
-            { trait_type: "Type", value: "Dizi" },
+            { trait_type: "Type", value: "Flute" },
             { trait_type: "Range", value: "Soprano" },
-            { trait_type: "Material", value: "Brass" },
-            { trait_type: "Major Modifier", value: "End Blown" },
-            { trait_type: "Minor Modifier", value: "Seven Holes" },
-            { trait_type: "Decoration", value: "Jade Inlay" },
+            { trait_type: "Material", value: "Wood" },
+            { trait_type: "Major Modifier", value: "Reed" },
+            { trait_type: "Minor Modifier", value: "Three Holes" },
+            { trait_type: "Decoration", value: "Pearl Inlay" },
+            { trait_type: "Order", value: "Brilliance" },
           ],
         })
       );
     });
   });
 
-  describe("token URI", () => {
+  xdescribe("token URI", () => {
     it("generates base64 JSON data", async function () {
       const json = JSON.stringify({
         name: "Flute #0",

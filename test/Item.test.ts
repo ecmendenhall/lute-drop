@@ -17,7 +17,7 @@ async function deploy(): Promise<Contracts> {
       ItemLib: itemlib.address,
     },
   });
-  const item = (await (await ItemFactory.deploy()).deployed()) as Item;
+  const item = (await (await ItemFactory.deploy(false)).deployed()) as Item;
 
   return { item };
 }
@@ -201,20 +201,6 @@ describe("Item", () => {
       expect(await contracts.item.totalSupply()).to.equal(1);
       await contracts.item.connect(burner).burn(0);
       expect(await contracts.item.totalSupply()).to.equal(0);
-    });
-  });
-
-  describe("nextId", () => {
-    beforeEach(async () => {
-      await contracts.item
-        .connect(owner)
-        .grantRole(CRAFTER_ROLE, crafter.address);
-    });
-
-    it("returns next ID", async function () {
-      expect(await contracts.item.nextId()).to.equal(0);
-      await contracts.item.connect(crafter).craft(recipient.address);
-      expect(await contracts.item.nextId()).to.equal(1);
     });
   });
 });

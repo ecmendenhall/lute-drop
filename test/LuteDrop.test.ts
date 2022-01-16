@@ -21,14 +21,14 @@ async function deploy(): Promise<Contracts> {
       ItemLib: itemlib.address,
     },
   });
-  const lute = (await (await LuteFactory.deploy()).deployed()) as Lute;
+  const lute = (await (await LuteFactory.deploy(true)).deployed()) as Lute;
 
   const FluteFactory = await ethers.getContractFactory("Flute", {
     libraries: {
       ItemLib: itemlib.address,
     },
   });
-  const flute = (await (await FluteFactory.deploy()).deployed()) as Flute;
+  const flute = (await (await FluteFactory.deploy(true)).deployed()) as Flute;
 
   const LutiswapFactory = await ethers.getContractFactory("Lutiswap");
   const lutiswap = (await (

@@ -32,11 +32,11 @@ task("deploy:testnet", "Deploys contracts", async (args, hre) => {
  */
 module.exports = {
   solidity: {
-    version: "0.8.4",
+    version: "0.8.9",
     settings: {
       optimizer: {
         enabled: true,
-        runs: 20,
+        runs: 200,
       },
     },
   },
