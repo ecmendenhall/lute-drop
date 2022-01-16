@@ -1,14 +1,11 @@
 import Contracts from "../components/Contracts";
 import Stats from "../components/Stats";
-import { useItemSupply, useLuteDrop } from "../hooks/contracts";
+import { useItemSupply } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
 const About = () => {
   const luteSupply = useItemSupply("lute");
   const fluteSupply = useItemSupply("flute");
-  const {
-    drops: [lootDrop, mlootDrop],
-  } = useLuteDrop();
 
   return (
     <FullPage
@@ -22,7 +19,7 @@ const About = () => {
       <div className="font-body text-xl">
         <div className="flex flex-col md:flex-row justify-evenly">
           <Contracts />
-          <Stats {...{ luteSupply, fluteSupply, lootDrop, mlootDrop }} />
+          <Stats {...{ luteSupply, fluteSupply }} />
           <div className="md:w-1/3 mb-4">
             <h4 className="font-black font-display text-2xl mb-2">
               How it works:

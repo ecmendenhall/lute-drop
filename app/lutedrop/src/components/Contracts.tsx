@@ -56,19 +56,6 @@ const Contracts = () => {
               chainId={chainId}
             />
           </ul>
-          <h4 className="font-black font-display text-2xl">Tokens:</h4>
-          <ul>
-            <ContractItem
-              name="Loot"
-              address={config.loot.address}
-              chainId={chainId}
-            />
-            <ContractItem
-              name="mLoot"
-              address={config.mloot.address}
-              chainId={chainId}
-            />
-          </ul>
         </div>
       )}
     </>

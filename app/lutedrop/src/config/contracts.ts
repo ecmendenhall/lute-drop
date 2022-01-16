@@ -4,57 +4,24 @@ import { Interface } from "ethers/lib/utils";
 const config = {
   [ChainId.Hardhat]: {
     lute: {
-      address: "0xFD471836031dc5108809D173A067e8486B9047A3",
+      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
       abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-        "function totalSupply() returns (uint256)",
-        "function nextId() returns(uint256)",
+        "function totalSupply() external view returns (uint256)",
       ]),
     },
     flute: {
-      address: "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc",
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
       abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-        "function totalSupply() returns (uint256)",
-        "function nextId() returns(uint256)",
+        "function totalSupply() external view returns (uint256)",
       ]),
     },
     luteDrop: {
-      address: "0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f",
-      abi: new Interface([
-        "function claim(uint8 item, address token, uint256 tokenId) payable",
-        "function dropId(address token) returns (uint256)",
-        "function drops(uint256 dropId) returns (address, uint256, uint256)",
-        "function isClaimed(address token, uint256 tokenId) returns (bool)",
-      ]),
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      abi: new Interface([]),
     },
     lutiswap: {
-      address: "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
-      abi: new Interface([
-        "function latestSwapPrice() view returns (uint256, uint256)",
-        "function swapExactLuteForFlute(uint256 tokenId) payable",
-        "function swapExactFluteForLute(uint256 tokenId) payable",
-      ]),
-    },
-    loot: {
-      address: "0xFF9C1b15B16263C61d017ee9F65C50e4AE0113D7",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-      ]),
-    },
-    mloot: {
-      address: "0x1dfe7ca09e99d10835bf73044a23b73fc20623df",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-      ]),
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      abi: new Interface([]),
     },
   },
   [ChainId.Rinkeby]: {
@@ -93,22 +60,6 @@ const config = {
         "function latestSwapPrice() view returns (uint256, uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) payable",
         "function swapExactFluteForLute(uint256 tokenId) payable",
-      ]),
-    },
-    loot: {
-      address: "0x56689336863f1917f301830b377B583dB39d6C4D",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-      ]),
-    },
-    mloot: {
-      address: "0x64e5BBb7242eE28183D27B3936F8A419712eb272",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
       ]),
     },
   },
