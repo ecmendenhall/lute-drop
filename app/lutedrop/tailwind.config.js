@@ -14,7 +14,14 @@ module.exports = {
   },
   darkMode: false,
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        parchment: {
+          50: "rgb(253 240 221)",
+          100: "rgb(250 220 176)",
+        },
+      },
+    },
     fontFamily: {
       mono: [...defaultTheme.fontFamily.mono],
       display: ["Almendra SC"],

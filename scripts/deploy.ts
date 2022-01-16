@@ -32,12 +32,12 @@ async function logToken(token: Contract, i: number) {
 
 async function logTokens(lute: Contract, flute: Contract) {
   console.log("\nLutes:");
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 20; i++) {
     await logToken(lute, i);
   }
 
   console.log("\nFlutes:");
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 20; i++) {
     await logToken(flute, i);
   }
 }
@@ -67,11 +67,7 @@ async function deployLoot(ethers: Ethers) {
 }
 
 async function deployCoreContracts(
-  ethers: Ethers,
-  lootAddress: string,
-  mlootAddress: string,
-  lootSupply: number,
-  mlootSupply: number
+  ethers: Ethers
 ) {
   const ItemLibFactory = await ethers.getContractFactory("ItemLib");
   const itemlib = await (await ItemLibFactory.deploy()).deployed();
@@ -81,7 +77,7 @@ async function deployCoreContracts(
       ItemLib: itemlib.address,
     },
   });
-  const lute = await Lute.deploy();
+  const lute = await Lute.deploy(true);
   await lute.deployed();
 
   console.log("Lute deployed to:", lute.address);
@@ -91,29 +87,26 @@ async function deployCoreContracts(
       ItemLib: itemlib.address,
     },
   });
-  const flute = await Flute.deploy();
+  const flute = await Flute.deploy(true);
   await flute.deployed();
 
   console.log("Flute deployed to:", flute.address);
-
-  const LuteDrop = await ethers.getContractFactory("LuteDrop");
-  const luteDrop = await LuteDrop.deploy(
-    lute.address,
-    flute.address,
-    lootAddress,
-    mlootAddress,
-    lootSupply,
-    mlootSupply
-  );
-  await luteDrop.deployed();
-
-  console.log("LuteDrop deployed to:", luteDrop.address);
-
+  
   const Lutiswap = await ethers.getContractFactory("Lutiswap");
   const lutiswap = await Lutiswap.deploy(lute.address, flute.address);
   await lutiswap.deployed();
 
   console.log("Lutiswap deployed to:", lutiswap.address);
+
+  const LuteDrop = await ethers.getContractFactory("LuteDrop");
+  const luteDrop = await LuteDrop.deploy(
+    lute.address,
+    flute.address,
+    lutiswap.address
+  );
+  await luteDrop.deployed();
+
+  console.log("LuteDrop deployed to:", luteDrop.address);
   return { lute, flute, luteDrop, lutiswap };
 }
 
@@ -125,13 +118,9 @@ async function grantRoles(
 ) {
   console.log("Granting Lute roles...");
   await lute.grantRole(CRAFTER_ROLE, luteDrop.address);
-  await lute.grantRole(CRAFTER_ROLE, lutiswap.address);
-  await lute.grantRole(BURNER_ROLE, lutiswap.address);
 
   console.log("Granting Flute roles...");
   await flute.grantRole(CRAFTER_ROLE, luteDrop.address);
-  await flute.grantRole(CRAFTER_ROLE, lutiswap.address);
-  await flute.grantRole(BURNER_ROLE, lutiswap.address);
 }
 
 async function craftItems(
@@ -142,9 +131,9 @@ async function craftItems(
   console.log("Crafting Lutes/Flutes to owner...");
   await lute.grantRole(CRAFTER_ROLE, owner.address);
   await flute.grantRole(CRAFTER_ROLE, owner.address);
-  for (let i = 0; i < 10; i++) {
-    await lute.craft("0x79d31bFcA5Fda7A4F15b36763d2e44C99D811a6C");
-    await flute.craft("0x79d31bFcA5Fda7A4F15b36763d2e44C99D811a6C");
+  for (let i = 0; i < 20; i++) {
+    await lute.craft("0xe979054eB69F543298406447D8AB6CBBc5791307");
+    await flute.craft("0xe979054eB69F543298406447D8AB6CBBc5791307");
   }
 }
 
@@ -153,11 +142,7 @@ export async function deployTestnet(ethers: Ethers) {
 
   //const { loot, mloot } = await deployLoot(ethers);
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(
-    ethers,
-    LOOT_ADDRESS_RINKEBY,
-    MLOOT_ADDRESS_RINKEBY,
-    LOOT_SUPPLY,
-    MLOOT_SUPPLY
+    ethers
   );
   await grantRoles(lute, flute, luteDrop, lutiswap);
   //await craftItems(lute, flute, owner);
@@ -168,13 +153,9 @@ export async function deployLocal(ethers: Ethers) {
 
   await deployMultiCall(ethers);
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(
-    ethers,
-    LOOT_ADDRESS,
-    MLOOT_ADDRESS,
-    LOOT_SUPPLY,
-    MLOOT_SUPPLY
+    ethers
   );
   await grantRoles(lute, flute, luteDrop, lutiswap);
   await craftItems(lute, flute, owner);
-  //await logTokens(lute, flute);
+  await logTokens(lute, flute);
 }
