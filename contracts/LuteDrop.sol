@@ -7,21 +7,22 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "./interfaces/IItem.sol";
 
 contract LuteDrop is Ownable, ReentrancyGuard {
-    IItem public lute;
-    IItem public flute;
-    address public lutiswap;
-    mapping(uint256 => Drop) public drops;
+    IItem public immutable lute;
+    IItem public immutable flute;
+    address public immutable lutiswap;
 
-    uint256 private nextId;
-    uint256 private totalClaimableSupply;
-    uint256 private constant MAX_CLAIMABLE_SUPPLY = 2500;
+    mapping(uint256 => Drop) public drops;
+    uint256 public latestDrop;
+
+    uint256 private totalCraftableSupply;
+    uint256 private constant MAX_CRAFTABLE_SUPPLY = 2500;
 
     struct Drop {
         uint256 fee;
-        uint256 claimableSupply;
-        uint256 claimedSupply;
-        uint256 claimsPerAddress;
-        mapping(address => uint256) claims;
+        uint256 craftableSupply;
+        uint256 craftedSupply;
+        uint256 craftsPerAddress;
+        mapping(address => uint256) crafts;
     }
 
     enum ItemType {
@@ -39,41 +40,41 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         lutiswap = _lutiswap;
     }
 
-    function claim(ItemType item, uint256 dropId) public payable nonReentrant {
+    function craft(ItemType item, uint256 dropId) public payable nonReentrant {
         Drop storage drop = drops[dropId];
 
-        require(drop.claimableSupply > 0, "Invalid drop ID");
+        require(drop.craftableSupply > 0, "Invalid drop ID");
         require(
-            drop.claims[msg.sender] < drop.claimsPerAddress,
-            "Already claimed max"
+            drop.crafts[msg.sender] < drop.craftsPerAddress,
+            "Already crafted max"
         );
         require(
-            drop.claimedSupply < drop.claimableSupply,
-            "Supply fully claimed"
+            drop.craftedSupply < drop.craftableSupply,
+            "Supply fully crafted"
         );
         require(msg.value >= drop.fee, "Insufficient payment");
 
-        drop.claims[msg.sender]++;
-        drop.claimedSupply++;
-        _claimItem(item, msg.sender);
+        drop.crafts[msg.sender]++;
+        drop.craftedSupply++;
+        _craftItem(item, msg.sender);
     }
 
-    function claims(address claimant, uint256 dropId)
+    function crafts(address claimant, uint256 dropId)
         public
         view
         returns (uint256)
     {
         Drop storage drop = drops[dropId];
-        require(drop.claimableSupply > 0, "Invalid drop ID");
-        return drop.claims[claimant];
+        require(drop.craftableSupply > 0, "Invalid drop ID");
+        return drop.crafts[claimant];
     }
 
     function addDrop(
         uint256 fee,
-        uint256 claimsPerAddress,
-        uint256 claimableSupply
+        uint256 craftsPerAddress,
+        uint256 craftableSupply
     ) public onlyOwner {
-        _addDrop(fee, claimsPerAddress, claimableSupply);
+        _addDrop(fee, craftsPerAddress, craftableSupply);
     }
 
     function withdraw(address to, uint256 value) public onlyOwner {
@@ -82,22 +83,22 @@ contract LuteDrop is Ownable, ReentrancyGuard {
 
     function _addDrop(
         uint256 fee,
-        uint256 claimsPerAddress,
-        uint256 claimableSupply
+        uint256 craftsPerAddress,
+        uint256 craftableSupply
     ) internal {
-        require(claimableSupply > 0, "Supply must be > 0");
+        require(craftableSupply > 0, "Supply must be > 0");
         require(
-            totalClaimableSupply + claimableSupply <= MAX_CLAIMABLE_SUPPLY,
+            totalCraftableSupply + craftableSupply <= MAX_CRAFTABLE_SUPPLY,
             "Exceeds max supply"
         );
-        nextId++;
-        totalClaimableSupply += claimableSupply;
-        drops[nextId].fee = fee;
-        drops[nextId].claimsPerAddress = claimsPerAddress;
-        drops[nextId].claimableSupply = claimableSupply;
+        latestDrop++;
+        totalCraftableSupply += craftableSupply;
+        drops[latestDrop].fee = fee;
+        drops[latestDrop].craftsPerAddress = craftsPerAddress;
+        drops[latestDrop].craftableSupply = craftableSupply;
     }
 
-    function _claimItem(ItemType item, address recipient) internal {
+    function _craftItem(ItemType item, address recipient) internal {
         if (item == ItemType.LUTE) {
             lute.craft(recipient);
             flute.craft(lutiswap);

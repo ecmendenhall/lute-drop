@@ -94,35 +94,35 @@ describe("LuteDrop", () => {
 
     it("reverts on invalid drop ID", async () => {
       await expect(
-        contracts.luteDrop.connect(minter).claim(0, 0, { value: fee })
+        contracts.luteDrop.connect(minter).craft(0, 0, { value: fee })
       ).to.be.revertedWith("Invalid drop ID");
     });
 
-    it("loot holders can claim a lute", async () => {
-      await contracts.luteDrop.connect(minter).claim(0, 1, { value: fee });
+    it("loot holders can craft a lute", async () => {
+      await contracts.luteDrop.connect(minter).craft(0, 1, { value: fee });
       expect(await contracts.lute.balanceOf(minter.address)).to.equal(1);
     });
 
-    it("loot holders can claim a flute", async () => {
-      await contracts.luteDrop.connect(minter).claim(1, 1, { value: fee });
+    it("loot holders can craft a flute", async () => {
+      await contracts.luteDrop.connect(minter).craft(1, 1, { value: fee });
       expect(await contracts.flute.balanceOf(minter.address)).to.equal(1);
     });
 
-    it("mints a flute to lutiswap when a lute is claimed", async () => {
+    it("mints a flute to lutiswap when a lute is crafted", async () => {
       expect(
         await contracts.flute.balanceOf(contracts.lutiswap.address)
       ).to.equal(0);
-      await contracts.luteDrop.connect(minter).claim(0, 1, { value: fee });
+      await contracts.luteDrop.connect(minter).craft(0, 1, { value: fee });
       expect(
         await contracts.flute.balanceOf(contracts.lutiswap.address)
       ).to.equal(1);
     });
 
-    it("mints a lute to lutiswap when a flute is claimed", async () => {
+    it("mints a lute to lutiswap when a flute is crafted", async () => {
       expect(
         await contracts.lute.balanceOf(contracts.lutiswap.address)
       ).to.equal(0);
-      await contracts.luteDrop.connect(minter).claim(1, 1, { value: fee });
+      await contracts.luteDrop.connect(minter).craft(1, 1, { value: fee });
       expect(
         await contracts.lute.balanceOf(contracts.lutiswap.address)
       ).to.equal(1);
@@ -130,34 +130,34 @@ describe("LuteDrop", () => {
 
     it("reverts on invalid items", async () => {
       await expect(
-        contracts.luteDrop.connect(minter).claim(3, 1, { value: fee })
+        contracts.luteDrop.connect(minter).craft(3, 1, { value: fee })
       ).to.be.revertedWith(
         "Transaction reverted: function was called with incorrect parameters"
       );
     });
 
-    it("reverts if supply is fully claimed", async () => {
-      await contracts.luteDrop.connect(minter1).claim(0, 1, { value: fee });
-      await contracts.luteDrop.connect(minter2).claim(0, 1, { value: fee });
+    it("reverts if supply is fully crafted", async () => {
+      await contracts.luteDrop.connect(minter1).craft(0, 1, { value: fee });
+      await contracts.luteDrop.connect(minter2).craft(0, 1, { value: fee });
       await expect(
-        contracts.luteDrop.connect(minter3).claim(0, 1, { value: fee })
-      ).to.be.revertedWith("Supply fully claimed");
+        contracts.luteDrop.connect(minter3).craft(0, 1, { value: fee })
+      ).to.be.revertedWith("Supply fully crafted");
     });
 
     it("reverts on insufficient payment", async () => {
       await expect(
         contracts.luteDrop
           .connect(minter)
-          .claim(0, 1, { value: fee.sub(parseEther("0.01")) })
+          .craft(0, 1, { value: fee.sub(parseEther("0.01")) })
       ).to.be.revertedWith("Insufficient payment");
     });
 
-    it("reverts if exceeding max claims", async () => {
-      await contracts.luteDrop.connect(minter).claim(0, 1, { value: fee });
-      await contracts.luteDrop.connect(minter).claim(0, 1, { value: fee });
+    it("reverts if exceeding max crafts", async () => {
+      await contracts.luteDrop.connect(minter).craft(0, 1, { value: fee });
+      await contracts.luteDrop.connect(minter).craft(0, 1, { value: fee });
       await expect(
-        contracts.luteDrop.connect(minter).claim(0, 1, { value: fee })
-      ).to.be.revertedWith("Already claimed max");
+        contracts.luteDrop.connect(minter).craft(0, 1, { value: fee })
+      ).to.be.revertedWith("Already crafted max");
     });
   });
 
@@ -166,7 +166,7 @@ describe("LuteDrop", () => {
 
     beforeEach(async () => {
       await contracts.luteDrop.connect(owner).addDrop(fee, 1, 10);
-      await contracts.luteDrop.connect(minter).claim(0, 1, { value: fee });
+      await contracts.luteDrop.connect(minter).craft(0, 1, { value: fee });
     });
 
     it("contract holds ETH from fees", async () => {
@@ -201,21 +201,28 @@ describe("LuteDrop", () => {
     it("owner can create new drops", async () => {
       await contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 10);
 
-      const [fee, claimableSupply, claimedSupply, claimsPerAddress] =
+      const [fee, craftableSupply, craftedSupply, craftsPerAddress] =
         await contracts.luteDrop.drops(1);
       expect(fee).to.equal(parseEther("10"));
-      expect(claimableSupply).to.equal(10);
-      expect(claimedSupply).to.equal(0);
-      expect(claimsPerAddress).to.equal(1);
+      expect(craftableSupply).to.equal(10);
+      expect(craftedSupply).to.equal(0);
+      expect(craftsPerAddress).to.equal(1);
+    });
+    
+    it("new drops increment latestDrop", async () => {
+      await contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 10);
+      expect(await contracts.luteDrop.latestDrop()).to.equal(1);
+      await contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 10);
+      expect(await contracts.luteDrop.latestDrop()).to.equal(2);
     });
 
-    it("reverts if claimable supply is zero", async () => {
+    it("reverts if craftable supply is zero", async () => {
       await expect(
         contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 0)
       ).to.be.revertedWith("Supply must be > 0");
     });
 
-    it("reverts if drop exceeds claimable supply limit", async () => {
+    it("reverts if drop exceeds craftable supply limit", async () => {
       await contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 100),
         await contracts.luteDrop
           .connect(owner)
