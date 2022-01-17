@@ -1,14 +1,37 @@
 import { useEthers } from "@usedapp/core";
-import { formatEther } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
+import SelectItem from "../components/SelectItem";
 import SwapPanel from "../components/SwapPanel";
-import { useLatestSwapPrice, useNextItem } from "../hooks/contracts";
+import {
+  useItems,
+  useLatestSwapPrice,
+  useNextItem,
+  useSwapExactFluteForLute,
+  useSwapExactLuteForFlute,
+  useTokenIdsByAccount,
+} from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
 const Swap = () => {
   const { account } = useEthers();
   const nextLute = useNextItem("lute");
   const nextFlute = useNextItem("flute");
+  const luteIds = useTokenIdsByAccount("lute", account, []);
+  const lutes = useItems("lute", luteIds);
+  const fluteIds = useTokenIdsByAccount("flute", account, []);
+  const flutes = useItems("flute", fluteIds);
   const { luteSwapFee, fluteSwapFee } = useLatestSwapPrice();
+
+  const { send: sendSwapExactLuteForFlute } = useSwapExactLuteForFlute();
+  const { send: sendSwapExactFluteForLute } = useSwapExactFluteForLute();
+
+  const onSwapFlute = (tokenId: BigNumber) => {
+    sendSwapExactFluteForLute(tokenId, { value: fluteSwapFee });
+  };
+
+  const onSwapLute = (tokenId: BigNumber) => {
+    sendSwapExactLuteForFlute(tokenId, { value: luteSwapFee });
+  };
 
   return (
     <FullPage
@@ -25,7 +48,9 @@ const Swap = () => {
               imgAlt="Lute"
               color="blue"
               buttonText="Swap Flute for Lute"
-              onSwap={() => {}}
+              items={flutes}
+              swapItem="flute"
+              onSwap={onSwapFlute}
             />
           )}
           <div className="my-2 mx-8 w-80 hidden lg:block">
@@ -39,7 +64,9 @@ const Swap = () => {
               imgAlt="Flute"
               color="red"
               buttonText="Swap Lute for Flute"
-              onSwap={() => {}}
+              items={lutes}
+              swapItem="lute"
+              onSwap={onSwapLute}
             />
           )}
         </div>

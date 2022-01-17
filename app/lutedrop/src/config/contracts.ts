@@ -8,6 +8,8 @@ const config = {
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
         "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
       ]),
     },
     flute: {
@@ -15,6 +17,8 @@ const config = {
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
         "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
       ]),
     },
     luteDrop: {
@@ -32,6 +36,8 @@ const config = {
         "function nextLute() external view returns (uint256)",
         "function nextFlute() external view returns (uint256)",
         "function latestSwapPrice() external view returns (uint256, uint256)",
+        "function swapExactLuteForFlute(uint256 tokenId) external payable",
+        "function swapExactFluteForLute(uint256 tokenId) external payable",
       ]),
     },
   },

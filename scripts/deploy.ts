@@ -131,10 +131,6 @@ async function craftItems(
   console.log("Crafting Lutes/Flutes to owner...");
   await lute.grantRole(CRAFTER_ROLE, owner.address);
   await flute.grantRole(CRAFTER_ROLE, owner.address);
-  for (let i = 0; i < 10; i++) {
-    await lute.craft("0xe979054eB69F543298406447D8AB6CBBc5791307");
-    await flute.craft("0xe979054eB69F543298406447D8AB6CBBc5791307");
-  }
   for (let i = 0; i < 30; i++) {
     await lute.craft(lutiswap.address);
   }

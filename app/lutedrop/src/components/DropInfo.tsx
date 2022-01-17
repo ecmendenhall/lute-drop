@@ -18,8 +18,17 @@ const DropInfo = ({
   crafted,
   limitPerAddress,
 }: Props) => {
+  const craftMessage = (remaining: number) => {
+    if (remaining > 1) {
+      return `You may craft ${remaining} more items.`;
+    } else if (remaining === 1) {
+      return "You may craft 1 more item.";
+    } else {
+      return "You have crafted the maximum number of items.";
+    }
+  };
   return (
-    <div className="flex flex-col text-center my-8">
+    <div className="flex flex-col text-center md:w-1/4 my-8">
       {total && total.gt(0) ? (
         <div>
           <h3 className="text-3xl font-body font-bold mb-2">
@@ -39,9 +48,7 @@ const DropInfo = ({
         <div>No active drops.</div>
       )}
       {limitPerAddress && crafted && (
-        <div>
-          You may craft {limitPerAddress.sub(crafted).toNumber()} more items.
-        </div>
+        <div>{craftMessage(limitPerAddress.sub(crafted).toNumber())}</div>
       )}
     </div>
   );

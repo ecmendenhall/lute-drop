@@ -11,14 +11,14 @@ import {
 import DropInfo from "../components/DropInfo";
 
 const Craft = () => {
-  const { chainId, account } = useEthers();
-  const config = getConfig(chainId);
+  const { account } = useEthers();
   const luteSupply = useItemSupply("lute");
   const fluteSupply = useItemSupply("flute");
   const crafted = useCraftedCount(account);
   const { dropId, fee, craftableSupply, craftedSupply, craftsPerAddress } =
     useLatestDrop();
   const { send: sendCraftItem } = useCraftItem();
+  const enabled = craftableSupply > craftedSupply && crafted < craftsPerAddress;
 
   const craftItem = (item: string) => {
     const typeId = item === "lute" ? 0 : 1;
@@ -33,7 +33,7 @@ const Craft = () => {
       <div className="font-body text-xl">
         <div className="flex flex-col md:flex-row items-center justify-center mb-8">
           <CraftPanel
-            enabled
+            enabled={enabled}
             crafted={fluteSupply}
             imgSrc="img/flutes.png"
             imgAlt="Flutes"
@@ -53,7 +53,7 @@ const Craft = () => {
             limitPerAddress={craftsPerAddress}
           />
           <CraftPanel
-            enabled
+            enabled={enabled}
             crafted={luteSupply}
             imgSrc="img/lutes.png"
             imgAlt="Lutes"
