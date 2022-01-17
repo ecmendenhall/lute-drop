@@ -185,9 +185,8 @@ describe("Flute", () => {
       expect(await contracts.flute.tokenSVG(0)).to.equal(
         [
           '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-          '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="rgb(254 251 248)"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs>',
-          '<style>.base { fill: rgb(153 27 27); font-family: Luminari, serif; font-size: 16px; }</style>',
-          '<rect width="100%" height="100%" fill="url(#b)" />',
+          "<style>.base { fill: rgb(153 27 27); font-family: Luminari, serif; font-size: 16px; }</style>",
+          '<rect width="100%" height="100%" fill="rgb(254 251 248)" />',
           '<text x="10" y="25" class="base" text-anchor="start">Wood Soprano Flute of Brilliance</text>',
           '<text x="10" y="50" class="base" text-anchor="start">Reed</text>',
           '<text x="10" y="75" class="base" text-anchor="start">Three Holes</text>',

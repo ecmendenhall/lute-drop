@@ -208,7 +208,7 @@ describe("LuteDrop", () => {
       expect(craftedSupply).to.equal(0);
       expect(craftsPerAddress).to.equal(1);
     });
-    
+
     it("new drops increment latestDrop", async () => {
       await contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 10);
       expect(await contracts.luteDrop.latestDrop()).to.equal(1);

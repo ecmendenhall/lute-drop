@@ -7,21 +7,32 @@ const config = {
       address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
       ]),
     },
     flute: {
       address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
       ]),
     },
     luteDrop: {
       address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      abi: new Interface([]),
+      abi: new Interface([
+        "function latestDrop() external view returns (uint256)",
+        "function drops(uint256 dropId) external view returns (tuple(uint256 fee, uint256 craftableSupply, uint256 craftedSupply, uint256 craftsPerAddress))",
+        "function crafts(address account, uint256 dropid) external view returns (uint256)",
+        "function craft(uint8 item, uint256 dropid) external payable",
+      ]),
     },
     lutiswap: {
       address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      abi: new Interface([]),
+      abi: new Interface([
+        "function nextLute() external view returns (uint256)",
+        "function nextFlute() external view returns (uint256)",
+        "function latestSwapPrice() external view returns (uint256, uint256)",
+      ]),
     },
   },
   [ChainId.Rinkeby]: {

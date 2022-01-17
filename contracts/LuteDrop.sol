@@ -59,14 +59,14 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         _craftItem(item, msg.sender);
     }
 
-    function crafts(address claimant, uint256 dropId)
+    function crafts(address account, uint256 dropId)
         public
         view
         returns (uint256)
     {
         Drop storage drop = drops[dropId];
         require(drop.craftableSupply > 0, "Invalid drop ID");
-        return drop.crafts[claimant];
+        return drop.crafts[account];
     }
 
     function addDrop(

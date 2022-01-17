@@ -1,14 +1,14 @@
 import { MemoryRouter, Redirect, Route, Switch } from "react-router-dom";
 import About from "../pages/About";
-import Claim from "../pages/Claim";
+import Craft from "../pages/Craft";
 import Swap from "../pages/Swap";
 
 const Routes = () => {
   return (
     <MemoryRouter>
       <Switch>
-        <Route exact path="/claim">
-          <Claim />
+        <Route exact path="/craft">
+          <Craft />
         </Route>
         <Route exact path="/swap">
           <Swap />
@@ -17,7 +17,7 @@ const Routes = () => {
           <About />
         </Route>
         <Route exact path="/">
-          <Redirect to="/claim" />
+          <Redirect to="/craft" />
         </Route>
       </Switch>
     </MemoryRouter>

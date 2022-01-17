@@ -191,9 +191,8 @@ describe("Lute", () => {
       expect(await contracts.lute.tokenSVG(0)).to.equal(
         [
           '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-          '<defs><linearGradient id="b" gradientTransform="rotate(105)"><stop offset="5%" stop-color="rgb(254 251 248)"/><stop offset="30%" stop-color="rgb(253 240 221)"/></linearGradient></defs>',
-          '<style>.base { fill: rgb(30 58 138); font-family: Luminari, serif; font-size: 16px; }</style>',
-          '<rect width="100%" height="100%" fill="url(#b)" />',
+          "<style>.base { fill: rgb(30 58 138); font-family: Luminari, serif; font-size: 16px; }</style>",
+          '<rect width="100%" height="100%" fill="rgb(254 251 248)" />',
           '<text x="340" y="25" class="base" text-anchor="end">Pine Baritone Lute of Brilliance</text>',
           '<text x="340" y="50" class="base" text-anchor="end">Twelve Strings</text>',
           '<text x="340" y="75" class="base" text-anchor="end">Eight Frets</text>',

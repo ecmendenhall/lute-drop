@@ -25,14 +25,14 @@ const About = () => {
               How it works:
             </h4>
             <p className="mb-4">
-              Loot and mLoot holders may claim one Lute or Flute per token, up
-              to the claimable supply limit. Claims cost only gas, plus an
-              optional tip.
+              When a Lute Drop is active, you may craft a Lute or Flute, while
+              supplies last. Each Lute Drop has a limited number of craftable
+              items, and a limit per wallet address.
             </p>
             <p className="mb-4">
               You may swap your Lute for a Flute (and vice versa) at any time
-              using Lutiswap. Your token will be burned in exchange for a newly
-              minted item.
+              using Lutiswap. Your token will be swapped in exchange for a token
+              from the Lutiswap pool.
             </p>
             <p className="mb-4">
               The swap fee is a function of the total supply of each item. When
