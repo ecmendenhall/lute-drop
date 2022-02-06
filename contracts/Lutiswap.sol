@@ -9,7 +9,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
 
-    uint256 public baseFee = 4;
+    uint256 public baseFee = 1;
 
     event Swap(
         address indexed user,

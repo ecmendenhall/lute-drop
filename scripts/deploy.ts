@@ -114,7 +114,7 @@ async function craftItems(
 
 async function addDrop(luteDrop: Contract, owner: SignerWithAddress) {
   console.log("Adding new Drop...");
-  await luteDrop.connect(owner).addDrop(parseEther("4"), 500, 500);
+  await luteDrop.connect(owner).addDrop(parseEther("2"), 500, 500);
 }
 
 export async function deployTestnet(ethers: Ethers) {
