@@ -3,6 +3,7 @@ import { BigNumber } from "ethers";
 import { useState } from "react";
 import SwapPanel from "../components/SwapPanel";
 import { getConfig } from "../config/contracts";
+import { isSupportedChain } from "../config/dapp";
 import {
   useIsApprovedForAll,
   useLatestSwapPrice,
@@ -76,32 +77,42 @@ const Swap = () => {
     >
       <div className="font-body text-xl">
         <div className="flex flex-col md:flex-row items-center justify-center">
-          <SwapPanel
-            nextItem={nextLute}
-            swapPrice={fluteSwapFee}
-            imgAlt="Lute"
-            color="blue"
-            buttonText="Swap Flute for Lute"
-            items={fluteIds}
-            swapItem="flute"
-            enabled={!swapPending}
-            onSwap={onSwapFlute}
-          />
+          {isSupportedChain(chainId) && (
+            <SwapPanel
+              nextItem={nextLute}
+              swapPrice={fluteSwapFee}
+              imgAlt="Lute"
+              color="blue"
+              buttonText="Swap Flute for Lute"
+              items={fluteIds}
+              swapItem="flute"
+              enabled={!swapPending}
+              onSwap={onSwapFlute}
+            />
+          )}
           <div className="my-2 mx-8 w-80 hidden lg:block">
             <img src="img/swap.png" alt="Swap Lutes for Flutes" />
           </div>
-          <SwapPanel
-            nextItem={nextFlute}
-            swapPrice={luteSwapFee}
-            imgAlt="Flute"
-            color="red"
-            buttonText="Swap Lute for Flute"
-            items={luteIds}
-            swapItem="lute"
-            enabled={!swapPending}
-            onSwap={onSwapLute}
-          />
+          {isSupportedChain(chainId) && (
+            <SwapPanel
+              nextItem={nextFlute}
+              swapPrice={luteSwapFee}
+              imgAlt="Flute"
+              color="red"
+              buttonText="Swap Lute for Flute"
+              items={luteIds}
+              swapItem="lute"
+              enabled={!swapPending}
+              onSwap={onSwapLute}
+            />
+          )}
         </div>
+        {!isSupportedChain(chainId) && (
+          <p className="text-center">
+            This network is not supported. Please connect to Polygon to use Lute
+            Drop.
+          </p>
+        )}
       </div>
     </FullPage>
   );

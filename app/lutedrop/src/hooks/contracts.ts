@@ -7,7 +7,6 @@ import {
   useEthers,
 } from "@usedapp/core";
 import { BigNumber, Contract } from "@usedapp/core/node_modules/ethers";
-import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { getConfig } from "../config/contracts";
 
@@ -165,7 +164,7 @@ export function useTotalCrafted(dependencies: any[]) {
   useEffect(() => {
     const loadTotalCrafted = async () => {
       if (library) {
-        const luteDrop = new ethers.Contract(
+        const luteDrop = new Contract(
           config.luteDrop.address,
           config.luteDrop.abi,
           library
@@ -194,7 +193,7 @@ export function useSwaps(dependencies: any[]) {
   useEffect(() => {
     const loadSwaps = async () => {
       if (library) {
-        const lutiswap = new ethers.Contract(
+        const lutiswap = new Contract(
           config.lutiswap.address,
           config.lutiswap.abi,
           library
@@ -221,7 +220,7 @@ export function useTokenIdsByAccount(
   useEffect(() => {
     const loadTokenIds = async () => {
       if (account && library) {
-        const token = new ethers.Contract(
+        const token = new Contract(
           config[item].address,
           config[item].abi,
           library

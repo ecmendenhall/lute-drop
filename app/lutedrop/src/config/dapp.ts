@@ -1,4 +1,22 @@
-import { ChainId, Config, MULTICALL_ADDRESSES } from "@usedapp/core";
+import {
+  ChainId,
+  Config,
+  Hardhat,
+  Mumbai,
+  Polygon,
+  Rinkeby,
+} from "@usedapp/core";
+
+export const isSupportedChain = (chainId: ChainId | undefined) => {
+  return !!chainId && SUPPORTED_CHAIN_IDS.includes(chainId);
+};
+
+const SUPPORTED_CHAIN_IDS = [
+  ChainId.Hardhat,
+  ChainId.Rinkeby,
+  ChainId.Mumbai,
+  ChainId.Polygon,
+];
 
 const config: Config = {
   readOnlyChainId: ChainId.Hardhat,
@@ -8,8 +26,8 @@ const config: Config = {
   },
   multicallAddresses: {
     [ChainId.Hardhat]: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-    ...MULTICALL_ADDRESSES,
   },
+  networks: [Hardhat, Rinkeby, Mumbai, Polygon],
 };
 
 export default config;

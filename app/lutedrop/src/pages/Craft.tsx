@@ -9,9 +9,10 @@ import {
 } from "../hooks/contracts";
 import DropInfo from "../components/DropInfo";
 import { useState } from "react";
+import { isSupportedChain } from "../config/dapp";
 
 const Craft = () => {
-  const { account } = useEthers();
+  const { chainId, account } = useEthers();
 
   const { send: sendCraftItem, state: craftItemState } = useCraftItem();
 
@@ -49,7 +50,7 @@ const Craft = () => {
       <div className="font-body text-xl">
         <div className="flex flex-col md:flex-row items-center justify-center mb-8">
           <CraftPanel
-            enabled={enabled}
+            enabled={isSupportedChain(chainId) && enabled}
             crafted={flutesCrafted}
             imgSrc="img/flutes.png"
             imgAlt="Flutes"
@@ -60,16 +61,23 @@ const Craft = () => {
               craftItem("flute");
             }}
           />
-          <DropInfo
-            id={dropId}
-            fee={fee}
-            total={craftableSupply}
-            remaining={craftedSupply}
-            crafted={crafted}
-            limitPerAddress={craftsPerAddress}
-          />
+          {isSupportedChain(chainId) ? (
+            <DropInfo
+              id={dropId}
+              fee={fee}
+              total={craftableSupply}
+              remaining={craftedSupply}
+              crafted={crafted}
+              limitPerAddress={craftsPerAddress}
+            />
+          ) : (
+            <p className="text-center w-1/4">
+              This network is not supported. Please connect to Polygon to use
+              Lute Drop.
+            </p>
+          )}
           <CraftPanel
-            enabled={enabled}
+            enabled={isSupportedChain(chainId) && enabled}
             crafted={lutesCrafted}
             imgSrc="img/lutes.png"
             imgAlt="Lutes"
