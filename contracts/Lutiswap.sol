@@ -12,6 +12,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
     uint256 public baseFee = 4;
 
     event Swap(
+        address indexed user,
         address indexed from,
         address indexed to,
         uint256 fromTokenId,
@@ -91,7 +92,14 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         if (msg.value > fee) {
             _safeTransferETH(msg.sender, msg.value - fee);
         }
-        emit Swap(address(from), address(to), tokenId, outTokenId, fee);
+        emit Swap(
+            msg.sender,
+            address(from),
+            address(to),
+            tokenId,
+            outTokenId,
+            fee
+        );
     }
 
     function setBaseFee(uint256 newBaseFee) public onlyOwner {

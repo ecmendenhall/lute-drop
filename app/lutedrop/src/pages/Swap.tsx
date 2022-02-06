@@ -1,11 +1,13 @@
 import { useEthers } from "@usedapp/core";
 import { BigNumber } from "ethers";
-import SelectItem from "../components/SelectItem";
+import { useState } from "react";
 import SwapPanel from "../components/SwapPanel";
+import { getConfig } from "../config/contracts";
 import {
-  useItems,
+  useIsApprovedForAll,
   useLatestSwapPrice,
   useNextItem,
+  useSetApprovalForAll,
   useSwapExactFluteForLute,
   useSwapExactLuteForFlute,
   useTokenIdsByAccount,
@@ -13,24 +15,58 @@ import {
 import FullPage from "../layouts/FullPage";
 
 const Swap = () => {
-  const { account } = useEthers();
+  const { account, chainId } = useEthers();
+  const config = getConfig(chainId);
+
+  const { send: sendApproveLutes } = useSetApprovalForAll("lute");
+  const { send: sendApproveFlutes } = useSetApprovalForAll("flute");
+  const {
+    send: sendSwapExactLuteForFlute,
+    state: sendSwapExactLuteForFluteState,
+  } = useSwapExactLuteForFlute();
+  const {
+    send: sendSwapExactFluteForLute,
+    state: sendSwapExactFluteForLuteState,
+  } = useSwapExactFluteForLute();
+
   const nextLute = useNextItem("lute");
   const nextFlute = useNextItem("flute");
-  const luteIds = useTokenIdsByAccount("lute", account, []);
-  const lutes = useItems("lute", luteIds);
-  const fluteIds = useTokenIdsByAccount("flute", account, []);
-  const flutes = useItems("flute", fluteIds);
+  const luteIds = useTokenIdsByAccount("lute", account, [
+    sendSwapExactFluteForLuteState,
+    sendSwapExactLuteForFluteState,
+  ]);
+  const fluteIds = useTokenIdsByAccount("flute", account, [
+    sendSwapExactFluteForLuteState,
+    sendSwapExactLuteForFluteState,
+  ]);
   const { luteSwapFee, fluteSwapFee } = useLatestSwapPrice();
+  const lutesApproved = useIsApprovedForAll("lute", account);
+  const flutesApproved = useIsApprovedForAll("flute", account);
 
-  const { send: sendSwapExactLuteForFlute } = useSwapExactLuteForFlute();
-  const { send: sendSwapExactFluteForLute } = useSwapExactFluteForLute();
+  const [swapPending, setSwapPending] = useState(false);
 
   const onSwapFlute = (tokenId: BigNumber) => {
-    sendSwapExactFluteForLute(tokenId, { value: fluteSwapFee });
+    const swap = async () => {
+      setSwapPending(true);
+      if (!flutesApproved) {
+        await sendApproveFlutes(config.lutiswap.address, true);
+      }
+      await sendSwapExactFluteForLute(tokenId, { value: fluteSwapFee });
+      setSwapPending(false);
+    };
+    swap();
   };
 
   const onSwapLute = (tokenId: BigNumber) => {
-    sendSwapExactLuteForFlute(tokenId, { value: luteSwapFee });
+    const swap = async () => {
+      setSwapPending(true);
+      if (!lutesApproved) {
+        await sendApproveLutes(config.lutiswap.address, true);
+      }
+      await sendSwapExactLuteForFlute(tokenId, { value: luteSwapFee });
+      setSwapPending(false);
+    };
+    swap();
   };
 
   return (
@@ -40,35 +76,31 @@ const Swap = () => {
     >
       <div className="font-body text-xl">
         <div className="flex flex-col md:flex-row items-center justify-center">
-          {nextLute && (
-            <SwapPanel
-              itemName={nextLute.name}
-              swapPrice={luteSwapFee}
-              imgSrc={nextLute.image}
-              imgAlt="Lute"
-              color="blue"
-              buttonText="Swap Flute for Lute"
-              items={flutes}
-              swapItem="flute"
-              onSwap={onSwapFlute}
-            />
-          )}
+          <SwapPanel
+            nextItem={nextLute}
+            swapPrice={fluteSwapFee}
+            imgAlt="Lute"
+            color="blue"
+            buttonText="Swap Flute for Lute"
+            items={fluteIds}
+            swapItem="flute"
+            enabled={!swapPending}
+            onSwap={onSwapFlute}
+          />
           <div className="my-2 mx-8 w-80 hidden lg:block">
             <img src="img/swap.png" alt="Swap Lutes for Flutes" />
           </div>
-          {nextFlute && (
-            <SwapPanel
-              itemName={nextFlute.name}
-              swapPrice={fluteSwapFee}
-              imgSrc={nextFlute.image}
-              imgAlt="Flute"
-              color="red"
-              buttonText="Swap Lute for Flute"
-              items={lutes}
-              swapItem="lute"
-              onSwap={onSwapLute}
-            />
-          )}
+          <SwapPanel
+            nextItem={nextFlute}
+            swapPrice={luteSwapFee}
+            imgAlt="Flute"
+            color="red"
+            buttonText="Swap Lute for Flute"
+            items={luteIds}
+            swapItem="lute"
+            enabled={!swapPending}
+            onSwap={onSwapLute}
+          />
         </div>
       </div>
     </FullPage>

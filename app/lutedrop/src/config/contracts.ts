@@ -8,7 +8,10 @@ const config = {
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
         "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
         "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
         "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
       ]),
     },
@@ -17,7 +20,10 @@ const config = {
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
         "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
         "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
         "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
       ]),
     },
@@ -28,6 +34,7 @@ const config = {
         "function drops(uint256 dropId) external view returns (tuple(uint256 fee, uint256 craftableSupply, uint256 craftedSupply, uint256 craftsPerAddress))",
         "function crafts(address account, uint256 dropid) external view returns (uint256)",
         "function craft(uint8 item, uint256 dropid) external payable",
+        "event Craft(address indexed to, uint8 indexed item, uint256 fee)",
       ]),
     },
     lutiswap: {
@@ -38,6 +45,7 @@ const config = {
         "function latestSwapPrice() external view returns (uint256, uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) external payable",
         "function swapExactFluteForLute(uint256 tokenId) external payable",
+        "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
       ]),
     },
   },
@@ -69,6 +77,7 @@ const config = {
         "function dropId(address token) returns (uint256)",
         "function drops(uint256 dropId) returns (address, uint256, uint256)",
         "function isClaimed(address token, uint256 tokenId) returns (bool)",
+        "event Craft(address indexed to, uint8 item, uint256 fee)",
       ]),
     },
     lutiswap: {
@@ -77,6 +86,7 @@ const config = {
         "function latestSwapPrice() view returns (uint256, uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) payable",
         "function swapExactFluteForLute(uint256 tokenId) payable",
+        "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
       ]),
     },
   },

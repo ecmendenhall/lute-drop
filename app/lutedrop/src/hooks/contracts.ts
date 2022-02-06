@@ -8,7 +8,6 @@ import {
 } from "@usedapp/core";
 import { BigNumber, Contract } from "@usedapp/core/node_modules/ethers";
 import { ethers } from "ethers";
-import { parse } from "path";
 import { useEffect, useState } from "react";
 import { getConfig } from "../config/contracts";
 
@@ -47,6 +46,7 @@ export function useItem(item: Item, id: BigNumber) {
 export function useItems(item: Item, ids: BigNumber[] | undefined) {
   const { chainId } = useEthers();
   const config = getConfig(chainId);
+  console.log(ids?.map((i) => i.toNumber()));
 
   const itemCalls = (ids || []).map((id: BigNumber) => {
     return {
@@ -56,15 +56,33 @@ export function useItems(item: Item, ids: BigNumber[] | undefined) {
       args: [id],
     };
   });
+  console.log(itemCalls);
   const itemsResponse = (useContractCalls(itemCalls) ?? []) as string[][];
   return itemsResponse
     .map((i, idx) => {
       if (i && ids) {
         const [uri] = i;
         return { id: ids[idx], ...parseMetadata(uri) };
+      } else {
+        return undefined;
       }
     })
     .filter((i) => !!i);
+}
+
+export function useIsApprovedForAll(
+  item: Item,
+  owner: string | null | undefined
+) {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
+  const [isApprovedForAll] = useContractCall({
+    abi: config[item].abi,
+    address: config[item].address,
+    method: "isApprovedForAll",
+    args: [owner, config.lutiswap.address],
+  }) ?? [false];
+  return isApprovedForAll;
 }
 
 export function useNextItem(item: Item) {
@@ -138,6 +156,59 @@ export function useCraftedCount(address: string | null | undefined) {
   return crafts;
 }
 
+export function useTotalCrafted(dependencies: any[]) {
+  const { library, chainId } = useEthers();
+  const config = getConfig(chainId);
+  const [lutesCrafted, setLutesCrafted] = useState<number>(0);
+  const [flutesCrafted, setFlutesCrafted] = useState<number>(0);
+
+  useEffect(() => {
+    const loadTotalCrafted = async () => {
+      if (library) {
+        const luteDrop = new ethers.Contract(
+          config.luteDrop.address,
+          config.luteDrop.abi,
+          library
+        );
+        const luteCraftLogs = await luteDrop.queryFilter(
+          luteDrop.filters.Craft(null, 0)
+        );
+        const fluteCraftLogs = await luteDrop.queryFilter(
+          luteDrop.filters.Craft(null, 1)
+        );
+        setLutesCrafted(luteCraftLogs.length);
+        setFlutesCrafted(fluteCraftLogs.length);
+      }
+    };
+    loadTotalCrafted();
+  }, [library, config.luteDrop.abi, config.luteDrop.address, ...dependencies]);
+
+  return { lutesCrafted, flutesCrafted };
+}
+
+export function useSwaps(dependencies: any[]) {
+  const { library, chainId } = useEthers();
+  const config = getConfig(chainId);
+  const [swaps, setSwaps] = useState<number>(0);
+
+  useEffect(() => {
+    const loadSwaps = async () => {
+      if (library) {
+        const lutiswap = new ethers.Contract(
+          config.lutiswap.address,
+          config.lutiswap.abi,
+          library
+        );
+        const swapLogs = await lutiswap.queryFilter(lutiswap.filters.Swap());
+        setSwaps(swapLogs.length);
+      }
+    };
+    loadSwaps();
+  }, [library, config.lutiswap.abi, config.lutiswap.address, ...dependencies]);
+
+  return swaps;
+}
+
 export function useTokenIdsByAccount(
   item: Item,
   account: string | null | undefined,
@@ -184,13 +255,7 @@ export function useTokenIdsByAccount(
       }
     };
     loadTokenIds();
-  }, [
-    account,
-    library,
-    config[item].abi,
-    config[item].address,
-    ...dependencies,
-  ]);
+  }, [account, library, config, item, ...dependencies]);
 
   return tokenIds;
 }
@@ -219,5 +284,14 @@ export function useSwapExactLuteForFlute() {
   const contract = new Contract(config.lutiswap.address, config.lutiswap.abi);
   return useContractFunction(contract, "swapExactLuteForFlute", {
     transactionName: "Swap Lute for Flute",
+  });
+}
+
+export function useSetApprovalForAll(item: Item) {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
+  const contract = new Contract(config[item].address, config[item].abi);
+  return useContractFunction(contract, "setApprovalForAll", {
+    transactionName: "Set Approval for Lutiswap",
   });
 }

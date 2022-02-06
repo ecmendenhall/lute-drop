@@ -1,11 +1,26 @@
+import { useEthers, useTokenBalance } from "@usedapp/core";
 import Contracts from "../components/Contracts";
 import Stats from "../components/Stats";
-import { useItemSupply } from "../hooks/contracts";
+import { getConfig } from "../config/contracts";
+import { useItemSupply, useSwaps, useTotalCrafted } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
 const About = () => {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
+
   const luteSupply = useItemSupply("lute");
   const fluteSupply = useItemSupply("flute");
+  const lutiswapLuteBalance = useTokenBalance(
+    config.lute.address,
+    config.lutiswap.address
+  );
+  const lutiswapFluteBalance = useTokenBalance(
+    config.flute.address,
+    config.lutiswap.address
+  );
+  const { lutesCrafted, flutesCrafted } = useTotalCrafted([]);
+  const swaps = useSwaps([]);
 
   return (
     <FullPage
@@ -18,8 +33,34 @@ const About = () => {
     >
       <div className="font-body text-xl">
         <div className="flex flex-col md:flex-row justify-evenly">
-          <Contracts />
-          <Stats {...{ luteSupply, fluteSupply }} />
+          <div>
+            <Contracts />
+            <div className="mb-4">
+              <h4 className="font-black font-display text-2xl">Links:</h4>
+              <ul className="mb-4">
+                <li>
+                  <a href="https://github.com/ecmendenhall/lute-drop">Github</a>
+                </li>
+                <li>
+                  <a href="https://alpha.guild.xyz/lute-drop">Guild</a>
+                </li>
+                <li>
+                  <a href="https://discord.gg/NmRgHGHvtN">Discord</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <Stats
+            {...{
+              luteSupply,
+              fluteSupply,
+              lutesCrafted,
+              flutesCrafted,
+              lutiswapLuteBalance,
+              lutiswapFluteBalance,
+              swaps,
+            }}
+          />
           <div className="md:w-1/3 mb-4">
             <h4 className="font-black font-display text-2xl mb-2">
               How it works:

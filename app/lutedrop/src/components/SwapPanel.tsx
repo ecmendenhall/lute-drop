@@ -7,39 +7,41 @@ import SelectItem from "./SelectItem";
 interface Item {
   id: BigNumber;
   name: string;
+  image: string;
 }
 
 interface Props {
-  itemName: string;
+  nextItem?: Item;
   swapPrice: BigNumber;
-  imgSrc: string;
   imgAlt: string;
   color: string;
   buttonText: string;
-  items: Item[];
+  items?: BigNumber[];
   swapItem: string;
+  enabled: boolean;
   onSwap: (tokenId: BigNumber) => void;
 }
 
 const SwapPanel = ({
-  itemName,
+  nextItem,
   swapPrice,
-  imgSrc,
   imgAlt,
   color,
   buttonText,
   items,
   swapItem,
+  enabled,
   onSwap,
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState<BigNumber>();
+  const receiveItem = swapItem === "lute" ? "flute" : "lute";
 
   const onChange = (id: BigNumber) => {
     setSelectedItem(id);
   };
 
   const onClick = () => {
-    if (selectedItem) {
+    if (enabled && selectedItem) {
       onSwap(selectedItem);
     }
   };
@@ -47,14 +49,28 @@ const SwapPanel = ({
   return (
     <div className="flex flex-col place-content-center text-center p-4">
       <div className="mb-4 bg-yellow-50 p-4 shadow w-72">
-        <h4 className="font-bold">{itemName}</h4>
-        <img src={imgSrc} alt={imgAlt} className="my-2" />
-        <p>{roundEther(swapPrice)} MATIC</p>
+        {nextItem ? (
+          <div>
+            <h4 className="font-bold">{nextItem.name}</h4>
+            <img src={nextItem.image} alt={imgAlt} className="my-2" />
+            <p>{roundEther(swapPrice)} MATIC</p>
+          </div>
+        ) : (
+          <div className="animate-pulse">
+            <h4 className="font-bold">Loading next {receiveItem}...</h4>
+            <img
+              src={`img/${receiveItem}.svg`}
+              alt={receiveItem}
+              className="my-2 animate-pulse"
+            />
+            <p className="invisible">??? MATIC</p>
+          </div>
+        )}
       </div>
       {items && items.length > 0 ? (
         <div>
           <div className="mb-4">
-            <SelectItem items={items} onChange={onChange} />
+            <SelectItem items={items} swapItem={swapItem} onChange={onChange} />
           </div>
           <Button color={color} onClick={onClick}>
             {buttonText}

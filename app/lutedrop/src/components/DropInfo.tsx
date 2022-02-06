@@ -28,7 +28,7 @@ const DropInfo = ({
     }
   };
   return (
-    <div className="flex flex-col text-center md:w-1/4 my-8">
+    <div className="flex flex-col text-center my-8">
       {total && total.gt(0) ? (
         <div>
           <h3 className="text-3xl font-body font-bold mb-2">

@@ -188,7 +188,6 @@ contract Lute is Item {
                     "Brass Pegs",
                     "Gold Pegs",
                     "Colorful Ribbon"
-                    "Colorful Ribbon"
                 ]
             );
     }

@@ -36,7 +36,7 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         uint256 craftableSupply,
         uint256 craftsPerAddress
     );
-    event Craft(address indexed to, ItemType item, uint256 fee);
+    event Craft(address indexed to, ItemType indexed item, uint256 fee);
     event Withdraw(address indexed to, uint256 amount);
 
     constructor(

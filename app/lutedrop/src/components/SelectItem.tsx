@@ -1,19 +1,18 @@
 import { BigNumber } from "ethers";
 import Select, { SingleValue } from "react-select";
 
-interface Item {
-  id: BigNumber;
-  name: string;
-}
-
 interface Props {
-  items: Item[];
+  swapItem: string;
+  items: BigNumber[];
   onChange: (id: BigNumber) => void;
 }
 
-const SelectItem = ({ items, onChange }: Props) => {
+const capitalize = (string: string) =>
+  string[0].toUpperCase() + string.slice(1);
+
+const SelectItem = ({ swapItem, items, onChange }: Props) => {
   const options = items.map((i) => {
-    return { value: i.id, label: i.name };
+    return { value: i, label: `${capitalize(swapItem)} #${i.toNumber()}` };
   });
 
   const handleChange = (

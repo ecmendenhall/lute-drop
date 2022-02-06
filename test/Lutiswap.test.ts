@@ -167,6 +167,7 @@ describe("Lutiswap", () => {
         )
           .to.emit(contracts.lutiswap, "Swap")
           .withArgs(
+            fluteHolder.address,
             contracts.flute.address,
             contracts.lute.address,
             0,
@@ -394,6 +395,7 @@ describe("Lutiswap", () => {
         )
           .to.emit(contracts.lutiswap, "Swap")
           .withArgs(
+            luteHolder.address,
             contracts.lute.address,
             contracts.flute.address,
             1,

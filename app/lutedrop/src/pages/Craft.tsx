@@ -1,28 +1,44 @@
 import { useEthers } from "@usedapp/core";
 import FullPage from "../layouts/FullPage";
-import { getConfig } from "../config/contracts";
 import CraftPanel from "../components/CraftPanel";
 import {
   useCraftedCount,
   useCraftItem,
-  useItemSupply,
   useLatestDrop,
+  useTotalCrafted,
 } from "../hooks/contracts";
 import DropInfo from "../components/DropInfo";
+import { useState } from "react";
 
 const Craft = () => {
   const { account } = useEthers();
-  const luteSupply = useItemSupply("lute");
-  const fluteSupply = useItemSupply("flute");
+
+  const { send: sendCraftItem, state: craftItemState } = useCraftItem();
+
+  const { lutesCrafted, flutesCrafted } = useTotalCrafted([craftItemState]);
   const crafted = useCraftedCount(account);
   const { dropId, fee, craftableSupply, craftedSupply, craftsPerAddress } =
     useLatestDrop();
-  const { send: sendCraftItem } = useCraftItem();
-  const enabled = craftableSupply > craftedSupply && crafted < craftsPerAddress;
+  const enabled =
+    craftableSupply &&
+    craftedSupply &&
+    crafted &&
+    craftsPerAddress &&
+    craftableSupply.gt(craftedSupply) &&
+    crafted.lt(craftsPerAddress);
+
+  const [craftingItem, setCraftingItem] = useState(false);
 
   const craftItem = (item: string) => {
-    const typeId = item === "lute" ? 0 : 1;
-    sendCraftItem(typeId, dropId, { value: fee });
+    const craft = async () => {
+      if (!craftingItem) {
+        setCraftingItem(true);
+        const typeId = item === "lute" ? 0 : 1;
+        await sendCraftItem(typeId, dropId, { value: fee });
+        setCraftingItem(false);
+      }
+    };
+    craft();
   };
 
   return (
@@ -34,7 +50,7 @@ const Craft = () => {
         <div className="flex flex-col md:flex-row items-center justify-center mb-8">
           <CraftPanel
             enabled={enabled}
-            crafted={fluteSupply}
+            crafted={flutesCrafted}
             imgSrc="img/flutes.png"
             imgAlt="Flutes"
             imgStyle="scale-105"
@@ -54,7 +70,7 @@ const Craft = () => {
           />
           <CraftPanel
             enabled={enabled}
-            crafted={luteSupply}
+            crafted={lutesCrafted}
             imgSrc="img/lutes.png"
             imgAlt="Lutes"
             imgStyle="translate-x-4"
