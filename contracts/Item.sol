@@ -47,79 +47,61 @@ abstract contract Item is ERC721Enumerable, AccessControl {
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function getType(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function getMajorModifier(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function getMinorModifier(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function getRange(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function getDecoration(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function getName(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function tokenSVG(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function attributesJSON(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function tokenJSON(uint256 tokenId)
         public
         view
         virtual
-        returns (string memory)
-    {}
-
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {}
+        returns (string memory);
 
     function getOrder(uint256 tokenId)
         public

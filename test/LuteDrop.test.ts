@@ -136,6 +136,18 @@ describe("LuteDrop", () => {
         .withArgs(minter.address, 1, fee);
     });
 
+    it("crafts returns number of crafted items by user and drop", async () => {
+      await contracts.luteDrop.connect(minter).craft(0, 1, { value: fee });
+      await contracts.luteDrop.connect(minter).craft(1, 1, { value: fee });
+      expect(await contracts.luteDrop.crafts(minter.address, 1)).to.equal(2);
+    });
+
+    it("crafts reverts on invalid drop ID", async () => {
+      await expect(
+        contracts.luteDrop.crafts(minter.address, 100)
+      ).to.be.revertedWith("Invalid drop ID");
+    });
+
     it("reverts on invalid items", async () => {
       await expect(
         contracts.luteDrop.connect(minter).craft(3, 1, { value: fee })
