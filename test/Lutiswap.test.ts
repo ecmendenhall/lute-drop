@@ -158,6 +158,23 @@ describe("Lutiswap", () => {
         expect(await contracts.lute.ownerOf(0)).to.equal(fluteHolder.address);
       });
 
+      it("emits Swap event", async () => {
+        const [_luteFee, fluteFee] = await contracts.lutiswap.latestSwapPrice();
+        await expect(
+          contracts.lutiswap.connect(fluteHolder).swapExactFluteForLute(0, {
+            value: fluteFee,
+          })
+        )
+          .to.emit(contracts.lutiswap, "Swap")
+          .withArgs(
+            contracts.flute.address,
+            contracts.lute.address,
+            0,
+            0,
+            fluteFee
+          );
+      });
+
       it("cannot swap unowned flutes", async () => {
         const [_luteFee, fluteFee] = await contracts.lutiswap.latestSwapPrice();
         await expect(
@@ -366,6 +383,23 @@ describe("Lutiswap", () => {
         });
         expect(await contracts.flute.balanceOf(luteHolder.address)).to.equal(1);
         expect(await contracts.flute.ownerOf(1)).to.equal(luteHolder.address);
+      });
+
+      it("emits Swap event", async () => {
+        const [luteFee, _fluteFee] = await contracts.lutiswap.latestSwapPrice();
+        await expect(
+          contracts.lutiswap.connect(luteHolder).swapExactLuteForFlute(1, {
+            value: luteFee,
+          })
+        )
+          .to.emit(contracts.lutiswap, "Swap")
+          .withArgs(
+            contracts.lute.address,
+            contracts.flute.address,
+            1,
+            1,
+            luteFee
+          );
       });
 
       it("cannot swap unowned lutes", async () => {
@@ -680,6 +714,14 @@ describe("Lutiswap", () => {
       );
     });
 
+    it("emits a Withdraw event", async () => {
+      await expect(
+        contracts.lutiswap.connect(owner).withdraw(owner.address, fee)
+      )
+        .to.emit(contracts.lutiswap, "Withdraw")
+        .withArgs(owner.address, fee);
+    });
+
     it("non-owner cannot withdraw stored fees", async () => {
       await expect(
         contracts.lutiswap.connect(nonOwner).withdraw(nonOwner.address, fee)
@@ -697,6 +739,12 @@ describe("Lutiswap", () => {
       await contracts.lutiswap.connect(owner).setBaseFee(10);
       const baseFee = await contracts.lutiswap.baseFee();
       expect(baseFee).to.equal(10);
+    });
+
+    it("emits UpdateBaseFee event", async () => {
+      await expect(contracts.lutiswap.connect(owner).setBaseFee(10))
+        .to.emit(contracts.lutiswap, "UpdateBaseFee")
+        .withArgs(4, 10);
     });
 
     it("non-owner cannot set base fee", async () => {

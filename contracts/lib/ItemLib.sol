@@ -101,28 +101,24 @@ library ItemLib {
             );
     }
 
-    function _textElement(
-        string memory y,
-        string memory text,
-        string[4] memory svgParams
-    ) internal pure returns (string memory) {
+    function _textElement(string memory y, string memory text)
+        internal
+        pure
+        returns (string memory)
+    {
         return
             string(
                 abi.encodePacked(
-                    '<text x="',
-                    svgParams[1],
-                    '" y="',
+                    '<text x="170" y="',
                     y,
-                    '" class="base" text-anchor="',
-                    svgParams[2],
-                    '">',
+                    '" class="base" text-anchor="middle">',
                     text,
                     "</text>"
                 )
             );
     }
 
-    function _styleTags(string[4] memory svgParams)
+    function _styleTags(string memory color)
         internal
         pure
         returns (string memory)
@@ -131,7 +127,7 @@ library ItemLib {
             string(
                 abi.encodePacked(
                     "<style>.base { fill: ",
-                    svgParams[0],
+                    color,
                     '; font-family: Luminari, serif; font-size: 16px; }</style><rect width="100%" height="100%" fill="rgb(253 240 221)" />'
                 )
             );
@@ -142,18 +138,19 @@ library ItemLib {
         string memory majorModifier,
         string memory minorModifier,
         string memory decoration,
-        string[4] memory svgParams
+        string memory color,
+        string memory svg
     ) public pure returns (string memory) {
         return
             string(
                 abi.encodePacked(
-                    '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
-                    _styleTags(svgParams),
-                    _textElement("25", name, svgParams),
-                    _textElement("50", majorModifier, svgParams),
-                    _textElement("75", minorModifier, svgParams),
-                    _textElement("100", decoration, svgParams),
-                    svgParams[3],
+                    '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 400">',
+                    _styleTags(color),
+                    svg,
+                    _textElement("300", name),
+                    _textElement("325", majorModifier),
+                    _textElement("350", minorModifier),
+                    _textElement("375", decoration),
                     "</svg>"
                 )
             );

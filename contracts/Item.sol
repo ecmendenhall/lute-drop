@@ -7,7 +7,6 @@ import "./lib/ItemLib.sol";
 
 abstract contract Item is ERC721Enumerable, AccessControl {
     bytes32 public constant CRAFTER_ROLE = keccak256("CRAFTER_ROLE");
-    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     bool internal immutable useSeeds;
     mapping(uint256 => uint256) internal seedsByTokenId;
@@ -42,10 +41,6 @@ abstract contract Item is ERC721Enumerable, AccessControl {
         nextId++;
         seedsByTokenId[id] = _getSeed(id);
         _mint(recipient, id);
-    }
-
-    function burn(uint256 tokenId) public onlyRole(BURNER_ROLE) {
-        _burn(tokenId);
     }
 
     function getMaterial(uint256 tokenId)
@@ -145,6 +140,7 @@ abstract contract Item is ERC721Enumerable, AccessControl {
                         block.timestamp,
                         block.difficulty,
                         block.gaslimit,
+                        block.basefee,
                         blockhash(block.number - 1),
                         msg.sender,
                         tx.gasprice

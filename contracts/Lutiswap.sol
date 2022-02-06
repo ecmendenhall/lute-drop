@@ -5,28 +5,36 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/IItem.sol";
 
-import "hardhat/console.sol";
-
 contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
 
     uint256 public baseFee = 4;
 
+    event Swap(
+        address indexed from,
+        address indexed to,
+        uint256 fromTokenId,
+        uint256 toTokenId,
+        uint256 fee
+    );
+    event UpdateBaseFee(uint256 oldFee, uint256 newFee);
+    event Withdraw(address indexed to, uint256 amount);
+
     constructor(address _lute, address _flute) {
         lute = IItem(_lute);
         flute = IItem(_flute);
     }
 
-    function nextLute() public view returns (uint256) {
+    function nextLute() external view returns (uint256) {
         return _nextToken(lute);
     }
 
-    function nextFlute() public view returns (uint256) {
+    function nextFlute() external view returns (uint256) {
         return _nextToken(flute);
     }
 
-    function latestSwapPrice() public view returns (uint256, uint256) {
+    function latestSwapPrice() external view returns (uint256, uint256) {
         return
             swapPrice(
                 lute.balanceOf(address(this)),
@@ -43,7 +51,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
     }
 
     function swapExactFluteForLute(uint256 tokenId)
-        public
+        external
         payable
         nonReentrant
     {
@@ -51,7 +59,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
     }
 
     function swapExactLuteForFlute(uint256 tokenId)
-        public
+        external
         payable
         nonReentrant
     {
@@ -83,14 +91,17 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         if (msg.value > fee) {
             _safeTransferETH(msg.sender, msg.value - fee);
         }
+        emit Swap(address(from), address(to), tokenId, outTokenId, fee);
     }
 
     function setBaseFee(uint256 newBaseFee) public onlyOwner {
+        emit UpdateBaseFee(baseFee, newBaseFee);
         baseFee = newBaseFee;
     }
 
     function withdraw(address to, uint256 value) public onlyOwner {
         _safeTransferETH(to, value);
+        emit Withdraw(to, value);
     }
 
     function _swapPrice(uint256 _from, uint256 _to)

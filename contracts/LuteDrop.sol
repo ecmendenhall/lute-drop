@@ -30,6 +30,15 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         FLUTE
     }
 
+    event AddDrop(
+        uint256 id,
+        uint256 fee,
+        uint256 craftableSupply,
+        uint256 craftsPerAddress
+    );
+    event Craft(address indexed to, ItemType item, uint256 fee);
+    event Withdraw(address indexed to, uint256 amount);
+
     constructor(
         address _lute,
         address _flute,
@@ -38,6 +47,16 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         lute = IItem(_lute);
         flute = IItem(_flute);
         lutiswap = _lutiswap;
+    }
+
+    function crafts(address account, uint256 dropId)
+        public
+        view
+        returns (uint256)
+    {
+        Drop storage drop = drops[dropId];
+        require(drop.craftableSupply > 0, "Invalid drop ID");
+        return drop.crafts[account];
     }
 
     function craft(ItemType item, uint256 dropId) public payable nonReentrant {
@@ -57,16 +76,7 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         drop.crafts[msg.sender]++;
         drop.craftedSupply++;
         _craftItem(item, msg.sender);
-    }
-
-    function crafts(address account, uint256 dropId)
-        public
-        view
-        returns (uint256)
-    {
-        Drop storage drop = drops[dropId];
-        require(drop.craftableSupply > 0, "Invalid drop ID");
-        return drop.crafts[account];
+        emit Craft(msg.sender, item, drop.fee);
     }
 
     function addDrop(
@@ -79,6 +89,7 @@ contract LuteDrop is Ownable, ReentrancyGuard {
 
     function withdraw(address to, uint256 value) public onlyOwner {
         _safeTransfer(to, value);
+        emit Withdraw(to, value);
     }
 
     function _addDrop(
@@ -96,6 +107,7 @@ contract LuteDrop is Ownable, ReentrancyGuard {
         drops[latestDrop].fee = fee;
         drops[latestDrop].craftsPerAddress = craftsPerAddress;
         drops[latestDrop].craftableSupply = craftableSupply;
+        emit AddDrop(latestDrop, fee, craftableSupply, craftsPerAddress);
     }
 
     function _craftItem(ItemType item, address recipient) internal {

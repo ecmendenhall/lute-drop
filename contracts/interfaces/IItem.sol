@@ -5,6 +5,4 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
 interface IItem is IERC721Enumerable {
     function craft(address recipient) external;
-
-    function burn(uint256 tokenId) external;
 }

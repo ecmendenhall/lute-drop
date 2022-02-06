@@ -51,22 +51,6 @@ async function deployMultiCall(ethers: Ethers) {
   console.log("Multicall deployed to:", multicall.address);
 }
 
-async function deployLoot(ethers: Ethers) {
-  const Loot = await ethers.getContractFactory("Loot");
-  const loot = await Loot.deploy({ gasLimit: 7_000_000 });
-  await loot.deployed();
-
-  console.log("LOOT deployed to:", loot.address);
-
-  const MLoot = await ethers.getContractFactory("TemporalLoot");
-  const mloot = await MLoot.deploy({ gasLimit: 8_000_000 });
-  await mloot.deployed();
-
-  console.log("MLOOT deployed to:", mloot.address);
-
-  return { loot, mloot };
-}
-
 async function deployCoreContracts(ethers: Ethers) {
   const ItemLibFactory = await ethers.getContractFactory("ItemLib");
   const itemlib = await (await ItemLibFactory.deploy()).deployed();
@@ -147,10 +131,8 @@ async function addDrop(luteDrop: Contract, owner: SignerWithAddress) {
 export async function deployTestnet(ethers: Ethers) {
   const [owner] = await ethers.getSigners();
 
-  //const { loot, mloot } = await deployLoot(ethers);
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(ethers);
   await grantRoles(lute, flute, luteDrop, lutiswap);
-  //await craftItems(lute, flute, owner);
 }
 
 export async function deployLocal(ethers: Ethers) {

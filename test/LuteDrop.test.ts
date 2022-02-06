@@ -128,6 +128,14 @@ describe("LuteDrop", () => {
       ).to.equal(1);
     });
 
+    it("emits a Craft event", async () => {
+      await expect(
+        contracts.luteDrop.connect(minter).craft(1, 1, { value: fee })
+      )
+        .to.emit(contracts.luteDrop, "Craft")
+        .withArgs(minter.address, 1, fee);
+    });
+
     it("reverts on invalid items", async () => {
       await expect(
         contracts.luteDrop.connect(minter).craft(3, 1, { value: fee })
@@ -190,6 +198,14 @@ describe("LuteDrop", () => {
       );
     });
 
+    it("emits a Withdraw event", async () => {
+      await expect(
+        contracts.luteDrop.connect(owner).withdraw(owner.address, fee)
+      )
+        .to.emit(contracts.luteDrop, "Withdraw")
+        .withArgs(owner.address, fee);
+    });
+
     it("non-owner cannot withdraw ETH from fees", async () => {
       await expect(
         contracts.luteDrop.connect(nonOwner).withdraw(nonOwner.address, fee)
@@ -214,6 +230,14 @@ describe("LuteDrop", () => {
       expect(await contracts.luteDrop.latestDrop()).to.equal(1);
       await contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 10);
       expect(await contracts.luteDrop.latestDrop()).to.equal(2);
+    });
+
+    it("emits AddDrop event", async () => {
+      await expect(
+        contracts.luteDrop.connect(owner).addDrop(parseEther("10"), 1, 10)
+      )
+        .to.emit(contracts.luteDrop, "AddDrop")
+        .withArgs(1, parseEther("10"), 10, 1);
     });
 
     it("reverts if craftable supply is zero", async () => {

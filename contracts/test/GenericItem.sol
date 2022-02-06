@@ -213,12 +213,8 @@ contract GenericItem is Item {
                 getMajorModifier(tokenId),
                 getMinorModifier(tokenId),
                 getDecoration(tokenId),
-                [
-                    "rgb(0 0 0)",
-                    "0",
-                    "start",
-                    '<image href="https://example.com/fake.png" x="0" y="0" width="100" />'
-                ]
+                "rgb(0 0 0)",
+                '<image href="https://example.com/fake.png" x="0" y="0" width="100" />'
             );
     }
 
