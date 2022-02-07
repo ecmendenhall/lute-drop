@@ -192,8 +192,12 @@ export const getConfig = (chainId: ChainId | undefined) => {
       return config[ChainId.Hardhat];
     case ChainId.Rinkeby:
       return config[ChainId.Rinkeby];
+    case ChainId.Mumbai:
+      return config[ChainId.Mumbai];
+    case ChainId.Polygon:
+      return config[ChainId.Polygon];
     default:
-      return config[ChainId.Hardhat];
+      return config[ChainId.Polygon];
   }
 };
 

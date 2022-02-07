@@ -225,32 +225,38 @@ export function useTokenIdsByAccount(
           config[item].abi,
           library
         );
-        const sentLogs = await token.queryFilter(
-          token.filters.Transfer(account, null)
-        );
-        const receivedLogs = await token.queryFilter(
-          token.filters.Transfer(null, account)
-        );
-        const logs = sentLogs
-          .concat(receivedLogs)
-          .sort(
-            (a, b) =>
-              a.blockNumber - b.blockNumber ||
-              a.transactionIndex - b.transactionIndex
+        console.log(library);
+        console.log(config[item].address);
+        try {
+          const sentLogs = await token.queryFilter(
+            token.filters.Transfer(account, null)
           );
-        const owned = new Set<string>();
-        for (const log of logs) {
-          if (log.args) {
-            const { from, to, tokenId } = log.args;
-            if (addressEqual(to, account)) {
-              owned.add(tokenId.toString());
-            } else if (addressEqual(from, account)) {
-              owned.delete(tokenId.toString());
+          const receivedLogs = await token.queryFilter(
+            token.filters.Transfer(null, account)
+          );
+          const logs = sentLogs
+            .concat(receivedLogs)
+            .sort(
+              (a, b) =>
+                a.blockNumber - b.blockNumber ||
+                a.transactionIndex - b.transactionIndex
+            );
+          const owned = new Set<string>();
+          for (const log of logs) {
+            if (log.args) {
+              const { from, to, tokenId } = log.args;
+              if (addressEqual(to, account)) {
+                owned.add(tokenId.toString());
+              } else if (addressEqual(from, account)) {
+                owned.delete(tokenId.toString());
+              }
             }
           }
+          const tokenIds = Array.from(owned).map((id) => BigNumber.from(id));
+          setTokenIds(tokenIds);
+        } catch (e) {
+          console.log(e);
         }
-        const tokenIds = Array.from(owned).map((id) => BigNumber.from(id));
-        setTokenIds(tokenIds);
       }
     };
     loadTokenIds();
