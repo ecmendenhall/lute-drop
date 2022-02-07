@@ -9,7 +9,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
 
-    uint256 public baseFee = 1;
+    uint256 public baseFee = 1 ether;
 
     event Swap(
         address indexed user,
@@ -121,7 +121,7 @@ contract Lutiswap is Ownable, ReentrancyGuard {
         uint256 f = _from * 1e18;
         uint256 t = _to * 1e18;
         uint256 k = f * t;
-        return ((k / (t - 1e18)) - f) * baseFee;
+        return (((k / (t - 1e18)) - f) * baseFee) / 1e18;
     }
 
     function _safeTransferETH(address to, uint256 value) internal {

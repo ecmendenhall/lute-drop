@@ -86,7 +86,7 @@ describe("Lutiswap", () => {
       .connect(owner)
       .grantRole(CRAFTER_ROLE, contracts.lutiswap.address);
 
-    await contracts.lutiswap.connect(owner).setBaseFee(4);
+    await contracts.lutiswap.connect(owner).setBaseFee(parseEther("4"));
   });
 
   describe("configuration", () => {
@@ -727,19 +727,21 @@ describe("Lutiswap", () => {
   describe("base fee", () => {
     it("baseFee returns base fee", async () => {
       const baseFee = await contracts.lutiswap.baseFee();
-      expect(baseFee).to.equal(4);
+      expect(baseFee).to.equal(parseEther("4"));
     });
 
     it("owner can set base fee", async () => {
-      await contracts.lutiswap.connect(owner).setBaseFee(10);
+      await contracts.lutiswap.connect(owner).setBaseFee(parseEther("10"));
       const baseFee = await contracts.lutiswap.baseFee();
-      expect(baseFee).to.equal(10);
+      expect(baseFee).to.equal(parseEther("10"));
     });
 
     it("emits UpdateBaseFee event", async () => {
-      await expect(contracts.lutiswap.connect(owner).setBaseFee(10))
+      await expect(
+        contracts.lutiswap.connect(owner).setBaseFee(parseEther("10"))
+      )
         .to.emit(contracts.lutiswap, "UpdateBaseFee")
-        .withArgs(4, 10);
+        .withArgs(parseEther("4"), parseEther("10"));
     });
 
     it("non-owner cannot set base fee", async () => {

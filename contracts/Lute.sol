@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./Item.sol";
 
 contract Lute is Item {
-    constructor(bool _useSeeds) Item("Lute", "LUTE", _useSeeds) {}
+    constructor(bool _useSeeds) Item("Lute Drop: Lute", "LUTE", _useSeeds) {}
 
     function getMaterial(uint256 tokenId)
         public
