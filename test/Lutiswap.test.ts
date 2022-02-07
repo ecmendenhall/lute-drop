@@ -48,9 +48,6 @@ let owner: SignerWithAddress,
 const CRAFTER_ROLE = ethers.utils.keccak256(
   ethers.utils.toUtf8Bytes("CRAFTER_ROLE")
 );
-const BURNER_ROLE = ethers.utils.keccak256(
-  ethers.utils.toUtf8Bytes("BURNER_ROLE")
-);
 
 describe("Lutiswap", () => {
   beforeEach(async () => {
@@ -84,16 +81,12 @@ describe("Lutiswap", () => {
     await contracts.flute
       .connect(owner)
       .grantRole(CRAFTER_ROLE, contracts.lutiswap.address);
-    await contracts.flute
-      .connect(owner)
-      .grantRole(BURNER_ROLE, contracts.lutiswap.address);
 
     await contracts.lute
       .connect(owner)
       .grantRole(CRAFTER_ROLE, contracts.lutiswap.address);
-    await contracts.lute
-      .connect(owner)
-      .grantRole(BURNER_ROLE, contracts.lutiswap.address);
+
+    await contracts.lutiswap.connect(owner).setBaseFee(4);
   });
 
   describe("configuration", () => {

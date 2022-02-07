@@ -126,17 +126,22 @@ const About = () => {
               warranty of any kind.
             </p>
           </div>
-          <Stats
-            {...{
-              luteSupply,
-              fluteSupply,
-              lutesCrafted,
-              flutesCrafted,
-              lutiswapLuteBalance,
-              lutiswapFluteBalance,
-              swaps,
-            }}
-          />
+          <div>
+            <Stats
+              {...{
+                luteSupply,
+                fluteSupply,
+                lutesCrafted,
+                flutesCrafted,
+                lutiswapLuteBalance,
+                lutiswapFluteBalance,
+                swaps,
+              }}
+            />
+            <div className="w-72">
+              <img src="img/about.png" alt="Two flute players" />
+            </div>
+          </div>
         </div>
       </div>
     </FullPage>

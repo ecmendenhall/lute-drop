@@ -30,10 +30,10 @@ const Stats = ({
       <p className="my-2">Lutes crafted: {lutesCrafted}</p>
       <p className="my-2">Flutes crafted: {flutesCrafted}</p>
       <p className="my-2">
-        Lute circulating supply: {luteSupply || 0 - lutiswapLutes}
+        Lute circulating supply: {(luteSupply || 0) - lutiswapLutes}
       </p>
       <p className="my-2">
-        Flute circulating supply: {fluteSupply || 0 - lutiswapFlutes}
+        Flute circulating supply: {(fluteSupply || 0) - lutiswapFlutes}
       </p>
       <p className="my-2">Total swaps: {swaps}</p>
     </div>

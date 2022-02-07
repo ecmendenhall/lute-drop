@@ -114,7 +114,7 @@ async function craftItems(
 
 async function addDrop(luteDrop: Contract, owner: SignerWithAddress) {
   console.log("Adding new Drop...");
-  await luteDrop.connect(owner).addDrop(parseEther("2"), 500, 500);
+  await luteDrop.connect(owner).addDrop(parseEther("2"), 5, 100);
 }
 
 export async function deployTestnet(ethers: Ethers) {
@@ -122,6 +122,7 @@ export async function deployTestnet(ethers: Ethers) {
 
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(ethers);
   await grantRoles(lute, flute, luteDrop, lutiswap);
+  await addDrop(luteDrop, owner);
 }
 
 export async function deployLocal(ethers: Ethers) {
@@ -131,8 +132,6 @@ export async function deployLocal(ethers: Ethers) {
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(ethers);
   await grantRoles(lute, flute, luteDrop, lutiswap);
   await addDrop(luteDrop, owner);
-  //await craftItems(lute, flute, lutiswap, owner);
-  //await logTokens(lute, flute);
   await owner.sendTransaction({
     to: "0xe979054eB69F543298406447D8AB6CBBc5791307",
     value: ethers.utils.parseEther("1000"),
