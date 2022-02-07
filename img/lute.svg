@@ -56,4 +56,8 @@
       <path d="M238.93 432.36h34.14V512h-34.14z"/>
     </g>
   </svg>
+  <text x="170" y="300" class="base" text-anchor="middle">Crystal Baritone Bouzouki of Enlightenment</text>
+  <text x="170" y="325" class="base" text-anchor="middle">Twelve Strings</text>
+  <text x="170" y="350" class="base" text-anchor="middle">Triangular Body</text>
+  <text x="170" y="375" class="base" text-anchor="middle">Decorative Carving</text>
 </svg>

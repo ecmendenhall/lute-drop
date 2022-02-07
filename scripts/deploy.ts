@@ -1,23 +1,12 @@
 import { Contract, ethers } from "ethers";
 import { HardhatEthersHelpers } from "@nomiclabs/hardhat-ethers/types";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { parseEther } from "ethers/lib/utils";
 
 type Ethers = typeof ethers & HardhatEthersHelpers;
 
-const LOOT_ADDRESS = "0xFF9C1b15B16263C61d017ee9F65C50e4AE0113D7";
-const MLOOT_ADDRESS = "0x1dfe7ca09e99d10835bf73044a23b73fc20623df";
-const LOOT_ADDRESS_ROPSTEN = "0x0bC5ade1c02E930F625C8C74408bc87C770B5b9b";
-const MLOOT_ADDRESS_ROPSTEN = "";
-const LOOT_ADDRESS_RINKEBY = "0x56689336863f1917f301830b377B583dB39d6C4D";
-const MLOOT_ADDRESS_RINKEBY = "0x64e5BBb7242eE28183D27B3936F8A419712eb272";
-const LOOT_SUPPLY = 1000;
-const MLOOT_SUPPLY = 10000;
-
 const CRAFTER_ROLE = ethers.utils.keccak256(
   ethers.utils.toUtf8Bytes("CRAFTER_ROLE")
-);
-const BURNER_ROLE = ethers.utils.keccak256(
-  ethers.utils.toUtf8Bytes("BURNER_ROLE")
 );
 
 async function logToken(token: Contract, i: number) {
@@ -32,12 +21,12 @@ async function logToken(token: Contract, i: number) {
 
 async function logTokens(lute: Contract, flute: Contract) {
   console.log("\nLutes:");
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 20; i++) {
     await logToken(lute, i);
   }
 
   console.log("\nFlutes:");
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 20; i++) {
     await logToken(flute, i);
   }
 }
@@ -50,38 +39,17 @@ async function deployMultiCall(ethers: Ethers) {
   console.log("Multicall deployed to:", multicall.address);
 }
 
-async function deployLoot(ethers: Ethers) {
-  const Loot = await ethers.getContractFactory("Loot");
-  const loot = await Loot.deploy({ gasLimit: 7_000_000 });
-  await loot.deployed();
-
-  console.log("LOOT deployed to:", loot.address);
-
-  const MLoot = await ethers.getContractFactory("TemporalLoot");
-  const mloot = await MLoot.deploy({ gasLimit: 8_000_000 });
-  await mloot.deployed();
-
-  console.log("MLOOT deployed to:", mloot.address);
-
-  return { loot, mloot };
-}
-
-async function deployCoreContracts(
-  ethers: Ethers,
-  lootAddress: string,
-  mlootAddress: string,
-  lootSupply: number,
-  mlootSupply: number
-) {
+async function deployCoreContracts(ethers: Ethers) {
   const ItemLibFactory = await ethers.getContractFactory("ItemLib");
   const itemlib = await (await ItemLibFactory.deploy()).deployed();
+  console.log("ItemLib deployed to:", itemlib.address);
 
   const Lute = await ethers.getContractFactory("Lute", {
     libraries: {
       ItemLib: itemlib.address,
     },
   });
-  const lute = await Lute.deploy();
+  const lute = await Lute.deploy(true);
   await lute.deployed();
 
   console.log("Lute deployed to:", lute.address);
@@ -91,29 +59,26 @@ async function deployCoreContracts(
       ItemLib: itemlib.address,
     },
   });
-  const flute = await Flute.deploy();
+  const flute = await Flute.deploy(true);
   await flute.deployed();
 
   console.log("Flute deployed to:", flute.address);
-
-  const LuteDrop = await ethers.getContractFactory("LuteDrop");
-  const luteDrop = await LuteDrop.deploy(
-    lute.address,
-    flute.address,
-    lootAddress,
-    mlootAddress,
-    lootSupply,
-    mlootSupply
-  );
-  await luteDrop.deployed();
-
-  console.log("LuteDrop deployed to:", luteDrop.address);
 
   const Lutiswap = await ethers.getContractFactory("Lutiswap");
   const lutiswap = await Lutiswap.deploy(lute.address, flute.address);
   await lutiswap.deployed();
 
   console.log("Lutiswap deployed to:", lutiswap.address);
+
+  const LuteDrop = await ethers.getContractFactory("LuteDrop");
+  const luteDrop = await LuteDrop.deploy(
+    lute.address,
+    flute.address,
+    lutiswap.address
+  );
+  await luteDrop.deployed();
+
+  console.log("LuteDrop deployed to:", luteDrop.address);
   return { lute, flute, luteDrop, lutiswap };
 }
 
@@ -125,56 +90,50 @@ async function grantRoles(
 ) {
   console.log("Granting Lute roles...");
   await lute.grantRole(CRAFTER_ROLE, luteDrop.address);
-  await lute.grantRole(CRAFTER_ROLE, lutiswap.address);
-  await lute.grantRole(BURNER_ROLE, lutiswap.address);
 
   console.log("Granting Flute roles...");
   await flute.grantRole(CRAFTER_ROLE, luteDrop.address);
-  await flute.grantRole(CRAFTER_ROLE, lutiswap.address);
-  await flute.grantRole(BURNER_ROLE, lutiswap.address);
 }
 
 async function craftItems(
   lute: Contract,
   flute: Contract,
+  lutiswap: Contract,
   owner: SignerWithAddress
 ) {
   console.log("Crafting Lutes/Flutes to owner...");
   await lute.grantRole(CRAFTER_ROLE, owner.address);
   await flute.grantRole(CRAFTER_ROLE, owner.address);
-  for (let i = 0; i < 10; i++) {
-    await lute.craft("0x79d31bFcA5Fda7A4F15b36763d2e44C99D811a6C");
-    await flute.craft("0x79d31bFcA5Fda7A4F15b36763d2e44C99D811a6C");
+  for (let i = 0; i < 30; i++) {
+    await lute.craft(lutiswap.address);
   }
+  for (let i = 0; i < 20; i++) {
+    await flute.craft(lutiswap.address);
+  }
+}
+
+async function addDrop(luteDrop: Contract, owner: SignerWithAddress) {
+  console.log("Adding new Drop...");
+  await luteDrop.connect(owner).addDrop(parseEther("2"), 5, 100);
 }
 
 export async function deployTestnet(ethers: Ethers) {
   const [owner] = await ethers.getSigners();
 
-  //const { loot, mloot } = await deployLoot(ethers);
-  const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(
-    ethers,
-    LOOT_ADDRESS_RINKEBY,
-    MLOOT_ADDRESS_RINKEBY,
-    LOOT_SUPPLY,
-    MLOOT_SUPPLY
-  );
+  const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(ethers);
   await grantRoles(lute, flute, luteDrop, lutiswap);
-  //await craftItems(lute, flute, owner);
+  await addDrop(luteDrop, owner);
 }
 
 export async function deployLocal(ethers: Ethers) {
   const [owner] = await ethers.getSigners();
 
   await deployMultiCall(ethers);
-  const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(
-    ethers,
-    LOOT_ADDRESS,
-    MLOOT_ADDRESS,
-    LOOT_SUPPLY,
-    MLOOT_SUPPLY
-  );
+  const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(ethers);
   await grantRoles(lute, flute, luteDrop, lutiswap);
-  await craftItems(lute, flute, owner);
-  //await logTokens(lute, flute);
+  await addDrop(luteDrop, owner);
+  await owner.sendTransaction({
+    to: "0xe979054eB69F543298406447D8AB6CBBc5791307",
+    value: ethers.utils.parseEther("1000"),
+  });
 }

@@ -2,35 +2,35 @@ import Button from "./Button";
 
 interface Props {
   enabled: boolean;
-  claimed: number;
+  crafted: number;
   imgSrc: string;
   imgAlt: string;
   imgStyle: string;
   color: string;
   buttonText: string;
-  onClaim: () => void;
+  onCraft: () => void;
 }
 
-const ClaimPanel = ({
+const CraftPanel = ({
   enabled,
-  claimed,
+  crafted,
   imgSrc,
   imgAlt,
   imgStyle,
   color,
   buttonText,
-  onClaim,
+  onCraft,
 }: Props) => {
-  const imgClass = `h-72 p-0 m-0 transform ${imgStyle}`;
+  const imgClass = `h-56 lg:h-72 p-0 m-0 transform ${imgStyle}`;
   return (
     <div className="flex flex-col md:w-1/3 items-center text-center text-xl font-body">
       <div className="mb-4">
-        <span className="font-bold">Claimed:</span> {claimed}
+        <span className="font-bold">Total crafted:</span> {crafted}
         <img src={imgSrc} alt={imgAlt} className={imgClass} />
       </div>
       {enabled && (
         <div>
-          <Button color={color} onClick={onClaim}>
+          <Button color={color} onClick={onCraft}>
             {buttonText}
           </Button>
         </div>
@@ -39,4 +39,4 @@ const ClaimPanel = ({
   );
 };
 
-export default ClaimPanel;
+export default CraftPanel;

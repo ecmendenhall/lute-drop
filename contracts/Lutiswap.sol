@@ -9,74 +9,119 @@ contract Lutiswap is Ownable, ReentrancyGuard {
     IItem public lute;
     IItem public flute;
 
+    uint256 public baseFee = 1 ether;
+
+    event Swap(
+        address indexed user,
+        address indexed from,
+        address indexed to,
+        uint256 fromTokenId,
+        uint256 toTokenId,
+        uint256 fee
+    );
+    event UpdateBaseFee(uint256 oldFee, uint256 newFee);
+    event Withdraw(address indexed to, uint256 amount);
+
     constructor(address _lute, address _flute) {
         lute = IItem(_lute);
         flute = IItem(_flute);
     }
 
-    function swapExactFluteForLute(uint256 tokenId)
-        public
-        payable
-        nonReentrant
-    {
-        return swap(tokenId, flute, lute);
+    function nextLute() external view returns (uint256) {
+        return _nextToken(lute);
     }
 
-    function swapExactLuteForFlute(uint256 tokenId)
-        public
-        payable
-        nonReentrant
-    {
-        return swap(tokenId, lute, flute);
+    function nextFlute() external view returns (uint256) {
+        return _nextToken(flute);
     }
 
-    function latestSwapPrice() public view returns (uint256, uint256) {
-        return swapPrice(lute.totalSupply(), flute.totalSupply());
+    function latestSwapPrice() external view returns (uint256, uint256) {
+        return
+            swapPrice(
+                lute.balanceOf(address(this)),
+                flute.balanceOf(address(this))
+            );
     }
 
     function swapPrice(uint256 l, uint256 f)
         public
-        pure
+        view
         returns (uint256, uint256)
     {
         return (_swapPrice(l, f), _swapPrice(f, l));
     }
 
-    function swap(
+    function swapExactFluteForLute(uint256 tokenId)
+        external
+        payable
+        nonReentrant
+    {
+        return _swap(tokenId, flute, lute);
+    }
+
+    function swapExactLuteForFlute(uint256 tokenId)
+        external
+        payable
+        nonReentrant
+    {
+        return _swap(tokenId, lute, flute);
+    }
+
+    function _nextToken(IItem token) internal view returns (uint256) {
+        return token.tokenOfOwnerByIndex(address(this), 0);
+    }
+
+    function _swap(
         uint256 tokenId,
         IItem from,
         IItem to
     ) internal {
         require(from.ownerOf(tokenId) == msg.sender, "Must own item to swap");
-        uint256 fromSupply = from.totalSupply();
-        uint256 toSupply = to.totalSupply();
-        uint256 fee = _swapPrice(fromSupply, toSupply);
+        uint256 fromReserve = from.balanceOf(address(this));
+        uint256 toReserve = to.balanceOf(address(this));
+        uint256 fee = _swapPrice(fromReserve, toReserve);
         require(msg.value >= fee, "Insufficient payment");
-        from.burn(tokenId);
-        to.craft(msg.sender);
+        from.transferFrom(msg.sender, address(this), tokenId);
+        uint256 outTokenId = _nextToken(to);
+        to.transferFrom(address(this), msg.sender, outTokenId);
         require(
-            (fromSupply + toSupply) == (from.totalSupply() + to.totalSupply()),
+            (fromReserve + toReserve) ==
+                (from.balanceOf(address(this)) + to.balanceOf(address(this))),
             "Supply invariant"
         );
         if (msg.value > fee) {
             _safeTransferETH(msg.sender, msg.value - fee);
         }
+        emit Swap(
+            msg.sender,
+            address(from),
+            address(to),
+            tokenId,
+            outTokenId,
+            fee
+        );
+    }
+
+    function setBaseFee(uint256 newBaseFee) public onlyOwner {
+        emit UpdateBaseFee(baseFee, newBaseFee);
+        baseFee = newBaseFee;
     }
 
     function withdraw(address to, uint256 value) public onlyOwner {
         _safeTransferETH(to, value);
+        emit Withdraw(to, value);
     }
 
     function _swapPrice(uint256 _from, uint256 _to)
         internal
-        pure
+        view
         returns (uint256)
     {
-        require(_from > 1, "Invalid swap");
+        require(_from > 1 && _to > 1, "Invalid swap");
         uint256 f = _from * 1e18;
         uint256 t = _to * 1e18;
         uint256 k = f * t;
-        return ((k / (f - 1e18)) - t) / 1e2;
+        return (((k / (t - 1e18)) - f) * baseFee) / 1e18;
     }
 
     function _safeTransferETH(address to, uint256 value) internal {

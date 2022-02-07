@@ -4,56 +4,142 @@ import { Interface } from "ethers/lib/utils";
 const config = {
   [ChainId.Hardhat]: {
     lute: {
-      address: "0xFD471836031dc5108809D173A067e8486B9047A3",
+      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
       abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-        "function totalSupply() returns (uint256)",
-        "function nextId() returns(uint256)",
+        "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
       ]),
     },
     flute: {
-      address: "0xcbEAF3BDe82155F56486Fb5a1072cb8baAf547cc",
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
       abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-        "function totalSupply() returns (uint256)",
-        "function nextId() returns(uint256)",
+        "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
       ]),
     },
     luteDrop: {
-      address: "0x1429859428C0aBc9C2C47C8Ee9FBaf82cFA0F20f",
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
       abi: new Interface([
-        "function claim(uint8 item, address token, uint256 tokenId) payable",
-        "function dropId(address token) returns (uint256)",
-        "function drops(uint256 dropId) returns (address, uint256, uint256)",
-        "function isClaimed(address token, uint256 tokenId) returns (bool)",
+        "function latestDrop() external view returns (uint256)",
+        "function drops(uint256 dropId) external view returns (tuple(uint256 fee, uint256 craftableSupply, uint256 craftedSupply, uint256 craftsPerAddress))",
+        "function crafts(address account, uint256 dropid) external view returns (uint256)",
+        "function craft(uint8 item, uint256 dropid) external payable",
+        "event Craft(address indexed to, uint8 indexed item, uint256 fee)",
       ]),
     },
     lutiswap: {
-      address: "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       abi: new Interface([
-        "function latestSwapPrice() view returns (uint256, uint256)",
-        "function swapExactLuteForFlute(uint256 tokenId) payable",
-        "function swapExactFluteForLute(uint256 tokenId) payable",
+        "function nextLute() external view returns (uint256)",
+        "function nextFlute() external view returns (uint256)",
+        "function latestSwapPrice() external view returns (uint256, uint256)",
+        "function swapExactLuteForFlute(uint256 tokenId) external payable",
+        "function swapExactFluteForLute(uint256 tokenId) external payable",
+        "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
       ]),
     },
-    loot: {
-      address: "0xFF9C1b15B16263C61d017ee9F65C50e4AE0113D7",
+  },
+  [ChainId.Mumbai]: {
+    lute: {
+      address: "0xF782D55BBef8028f965Bf542d8FBf3993aF9B800",
       abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
+        "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
       ]),
     },
-    mloot: {
-      address: "0x1dfe7ca09e99d10835bf73044a23b73fc20623df",
+    flute: {
+      address: "0x1ae67219b798Db3A7fc03D5cfaAc583CcB55C295",
       abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
+        "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
+      ]),
+    },
+    luteDrop: {
+      address: "0xA78a53b92aAb1eF0EFcdBA0f654B4087185F2Be0",
+      abi: new Interface([
+        "function latestDrop() external view returns (uint256)",
+        "function drops(uint256 dropId) external view returns (tuple(uint256 fee, uint256 craftableSupply, uint256 craftedSupply, uint256 craftsPerAddress))",
+        "function crafts(address account, uint256 dropid) external view returns (uint256)",
+        "function craft(uint8 item, uint256 dropid) external payable",
+        "event Craft(address indexed to, uint8 indexed item, uint256 fee)",
+      ]),
+    },
+    lutiswap: {
+      address: "0xc4e008F5bDD5e2c138A6a7E827076d45450D430E",
+      abi: new Interface([
+        "function nextLute() external view returns (uint256)",
+        "function nextFlute() external view returns (uint256)",
+        "function latestSwapPrice() external view returns (uint256, uint256)",
+        "function swapExactLuteForFlute(uint256 tokenId) external payable",
+        "function swapExactFluteForLute(uint256 tokenId) external payable",
+        "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
+      ]),
+    },
+  },
+  [ChainId.Polygon]: {
+    lute: {
+      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      abi: new Interface([
+        "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
+      ]),
+    },
+    flute: {
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      abi: new Interface([
+        "function totalSupply() external view returns (uint256)",
+        "function tokenURI(uint256 tokenId) external view returns (string memory)",
+        "function setApprovalForAll(address operator, bool approved) external",
+        "function isApprovedForAll(address owner, address operator) external view returns (bool)",
+        "event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)",
+        "event ApprovalForAll(address indexed owner, address indexed operator, bool approved)",
+        "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)",
+      ]),
+    },
+    luteDrop: {
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      abi: new Interface([
+        "function latestDrop() external view returns (uint256)",
+        "function drops(uint256 dropId) external view returns (tuple(uint256 fee, uint256 craftableSupply, uint256 craftedSupply, uint256 craftsPerAddress))",
+        "function crafts(address account, uint256 dropid) external view returns (uint256)",
+        "function craft(uint8 item, uint256 dropid) external payable",
+        "event Craft(address indexed to, uint8 indexed item, uint256 fee)",
+      ]),
+    },
+    lutiswap: {
+      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      abi: new Interface([
+        "function nextLute() external view returns (uint256)",
+        "function nextFlute() external view returns (uint256)",
+        "function latestSwapPrice() external view returns (uint256, uint256)",
+        "function swapExactLuteForFlute(uint256 tokenId) external payable",
+        "function swapExactFluteForLute(uint256 tokenId) external payable",
+        "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
       ]),
     },
   },
@@ -85,6 +171,7 @@ const config = {
         "function dropId(address token) returns (uint256)",
         "function drops(uint256 dropId) returns (address, uint256, uint256)",
         "function isClaimed(address token, uint256 tokenId) returns (bool)",
+        "event Craft(address indexed to, uint8 item, uint256 fee)",
       ]),
     },
     lutiswap: {
@@ -93,22 +180,7 @@ const config = {
         "function latestSwapPrice() view returns (uint256, uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) payable",
         "function swapExactFluteForLute(uint256 tokenId) payable",
-      ]),
-    },
-    loot: {
-      address: "0x56689336863f1917f301830b377B583dB39d6C4D",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-      ]),
-    },
-    mloot: {
-      address: "0x64e5BBb7242eE28183D27B3936F8A419712eb272",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
+        "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
       ]),
     },
   },
@@ -120,8 +192,12 @@ export const getConfig = (chainId: ChainId | undefined) => {
       return config[ChainId.Hardhat];
     case ChainId.Rinkeby:
       return config[ChainId.Rinkeby];
+    case ChainId.Mumbai:
+      return config[ChainId.Mumbai];
+    case ChainId.Polygon:
+      return config[ChainId.Polygon];
     default:
-      return config[ChainId.Hardhat];
+      return config[ChainId.Polygon];
   }
 };
 

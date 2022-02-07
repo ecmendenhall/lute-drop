@@ -1,6 +1,7 @@
 import BlockCounter from "../components/BlockCounter";
 import Connect from "../components/Connect";
 import Nav from "../components/Nav";
+import Notifications from "../components/Notifications";
 
 interface Props {
   subhed: React.ReactNode;
@@ -9,9 +10,9 @@ interface Props {
 
 const FullPage = ({ subhed, children }: Props) => {
   return (
-    <div className="p-16 min-h-screen bg-gradient-to-tr from-yellow-100 to-yellow-50">
+    <div className="p-16 min-h-screen bg-gradient-to-tr from-parchment-100 to-parchment-50">
       <div className="mb-4">
-        <h1 className="font-display text-gray-700 font-bold tracking-wider text-6xl lg:text-8xl text-center">
+        <h1 className="font-display font-black tracking-wider text-6xl lg:text-8xl text-center">
           Lute Drop
         </h1>
         <div className="font-body text-center text-xl">
@@ -24,6 +25,7 @@ const FullPage = ({ subhed, children }: Props) => {
         {children}
       </div>
       <BlockCounter />
+      <Notifications />
     </div>
   );
 };

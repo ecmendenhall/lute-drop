@@ -1,37 +1,73 @@
 import { useEthers } from "@usedapp/core";
+import { BigNumber } from "ethers";
+import { useState } from "react";
 import SwapPanel from "../components/SwapPanel";
-import TransactionStatus from "../components/TransactionStatus";
-import { roundEther } from "../helpers";
+import { getConfig } from "../config/contracts";
+import { isSupportedChain } from "../config/dapp";
 import {
+  useIsApprovedForAll,
+  useLatestSwapPrice,
   useNextItem,
-  useLutiswap,
-  useTokenHoldings,
+  useSetApprovalForAll,
   useSwapExactFluteForLute,
   useSwapExactLuteForFlute,
+  useTokenIdsByAccount,
 } from "../hooks/contracts";
 import FullPage from "../layouts/FullPage";
 
 const Swap = () => {
-  const { account } = useEthers();
+  const { account, chainId } = useEthers();
+  const config = getConfig(chainId);
+
+  const { send: sendApproveLutes } = useSetApprovalForAll("lute");
+  const { send: sendApproveFlutes } = useSetApprovalForAll("flute");
+  const {
+    send: sendSwapExactLuteForFlute,
+    state: sendSwapExactLuteForFluteState,
+  } = useSwapExactLuteForFlute();
+  const {
+    send: sendSwapExactFluteForLute,
+    state: sendSwapExactFluteForLuteState,
+  } = useSwapExactFluteForLute();
+
   const nextLute = useNextItem("lute");
   const nextFlute = useNextItem("flute");
-  const { luteHoldings, fluteHoldings } = useTokenHoldings(account);
-  const { luteSwapFee, fluteSwapFee } = useLutiswap();
-  const {
-    state: sendSwapExactFluteForLuteState,
-    send: sendSwapExactFluteForLute,
-  } = useSwapExactFluteForLute();
-  const {
-    state: sendSwapExactLuteForFluteState,
-    send: sendSwapExactLuteForFlute,
-  } = useSwapExactLuteForFlute();
+  const luteIds = useTokenIdsByAccount("lute", account, [
+    sendSwapExactFluteForLuteState,
+    sendSwapExactLuteForFluteState,
+  ]);
+  const fluteIds = useTokenIdsByAccount("flute", account, [
+    sendSwapExactFluteForLuteState,
+    sendSwapExactLuteForFluteState,
+  ]);
+  const { luteSwapFee, fluteSwapFee } = useLatestSwapPrice();
+  const lutesApproved = useIsApprovedForAll("lute", account);
+  const flutesApproved = useIsApprovedForAll("flute", account);
 
-  const onSwapFlute = (tokenId: number) => {
-    sendSwapExactFluteForLute(tokenId, { value: fluteSwapFee });
+  const [swapPending, setSwapPending] = useState(false);
+
+  const onSwapFlute = (tokenId: BigNumber) => {
+    const swap = async () => {
+      setSwapPending(true);
+      if (!flutesApproved) {
+        await sendApproveFlutes(config.lutiswap.address, true);
+      }
+      await sendSwapExactFluteForLute(tokenId, { value: fluteSwapFee });
+      setSwapPending(false);
+    };
+    swap();
   };
 
-  const onSwapLute = (tokenId: number) => {
-    sendSwapExactLuteForFlute(tokenId, { value: luteSwapFee });
+  const onSwapLute = (tokenId: BigNumber) => {
+    const swap = async () => {
+      setSwapPending(true);
+      if (!lutesApproved) {
+        await sendApproveLutes(config.lutiswap.address, true);
+      }
+      await sendSwapExactLuteForFlute(tokenId, { value: luteSwapFee });
+      setSwapPending(false);
+    };
+    swap();
   };
 
   return (
@@ -40,45 +76,43 @@ const Swap = () => {
     lutes."
     >
       <div className="font-body text-xl">
-        <div className="flex flex-col md:flex-row items-center justify-evenly">
-          {nextLute && fluteSwapFee && (
+        <div className="flex flex-col md:flex-row items-center justify-center">
+          {isSupportedChain(chainId) && (
             <SwapPanel
-              itemName={nextLute.name}
-              swapPrice={roundEther(fluteSwapFee)}
-              holdings={[{ name: "Flute", holdings: fluteHoldings }]}
-              imgSrc={nextLute.image}
+              nextItem={nextLute}
+              swapPrice={fluteSwapFee}
               imgAlt="Lute"
-              color="red"
+              color="blue"
               buttonText="Swap Flute for Lute"
+              items={fluteIds}
+              swapItem="flute"
+              enabled={!swapPending}
               onSwap={onSwapFlute}
             />
           )}
-          <div className="my-2 mx-8 w-80">
+          <div className="my-2 mx-8 w-80 hidden lg:block">
             <img src="img/swap.png" alt="Swap Lutes for Flutes" />
           </div>
-          {nextFlute && luteSwapFee && (
+          {isSupportedChain(chainId) && (
             <SwapPanel
-              itemName={nextFlute.name}
-              swapPrice={roundEther(luteSwapFee)}
-              holdings={[{ name: "Lute", holdings: luteHoldings }]}
-              imgSrc={nextFlute.image}
+              nextItem={nextFlute}
+              swapPrice={luteSwapFee}
               imgAlt="Flute"
-              color="blue"
+              color="red"
               buttonText="Swap Lute for Flute"
+              items={luteIds}
+              swapItem="lute"
+              enabled={!swapPending}
               onSwap={onSwapLute}
             />
           )}
         </div>
-        <TransactionStatus
-          txState={sendSwapExactFluteForLuteState}
-          successMessage="Success!"
-          miningMessage="Swapping..."
-        />
-        <TransactionStatus
-          txState={sendSwapExactLuteForFluteState}
-          successMessage="Success!"
-          miningMessage="Swapping..."
-        />
+        {!isSupportedChain(chainId) && (
+          <p className="text-center">
+            This network is not supported. Please connect to Polygon to use Lute
+            Drop.
+          </p>
+        )}
       </div>
     </FullPage>
   );

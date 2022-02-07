@@ -1,38 +1,43 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import { BigNumber } from "@ethersproject/bignumber";
 
 interface Props {
-  luteSupply: number
-  fluteSupply: number
-  lootDrop: {
-    claimableSupply: BigNumber
-    claimedSupply: BigNumber
-  }
-  mlootDrop: {
-    claimableSupply: BigNumber
-    claimedSupply: BigNumber
-  }
+  lutesCrafted: number;
+  flutesCrafted: number;
+  luteSupply: number;
+  fluteSupply: number;
+  lutiswapLuteBalance?: BigNumber;
+  lutiswapFluteBalance?: BigNumber;
+  swaps: number;
 }
 
-const Stats = ({ luteSupply, fluteSupply, lootDrop, mlootDrop }: Props) => {
+const Stats = ({
+  lutesCrafted,
+  flutesCrafted,
+  luteSupply,
+  fluteSupply,
+  lutiswapLuteBalance,
+  lutiswapFluteBalance,
+  swaps,
+}: Props) => {
+  const lutiswapLutes =
+    (lutiswapLuteBalance && lutiswapLuteBalance.toNumber()) || 0;
+  const lutiswapFlutes =
+    (lutiswapFluteBalance && lutiswapFluteBalance.toNumber()) || 0;
+
   return (
     <div className="mb-4">
       <h4 className="font-black font-display text-2xl">Stats:</h4>
-      <p className="my-2">Lute supply: {luteSupply}</p>
-      <p className="my-2">Flute supply: {fluteSupply}</p>
+      <p className="my-2">Lutes crafted: {lutesCrafted}</p>
+      <p className="my-2">Flutes crafted: {flutesCrafted}</p>
       <p className="my-2">
-        Loot claimable supply: {lootDrop && lootDrop.claimableSupply.toNumber()}
+        Lute circulating supply: {(luteSupply || 0) - lutiswapLutes}
       </p>
       <p className="my-2">
-        Items claimed with Loot: {lootDrop && lootDrop.claimedSupply.toNumber()}
+        Flute circulating supply: {(fluteSupply || 0) - lutiswapFlutes}
       </p>
-      <p className="my-2">
-        mLoot claimable supply: {mlootDrop && mlootDrop.claimableSupply.toNumber()}
-      </p>
-      <p className="my-2">
-        Items claimed with mLoot: {mlootDrop && mlootDrop.claimedSupply.toNumber()}
-      </p>
+      <p className="my-2">Total swaps: {swaps}</p>
     </div>
-  )
-}
+  );
+};
 
-export default Stats
+export default Stats;

@@ -78,4 +78,8 @@
     </g>
     <path fill="#844d00" d="M42.3 235.28H26.24v-6.02H42.3z"/>
   </svg>
+  <text x="170" y="300" class="base" text-anchor="middle">Crystal Soprano Recorder of Enlightenment</text>
+  <text x="170" y="325" class="base" text-anchor="middle">Double Reed</text>
+  <text x="170" y="350" class="base" text-anchor="middle">Double Slide</text>
+  <text x="170" y="375" class="base" text-anchor="middle">Decorative Engraving</text>
 </svg>

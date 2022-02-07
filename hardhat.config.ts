@@ -32,11 +32,11 @@ task("deploy:testnet", "Deploys contracts", async (args, hre) => {
  */
 module.exports = {
   solidity: {
-    version: "0.8.4",
+    version: "0.8.9",
     settings: {
       optimizer: {
         enabled: true,
-        runs: 20,
+        runs: 150,
       },
     },
   },
@@ -48,17 +48,13 @@ module.exports = {
         url: process.env.ALCHEMY_API_KEY,
       },
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts: { mnemonic: process.env.ROPSTEN_MNEMONIC },
-    },
-    kovan: {
-      url: process.env.KOVAN_URL || "",
-      accounts: { mnemonic: process.env.KOVAN_MNEMONIC },
-    },
     rinkeby: {
       url: process.env.RINKEBY_URL || "",
       accounts: { mnemonic: process.env.RINKEBY_MNEMONIC },
+    },
+    mumbai: {
+      url: process.env.MUMBAI_URL || "",
+      accounts: { mnemonic: process.env.MUMBAI_MNEMONIC },
     },
   },
   gasReporter: {

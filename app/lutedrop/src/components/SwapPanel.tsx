@@ -1,76 +1,84 @@
 import { BigNumber } from "@usedapp/core/node_modules/ethers";
 import { useState } from "react";
+import { roundEther } from "../helpers";
 import Button from "./Button";
-import SelectLoot from "./SelectLoot";
+import SelectItem from "./SelectItem";
 
 interface Item {
   id: BigNumber;
   name: string;
-}
-
-interface Holdings {
-  name: string;
-  holdings: Item[];
+  image: string;
 }
 
 interface Props {
-  itemName: string;
-  swapPrice: string;
-  holdings?: Holdings[];
-  imgSrc: string;
+  nextItem?: Item;
+  swapPrice: BigNumber;
   imgAlt: string;
   color: string;
   buttonText: string;
-  onSwap: (tokenId: number) => void;
+  items?: BigNumber[];
+  swapItem: string;
+  enabled: boolean;
+  onSwap: (tokenId: BigNumber) => void;
 }
 
 const SwapPanel = ({
-  itemName,
+  nextItem,
   swapPrice,
-  holdings,
-  imgSrc,
   imgAlt,
   color,
   buttonText,
+  items,
+  swapItem,
+  enabled,
   onSwap,
 }: Props) => {
-  const [selectedItem, setSelectedItem] = useState<number>();
+  const [selectedItem, setSelectedItem] = useState<BigNumber>();
+  const receiveItem = swapItem === "lute" ? "flute" : "lute";
 
-  const onClick = () => {
-    if (selectedItem) {
-      onSwap(selectedItem);
-    }
+  const onChange = (id: BigNumber) => {
+    setSelectedItem(id);
   };
 
-  const onSelect = (tokenIndex: number, itemIndex: number) => {
-    if (holdings) {
-      const token = holdings[tokenIndex];
-      const item = token.holdings[itemIndex];
-      setSelectedItem(item.id.toNumber());
+  const onClick = () => {
+    if (enabled && selectedItem) {
+      onSwap(selectedItem);
     }
   };
 
   return (
     <div className="flex flex-col place-content-center text-center p-4">
-      <div className="mb-4 bg-yellow-50 p-4 shadow w-60">
-        <h4 className="font-bold">{itemName}</h4>
-        <img src={imgSrc} alt={imgAlt} className="my-2" />
-        <p>{swapPrice} ETH</p>
+      <div className="mb-4 bg-yellow-50 p-4 shadow w-72">
+        {nextItem ? (
+          <div>
+            <h4 className="font-bold">{nextItem.name}</h4>
+            <img src={nextItem.image} alt={imgAlt} className="my-2" />
+            <p>{roundEther(swapPrice)} MATIC</p>
+          </div>
+        ) : (
+          <div className="animate-pulse">
+            <h4 className="font-bold">Loading next {receiveItem}...</h4>
+            <img
+              src={`img/${receiveItem}.svg`}
+              alt={receiveItem}
+              className="my-2 animate-pulse"
+            />
+            <p className="invisible">??? MATIC</p>
+          </div>
+        )}
       </div>
-      {holdings && holdings.length > 0 && (
-        <div className="mb-4">
-          <SelectLoot
-            showTokenName={false}
-            holdings={holdings}
-            onSelectLoot={onSelect}
-          />
+      {items && items.length > 0 ? (
+        <div>
+          <div className="mb-4">
+            <SelectItem items={items} swapItem={swapItem} onChange={onChange} />
+          </div>
+          <Button color={color} onClick={onClick}>
+            {buttonText}
+          </Button>
         </div>
+      ) : (
+        <p>You have no {swapItem}s to swap.</p>
       )}
-      <div>
-        <Button color={color} onClick={onClick}>
-          {buttonText}
-        </Button>
-      </div>
     </div>
   );
 };
