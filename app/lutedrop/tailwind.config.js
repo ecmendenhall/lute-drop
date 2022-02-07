@@ -4,12 +4,12 @@ module.exports = {
   purge: {
     content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
     safelist: [
-      "bg-blue-300",
-      "text-blue-800",
-      "hover:bg-blue-400",
-      "bg-red-300",
-      "text-red-800",
-      "hover:bg-red-400",
+      "bg-blue-500",
+      "text-blue-100",
+      "hover:bg-blue-600",
+      "bg-red-500",
+      "text-red-100",
+      "hover:bg-red-600",
     ],
   },
   darkMode: false,
