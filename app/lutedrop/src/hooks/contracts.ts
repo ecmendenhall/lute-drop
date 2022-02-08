@@ -1,20 +1,32 @@
 import { formatUnits } from "@ethersproject/units";
 import {
   addressEqual,
+  ChainId,
   useContractCall,
   useContractCalls,
   useContractFunction,
   useEthers,
 } from "@usedapp/core";
-import { BigNumber, Contract } from "@usedapp/core/node_modules/ethers";
+import { BigNumber, Contract, ethers } from "@usedapp/core/node_modules/ethers";
 import { useEffect, useState } from "react";
 import { getConfig } from "../config/contracts";
 
 type Item = "flute" | "lute";
 
+const alchemyProvider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/13eXkaOScVZ2s9rg5c4Hu2Tb3pPLc4In", ChainId.Polygon);
+
 const parseMetadata = (tokenURI: string) => {
   return JSON.parse(atob(tokenURI.substring(29)));
 };
+
+export function useEventRPC() {
+  const { library, chainId } = useEthers();
+  if(chainId === ChainId.Polygon) {
+    return alchemyProvider; 
+  } else {
+    return library;
+  }
+}
 
 export function useItemSupply(item: Item) {
   const { chainId } = useEthers();
@@ -167,8 +179,9 @@ export function useCraftedCount(address: string | null | undefined) {
 }
 
 export function useTotalCrafted(dependencies: any[]) {
-  const { library, chainId } = useEthers();
+  const { chainId } = useEthers();
   const config = getConfig(chainId);
+  const library = useEventRPC();
   const [lutesCrafted, setLutesCrafted] = useState<number>(0);
   const [flutesCrafted, setFlutesCrafted] = useState<number>(0);
 
@@ -197,8 +210,9 @@ export function useTotalCrafted(dependencies: any[]) {
 }
 
 export function useSwaps(dependencies: any[]) {
-  const { library, chainId } = useEthers();
+  const { chainId } = useEthers();
   const config = getConfig(chainId);
+  const library = useEventRPC();
   const [swaps, setSwaps] = useState<number>(0);
 
   useEffect(() => {
@@ -224,8 +238,9 @@ export function useTokenIdsByAccount(
   account: string | null | undefined,
   dependencies: any[]
 ) {
-  const { library, chainId } = useEthers();
+  const { chainId } = useEthers();
   const config = getConfig(chainId);
+  const library = useEventRPC();
   const [tokenIds, setTokenIds] = useState<BigNumber[] | undefined>();
 
   useEffect(() => {
