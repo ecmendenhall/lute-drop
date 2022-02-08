@@ -123,7 +123,7 @@ const About = () => {
             </p>
             <p className="mb-4">
               Lute Drop is experimental, unaudited, and provided as is without
-              warranty of any kind.
+              warranty of any kind. (It is a joke project about lutes and flutes.)
             </p>
           </div>
           <div>
