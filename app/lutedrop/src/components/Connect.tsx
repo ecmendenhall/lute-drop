@@ -1,4 +1,4 @@
-import { shortenAddress, useEthers, useLookupAddress } from "@usedapp/core";
+import { ChainId, shortenAddress, useEthers, useLookupAddress } from "@usedapp/core";
 import { useCallback, useEffect, useState } from "react";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -28,7 +28,9 @@ const Connect = () => {
         package: WalletConnectProvider,
         options: {
           bridge: "https://bridge.walletconnect.org",
-          infuraId: "142c1667bd93462e97f9060710aa66ba",
+          rpc: {
+            [ChainId.Polygon]: "https://polygon-rpc.com/"
+          }
         },
       },
     };
