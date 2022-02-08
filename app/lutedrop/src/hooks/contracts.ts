@@ -45,7 +45,6 @@ export function useItem(item: Item, id: BigNumber) {
 export function useItems(item: Item, ids: BigNumber[] | undefined) {
   const { chainId } = useEthers();
   const config = getConfig(chainId);
-  console.log(ids?.map((i) => i.toNumber()));
 
   const itemCalls = (ids || []).map((id: BigNumber) => {
     return {
@@ -55,7 +54,6 @@ export function useItems(item: Item, ids: BigNumber[] | undefined) {
       args: [id],
     };
   });
-  console.log(itemCalls);
   const itemsResponse = (useContractCalls(itemCalls) ?? []) as string[][];
   return itemsResponse
     .map((i, idx) => {
@@ -238,8 +236,6 @@ export function useTokenIdsByAccount(
           config[item].abi,
           library
         );
-        console.log(library);
-        console.log(config[item].address);
         try {
           const sentLogs = await token.queryFilter(
             token.filters.Transfer(account, null)

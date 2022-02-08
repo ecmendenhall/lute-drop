@@ -30,7 +30,7 @@ const DropInfo = ({
   return (
     <div className="flex flex-col text-center my-8">
       {total && total.gt(0) ? (
-        <div>
+        <div className="mb-4 bg-yellow-50 p-4 shadow w-72">
           <h3 className="text-3xl font-body font-bold mb-2">
             Drop #{id && id.toNumber()}
           </h3>
@@ -43,12 +43,12 @@ const DropInfo = ({
             <span className="font-bold">Fee:</span> {fee && formatEther(fee)}{" "}
             MATIC
           </p>
+          {limitPerAddress && crafted && (
+            <div>{craftMessage(limitPerAddress.sub(crafted).toNumber())}</div>
+          )}
         </div>
       ) : (
         <div>No active drops.</div>
-      )}
-      {limitPerAddress && crafted && (
-        <div>{craftMessage(limitPerAddress.sub(crafted).toNumber())}</div>
       )}
     </div>
   );
