@@ -52,7 +52,7 @@ const config = {
   },
   [ChainId.Mumbai]: {
     lute: {
-      address: "0x2520269af2df06639998795920851876f63b5AB1",
+      address: "0xB465F0Fe841671583e57bBf002D7820CE94D00F5",
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
         "function tokenURI(uint256 tokenId) external view returns (string memory)",
@@ -64,7 +64,7 @@ const config = {
       ]),
     },
     flute: {
-      address: "0x38e7D4621531E6d63eF3A817912b6f3a34610043",
+      address: "0xFDF502e5BA521038b12c3846406a55081CD791CC",
       abi: new Interface([
         "function totalSupply() external view returns (uint256)",
         "function tokenURI(uint256 tokenId) external view returns (string memory)",
@@ -76,7 +76,7 @@ const config = {
       ]),
     },
     luteDrop: {
-      address: "0x5Cc18D3C2f1e03b037A89fc1Ac1E13BDE4a956d1",
+      address: "0x6F42fb0721FD95bdBC56110dB6B338bC4A057F0B",
       abi: new Interface([
         "function latestDrop() external view returns (uint256)",
         "function drops(uint256 dropId) external view returns (tuple(uint256 fee, uint256 craftableSupply, uint256 craftedSupply, uint256 craftsPerAddress))",
@@ -86,7 +86,7 @@ const config = {
       ]),
     },
     lutiswap: {
-      address: "0x12d7F2D67440017c287Ae7F7a48a8f8508954e26",
+      address: "0x6B1ed9173e325dc2AffC4f3600baB04086cA7011",
       abi: new Interface([
         "function nextLute() external view returns (uint256)",
         "function nextFlute() external view returns (uint256)",
