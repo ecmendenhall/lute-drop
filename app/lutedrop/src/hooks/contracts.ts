@@ -13,7 +13,7 @@ import { getConfig } from "../config/contracts";
 
 type Item = "flute" | "lute";
 
-const alchemyProvider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/13eXkaOScVZ2s9rg5c4Hu2Tb3pPLc4In", ChainId.Polygon);
+const alchemyProvider = new ethers.providers.JsonRpcProvider("https://polygon-mainnet.g.alchemy.com/v2/lqMtsyPH5pEuMAvGQ00syJfZfrGtRbiB", ChainId.Polygon);
 
 const parseMetadata = (tokenURI: string) => {
   return JSON.parse(atob(tokenURI.substring(29)));

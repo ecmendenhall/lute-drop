@@ -22,7 +22,7 @@ const config: Config = {
   readOnlyChainId: ChainId.Polygon,
   readOnlyUrls: {
     [ChainId.Polygon]:
-      "https://polygon-mainnet.g.alchemy.com/v2/13eXkaOScVZ2s9rg5c4Hu2Tb3pPLc4In",
+      "https://polygon-mainnet.g.alchemy.com/v2/lqMtsyPH5pEuMAvGQ00syJfZfrGtRbiB",
   },
   multicallAddresses: {
     [ChainId.Hardhat]: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
