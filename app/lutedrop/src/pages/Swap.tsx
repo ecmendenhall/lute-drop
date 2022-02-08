@@ -102,6 +102,7 @@ const Swap = () => {
               items={fluteIds}
               swapItem="flute"
               enabled={!swapPending}
+              swapping={swapPending}
               onSwap={onSwapFlute}
             />
           )}
@@ -123,6 +124,7 @@ const Swap = () => {
               items={luteIds}
               swapItem="lute"
               enabled={!swapPending}
+              swapping={swapPending}
               onSwap={onSwapLute}
             />
           )}
@@ -132,6 +134,8 @@ const Swap = () => {
             </div>
           )}
         </div>
+        { sendSwapExactLuteForFluteState.errorMessage && <div className="text-center text-red-600">{sendSwapExactLuteForFluteState.errorMessage}</div>}
+        { sendSwapExactFluteForLuteState.errorMessage && <div className="text-center text-red-600">{sendSwapExactFluteForLuteState.errorMessage}</div>}
         {!isSupportedChain(chainId) && (
           <p className="text-center">
             This network is not supported. Please connect to Polygon to use Lute

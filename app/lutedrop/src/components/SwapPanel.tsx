@@ -19,6 +19,7 @@ interface Props {
   items?: BigNumber[];
   swapItem: string;
   enabled: boolean;
+  swapping: boolean;
   onSwap: (tokenId: BigNumber) => void;
 }
 
@@ -31,6 +32,7 @@ const SwapPanel = ({
   items,
   swapItem,
   enabled,
+  swapping,
   onSwap,
 }: Props) => {
   const [selectedItem, setSelectedItem] = useState<BigNumber>();
@@ -73,7 +75,7 @@ const SwapPanel = ({
             <SelectItem items={items} swapItem={swapItem} onChange={onChange} />
           </div>
           <Button color={color} onClick={onClick}>
-            {buttonText}
+            { swapping ? "Swapping..." : buttonText}
           </Button>
         </div>
       ) : (

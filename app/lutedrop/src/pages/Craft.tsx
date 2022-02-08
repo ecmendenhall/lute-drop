@@ -33,8 +33,8 @@ const Craft = () => {
   const craftItem = (item: string) => {
     const craft = async () => {
       if (!craftingItem) {
-        setCraftingItem(true);
         const typeId = item === "lute" ? 0 : 1;
+        setCraftingItem(true);
         await sendCraftItem(typeId, dropId, { value: fee });
         setCraftingItem(false);
       }
@@ -51,6 +51,7 @@ const Craft = () => {
         <div className="flex flex-col md:flex-row items-center justify-center mb-8">
           <CraftPanel
             enabled={isSupportedChain(chainId) && enabled}
+            crafting={craftingItem}
             crafted={flutesCrafted}
             imgSrc="img/flutes.png"
             imgAlt="Flutes"
@@ -78,6 +79,7 @@ const Craft = () => {
           )}
           <CraftPanel
             enabled={isSupportedChain(chainId) && enabled}
+            crafting={craftingItem}
             crafted={lutesCrafted}
             imgSrc="img/lutes.png"
             imgAlt="Lutes"
@@ -89,6 +91,7 @@ const Craft = () => {
             }}
           />
         </div>
+        {craftItemState.errorMessage && <div className="text-center text-red-600">{craftItemState.errorMessage}</div>}
       </div>
     </FullPage>
   );

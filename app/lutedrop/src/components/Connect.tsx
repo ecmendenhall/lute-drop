@@ -1,10 +1,10 @@
-import { ChainId, shortenAddress, useEthers, useLookupAddress } from "@usedapp/core";
-import { useCallback, useEffect, useState } from "react";
+import { ChainId, getExplorerAddressLink, shortenAddress, useEthers, useLookupAddress } from "@usedapp/core";
+import { useEffect, useState } from "react";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 const Connect = () => {
-  const { account, activate, deactivate } = useEthers();
+  const { account, chainId, activate, deactivate } = useEthers();
   const ens = useLookupAddress();
   const [activateError, setActivateError] = useState("");
   const { error } = useEthers();
@@ -51,10 +51,10 @@ const Connect = () => {
   return (
     <div>
       <div className="md:fixed md:top-12 md:right-12 md:mb-0 md:z-50 mb-8 text-center">
-        {account ? (
+        {(account && chainId) ? (
           <>
-            <span className="font-body text-xl px-4 py-2 bg-yellow-50 text-gray-800 hover:bg-yellow-400 rounded-md shadow mr-4">
-              {ens ?? shortenAddress(account)}
+            <span className="font-body text-xl px-4 py-2 bg-yellow-50 text-gray-800 rounded-md shadow mr-4">
+              <a href={getExplorerAddressLink(account, chainId)}>{ens ?? shortenAddress(account)}</a>
             </span>
             <button
               className="font-body text-xl px-4 py-2 bg-yellow-200 text-gray-800 hover:bg-yellow-400 rounded-md shadow"

@@ -2,6 +2,7 @@ import Button from "./Button";
 
 interface Props {
   enabled: boolean;
+  crafting: boolean;
   crafted: number;
   imgSrc: string;
   imgAlt: string;
@@ -13,6 +14,7 @@ interface Props {
 
 const CraftPanel = ({
   enabled,
+  crafting,
   crafted,
   imgSrc,
   imgAlt,
@@ -31,7 +33,7 @@ const CraftPanel = ({
       {enabled && (
         <div>
           <Button color={color} onClick={onCraft}>
-            {buttonText}
+            {crafting ? "Crafting..." : buttonText}
           </Button>
         </div>
       )}
