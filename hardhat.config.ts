@@ -7,7 +7,7 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import dotenv from "dotenv";
 import { task } from "hardhat/config";
-import { deployLocal, deployTestnet } from "./scripts/deploy";
+import { deployLocal, deployTestnet, deployMainnet } from "./scripts/deploy";
 
 dotenv.config();
 
@@ -25,6 +25,10 @@ task("deploy:local", "Deploys contracts", async (args, hre) => {
 
 task("deploy:testnet", "Deploys contracts", async (args, hre) => {
   await deployTestnet(hre.ethers);
+});
+
+task("deploy:mainnet", "Deploys contracts", async (args, hre) => {
+  await deployMainnet(hre.ethers);
 });
 
 /**
@@ -55,6 +59,10 @@ module.exports = {
     mumbai: {
       url: process.env.MUMBAI_URL || "",
       accounts: { mnemonic: process.env.MUMBAI_MNEMONIC },
+    },
+    polygon: {
+      url: process.env.POLYGON_URL || "",
+      accounts: { mnemonic: process.env.POLYGON_MNEMONIC },
     },
   },
   gasReporter: {
