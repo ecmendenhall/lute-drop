@@ -97,17 +97,30 @@ export function useNextItem(item: Item) {
   return useItem(item, tokenId);
 }
 
-export function useLatestSwapPrice() {
+export function useLatestSwapFluteForLutePrice() {
   const { chainId } = useEthers();
   const config = getConfig(chainId);
-  const [luteSwapFee, fluteSwapFee] =
+  const [fluteSwapFee] =
     useContractCall({
       abi: config.lutiswap.abi,
       address: config.lutiswap.address,
-      method: "latestSwapPrice",
+      method: "latestSwapFluteForLutePrice",
       args: [],
     }) ?? [];
-  return { luteSwapFee, fluteSwapFee };
+  return fluteSwapFee;
+}
+
+export function useLatestSwapLuteForFlutePrice() {
+  const { chainId } = useEthers();
+  const config = getConfig(chainId);
+  const [luteSwapFee] =
+    useContractCall({
+      abi: config.lutiswap.abi,
+      address: config.lutiswap.address,
+      method: "latestSwapLuteForFlutePrice",
+      args: [],
+    }) ?? [];
+  return luteSwapFee;
 }
 
 export function useLatestDrop() {

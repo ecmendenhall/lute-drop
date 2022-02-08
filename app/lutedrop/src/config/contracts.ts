@@ -42,7 +42,8 @@ const config = {
       abi: new Interface([
         "function nextLute() external view returns (uint256)",
         "function nextFlute() external view returns (uint256)",
-        "function latestSwapPrice() external view returns (uint256, uint256)",
+        "function latestSwapLuteForFlutePrice() external view returns (uint256)",
+        "function latestSwapFluteForLutePrice() external view returns (uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) external payable",
         "function swapExactFluteForLute(uint256 tokenId) external payable",
         "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
@@ -89,7 +90,8 @@ const config = {
       abi: new Interface([
         "function nextLute() external view returns (uint256)",
         "function nextFlute() external view returns (uint256)",
-        "function latestSwapPrice() external view returns (uint256, uint256)",
+        "function latestSwapLuteForFlutePrice() external view returns (uint256)",
+        "function latestSwapFluteForLutePrice() external view returns (uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) external payable",
         "function swapExactFluteForLute(uint256 tokenId) external payable",
         "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
@@ -136,50 +138,10 @@ const config = {
       abi: new Interface([
         "function nextLute() external view returns (uint256)",
         "function nextFlute() external view returns (uint256)",
-        "function latestSwapPrice() external view returns (uint256, uint256)",
+        "function latestSwapLuteForFlutePrice() external view returns (uint256)",
+        "function latestSwapFluteForLutePrice() external view returns (uint256)",
         "function swapExactLuteForFlute(uint256 tokenId) external payable",
         "function swapExactFluteForLute(uint256 tokenId) external payable",
-        "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
-      ]),
-    },
-  },
-  [ChainId.Rinkeby]: {
-    lute: {
-      address: "0x662A31660f430eB5F93d28Af484045a196653e6d",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-        "function totalSupply() returns (uint256)",
-        "function nextId() returns(uint256)",
-      ]),
-    },
-    flute: {
-      address: "0x6f3218395776A27696eAae0E6244a77C2a770761",
-      abi: new Interface([
-        "function balanceOf(address owner) returns (uint256)",
-        "function tokenOfOwnerByIndex(address owner, uint256 index) returns (uint256)",
-        "function tokenURI(uint256 tokenId) returns (string)",
-        "function totalSupply() returns (uint256)",
-        "function nextId() returns(uint256)",
-      ]),
-    },
-    luteDrop: {
-      address: "0x71DCbA7E75E974704868CDB657a43444C41c0405",
-      abi: new Interface([
-        "function claim(uint8 item, address token, uint256 tokenId) payable",
-        "function dropId(address token) returns (uint256)",
-        "function drops(uint256 dropId) returns (address, uint256, uint256)",
-        "function isClaimed(address token, uint256 tokenId) returns (bool)",
-        "event Craft(address indexed to, uint8 item, uint256 fee)",
-      ]),
-    },
-    lutiswap: {
-      address: "0x1bf657Cde28bfc08BE56B86F732bDFEf3358AB6e",
-      abi: new Interface([
-        "function latestSwapPrice() view returns (uint256, uint256)",
-        "function swapExactLuteForFlute(uint256 tokenId) payable",
-        "function swapExactFluteForLute(uint256 tokenId) payable",
         "event Swap(address indexed user, address indexed from, address indexed to, uint256 fromTokenId, uint256 toTokenId, uint256 fee)",
       ]),
     },
@@ -190,8 +152,6 @@ export const getConfig = (chainId: ChainId | undefined) => {
   switch (chainId) {
     case ChainId.Hardhat:
       return config[ChainId.Hardhat];
-    case ChainId.Rinkeby:
-      return config[ChainId.Rinkeby];
     case ChainId.Mumbai:
       return config[ChainId.Mumbai];
     case ChainId.Polygon:

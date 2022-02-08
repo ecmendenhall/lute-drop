@@ -1,4 +1,4 @@
-import { useEthers } from "@usedapp/core";
+import { useEthers, useTokenBalance } from "@usedapp/core";
 import { BigNumber } from "ethers";
 import { useState } from "react";
 import SwapPanel from "../components/SwapPanel";
@@ -6,7 +6,8 @@ import { getConfig } from "../config/contracts";
 import { isSupportedChain } from "../config/dapp";
 import {
   useIsApprovedForAll,
-  useLatestSwapPrice,
+  useLatestSwapFluteForLutePrice,
+  useLatestSwapLuteForFlutePrice,
   useNextItem,
   useSetApprovalForAll,
   useSwapExactFluteForLute,
@@ -30,6 +31,14 @@ const Swap = () => {
     state: sendSwapExactFluteForLuteState,
   } = useSwapExactFluteForLute();
 
+  const lutiswapLuteBalance = useTokenBalance(
+    config.lute.address,
+    config.lutiswap.address
+  );
+  const lutiswapFluteBalance = useTokenBalance(
+    config.flute.address,
+    config.lutiswap.address
+  );
   const nextLute = useNextItem("lute");
   const nextFlute = useNextItem("flute");
   const luteIds = useTokenIdsByAccount("lute", account, [
@@ -40,11 +49,17 @@ const Swap = () => {
     sendSwapExactFluteForLuteState,
     sendSwapExactLuteForFluteState,
   ]);
-  const { luteSwapFee, fluteSwapFee } = useLatestSwapPrice();
+  const luteSwapFee = useLatestSwapLuteForFlutePrice();
+  const fluteSwapFee = useLatestSwapFluteForLutePrice();
   const lutesApproved = useIsApprovedForAll("lute", account);
   const flutesApproved = useIsApprovedForAll("flute", account);
 
   const [swapPending, setSwapPending] = useState(false);
+
+  const sufficientLuteReserve =
+    lutiswapLuteBalance && lutiswapLuteBalance.gt(2);
+  const sufficientFluteReserve =
+    lutiswapFluteBalance && lutiswapFluteBalance.gt(2);
 
   const onSwapFlute = (tokenId: BigNumber) => {
     const swap = async () => {
@@ -77,7 +92,7 @@ const Swap = () => {
     >
       <div className="font-body text-xl">
         <div className="flex flex-col md:flex-row items-center justify-center">
-          {isSupportedChain(chainId) && (
+          {isSupportedChain(chainId) && sufficientLuteReserve && (
             <SwapPanel
               nextItem={nextLute}
               swapPrice={fluteSwapFee}
@@ -90,10 +105,15 @@ const Swap = () => {
               onSwap={onSwapFlute}
             />
           )}
+          {!sufficientLuteReserve && (
+            <div className="w-72 text-center">
+              Too few reserve lutes to swap.
+            </div>
+          )}
           <div className="my-2 mx-8 w-80 hidden lg:block">
             <img src="img/swap.png" alt="Swap Lutes for Flutes" />
           </div>
-          {isSupportedChain(chainId) && (
+          {isSupportedChain(chainId) && sufficientFluteReserve && (
             <SwapPanel
               nextItem={nextFlute}
               swapPrice={luteSwapFee}
@@ -105,6 +125,11 @@ const Swap = () => {
               enabled={!swapPending}
               onSwap={onSwapLute}
             />
+          )}
+          {!sufficientFluteReserve && (
+            <div className="w-72 text-center">
+              Too few reserve flutes to swap.
+            </div>
           )}
         </div>
         {!isSupportedChain(chainId) && (

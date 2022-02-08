@@ -122,7 +122,9 @@ export async function deployTestnet(ethers: Ethers) {
 
   const { lute, flute, luteDrop, lutiswap } = await deployCoreContracts(ethers);
   await grantRoles(lute, flute, luteDrop, lutiswap);
-  await addDrop(luteDrop, owner);
+  //await addDrop(luteDrop, owner);
+  await luteDrop.connect(owner).addDrop(parseEther("0.02"), 5, 100);
+  await lutiswap.connect(owner).setBaseFee(parseEther("0.01"));
 }
 
 export async function deployLocal(ethers: Ethers) {
