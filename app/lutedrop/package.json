@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.2.0",
+    "@davatar/react": "^1.8.1",
     "@fontsource/almendra": "^4.5.0",
     "@fontsource/almendra-sc": "^4.5.0",
     "@testing-library/jest-dom": "^5.11.4",
